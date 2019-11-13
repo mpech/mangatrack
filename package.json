@@ -22,6 +22,9 @@
         "mocha": "6.2.2",
         "mocha-jenkins-reporter": "0.4.2"
     },
+    "scripts":{
+        "test":"make custom"
+    },
     "private": true,
     "license": "MIT"
 }

@@ -20,7 +20,7 @@ e2e:
 
 #http://stackoverflow.com/questions/6273608/how-to-pass-argument-to-makefile-from-command-line
 custom:
-	@$(mocha) $(filter-out $@,$(MAKECMDGOALS))
+	@$(mocha) $(filter-out $@,$(addprefix $(INIT_CWD)/,$(MAKECMDGOALS)))
 
 %:
 	@:

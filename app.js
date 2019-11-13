@@ -16,7 +16,10 @@ app.use(function(req,res,next){
     o['sid'] = req.headers.sid;
     return next();
 })
-app.use(reqLogger.express({maxRequestTime: config.reqlogger_maxRequestTime, logger:config.logger}))
+app.use(reqLogger.express({
+    maxRequestTime: config.reqlogger_maxRequestTime, 
+    logger:config.logger
+}))
 
 require('./routes').load(app);
 app.get('/ping', (req,res)=>res.send('OK'));
