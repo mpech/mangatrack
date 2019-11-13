@@ -12,6 +12,8 @@
         "google-auth-library": "0.10.0",
         "moment-timezone": "0.5.13",
         "mongoose": "5.7.10",
+        "request": "2.88.0",
+        "request-promise-native": "1.0.8",
         "retryer": "1.1.2",
         "supertest": "3.0.0",
         "winston": "3.2.1",
@@ -22,8 +24,8 @@
         "mocha": "6.2.2",
         "mocha-jenkins-reporter": "0.4.2"
     },
-    "scripts":{
-        "test":"make custom"
+    "scripts": {
+        "test": "make custom"
     },
     "private": true,
     "license": "MIT"

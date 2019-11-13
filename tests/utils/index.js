@@ -54,7 +54,7 @@ exports.bindApp = function(){
     before(exports.waitUntilAppReady(app, out));
     after(exports.appClose(app, out));
 }
-exports.bindBdd = function(){
+exports.bindDb = function(){
     before(exports.dbConnect);
     after(exports.dbClose);
 }

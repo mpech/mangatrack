@@ -6,7 +6,7 @@ var Mocker = require('../../lib/mocker');
 var MangaModel = require('../../models/mangaModel');
 
 utils.bindApp();
-utils.bindBdd();
+utils.bindDb();
 describe('e2e mangas', function(){
     beforeEach(utils.clearColls([MangaModel]));
 
