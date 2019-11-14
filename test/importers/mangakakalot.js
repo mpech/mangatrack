@@ -94,7 +94,11 @@ describe('importers mangakakalot',function(){
             let c = res[1];
             assert.equal(c.name,'To You, The Immortal Chapter 112.5: Then, Towards the Sunrise (2)');
             assert.equal(c.num,112.5);
-            assert.equal(new Date(c.date).toISOString(), '2019-10-19T01:38:00.000Z');
+            let date = new Date(c.date);
+            //is enough to check the date has been parsed
+            assert.equal(date.getFullYear(), 2019);
+            assert.equal(date.getMonth(), 9);
+            assert.equal(date.getDate(), 19);
             assert.equal(c.url, 'https://mangakakalot.com/chapter/to_you_the_immortal/chapter_112.5')
         })
     }));
