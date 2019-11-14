@@ -53,7 +53,7 @@ Importer.prototype.allUpdates = function(){
             }
             last = this.parseDate(last);
             if(!acc.hasOwnProperty(title)){
-                acc[title] = {last, url, num};
+                acc[title] = {last, url, num, name:title};
             }
             return acc;
         },{})

@@ -5,8 +5,6 @@ var Logger = require('../../lib/logger');
 var Mocker = require('../../lib/mocker');
 
 describe('lib logger',function(){
-    before(utils.dbConnect.bind(null,{}));
-    after(utils.dbClose);
     beforeEach(utils.clearColls([]));
 
     it('just logs', Mocker.mockIt(mokr=>{

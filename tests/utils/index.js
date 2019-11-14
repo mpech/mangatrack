@@ -2,27 +2,52 @@ var mongoose = require('mongoose');
 var config = require('../../config');
 var assert = require('assert');
 var exports = module.exports;
-var AppStarter = require('../../lib/appStarter');
-var appStarter;
-exports.waitUntilAppReady = function(app, out){
-    appStarter = AppStarter({
+var appStarter = require('../../lib/appStarter');
+var util = require('util');
+var app = require('../../app');
+var Singleton = require('../../lib/singleton');
+var requester = require('supertest');
+
+function dbConnect(){
+    if(mongoose.connection && mongoose.connection.constructor.STATES.connected  == mongoose.connection._readyState){
+        return Promise.resolve(mongoose.connection);
+    }
+    return mongoose.connect(config.selectedDb || config.dbTestUrl).then(conn=>conn.connection)
+};
+
+function dbClose(conn){
+    return conn.close();
+};
+
+function appStarterConnect(app, out){
+    let conf = {
         port: config.port,
         dbUrl: config.dbTestUrl,
         logger: config.logger,
         phase: config.phase
+    };
+    return appStarter.open(app, conf).then(_=>{
+        out.requester = requester(app);
+        return appStarter;
     });
-    return function(){
-        return new Promise((ok,ko)=>{
-            appStarter.onReady(function(err, server){
-                if(err){return ko(err)}
-                exports.requester = require('supertest')(app);
-                out.server = server;
-                return ok();
-            });
-            return appStarter.start(app);
-        })
-    }
-};
+}
+
+function appStarterClose(appStarter){
+    return appStarter.close();
+}
+
+var dbSingle = Singleton(dbConnect, dbClose, 'db')
+var appSingle = Singleton(appStarterConnect, appStarterClose, 'appStarter')
+
+exports.bindDb = function(){
+    before(function(){return dbSingle.open()});
+    after(function(){return dbSingle.close()});
+}
+
+exports.bindApp = function(){
+    before(function(){return appSingle.open(app, exports)});
+    after(function(){return appSingle.close()});
+}
 
 exports.clearColls = function(arr){
     return function(){
@@ -32,46 +57,3 @@ exports.clearColls = function(arr){
         })
     };
 };
-
-exports.dbConnect = function(){
-    return new Promise((ok,ko)=>{
-        var testUrl = config.dbTestUrl;
-        if(mongoose.connection && mongoose.connection.constructor.STATES.connected  == mongoose.connection._readyState){
-            return ok();
-        }
-        return mongoose.connect(config.selectedDb || testUrl, (err,db)=>{
-            return err == null?ok():ko(err)
-        });
-    })
-};
-exports.dbClose = function(done){
-    mongoose.connection.close(done);
-};
-
-exports.bindApp = function(){
-    var app = require('../../app');
-    let out = {};
-    before(exports.waitUntilAppReady(app, out));
-    after(exports.appClose(app, out));
-}
-exports.bindDb = function(){
-    before(exports.dbConnect);
-    after(exports.dbClose);
-}
-
-exports.appClose = function(app, out){
-    return function(){
-        return new Promise((ok,ko)=>{
-            //waitAppReady only fills out once.
-            //you just need to shut the server once.
-            if(!out.server){
-                return ok();
-            }
-            return out.server.close(function(err){
-                if(err)return ko(err);
-                return ok();
-            });
-        })
-    }
-};
-

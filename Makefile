@@ -1,6 +1,11 @@
 mocha=./node_modules/mocha/bin/mocha --recursive
-folders=models lib e2e
+folders=models lib e2e activity
 dirs=$(addprefix tests/,$(folders))
+
+#allow makefile to be run without npm
+ifeq ($(INIT_CWD),)
+	INIT_CWD := $(PWD)
+endif
 .PHONY: test $(folders) cover
 test: $(folders)
 models:
@@ -20,7 +25,7 @@ e2e:
 
 #http://stackoverflow.com/questions/6273608/how-to-pass-argument-to-makefile-from-command-line
 custom:
-	@$(mocha) $(filter-out $@,$(addprefix $(INIT_CWD)/,$(MAKECMDGOALS)))
+	$(mocha) $(addprefix $(INIT_CWD)/,$(filter-out custom, $(MAKECMDGOALS)));
 
 %:
 	@:

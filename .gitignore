@@ -1,5 +1,5 @@
 *.patch
 node_modules
 config/privateConfig.js
-sdk/gmail-nodejs-quickstart.json
 *.tar.gz
+roadmap.md

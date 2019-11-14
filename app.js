@@ -1,6 +1,6 @@
 var express = require('express');
 var config = require('./config');
-var appStarter = require('./lib/appStarter')(config);
+var appStarter = require('./lib/appStarter');
 var bodyParser = require('body-parser');
 var ctx = require('./lib/ctx');
 var reqLogger = require('./lib/reqlogger');
@@ -26,7 +26,7 @@ app.get('/ping', (req,res)=>res.send('OK'));
 
 
 if(!module.parent){
-    appStarter.start(app);
+    appStarter.open(app, config);
     var onDeath = function(signal, e){
         console.log('crashed ('+signal+'):',new Date());
         if(e){

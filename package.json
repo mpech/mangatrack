@@ -16,6 +16,7 @@
         "request-promise-native": "1.0.8",
         "retryer": "1.1.2",
         "supertest": "3.0.0",
+        "throttled-queue": "1.0.7",
         "winston": "3.2.1",
         "winston-daily-rotate-file": "4.2.1"
     },

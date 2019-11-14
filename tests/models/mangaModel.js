@@ -8,9 +8,8 @@ var util = require('util');
 var app = {};
 var ctx = require('../../lib/ctx');
 
+utils.bindDb();
 describe('mangaModel',function(){
-    before(utils.dbConnect.bind(null,{}));
-    after(utils.dbClose);
     beforeEach(utils.clearColls([MangaModel]));
 
     it('keeps domain while using mongoose', Mocker.mockIt(function(mokr){
@@ -37,5 +36,9 @@ describe('mangaModel',function(){
         ]).finally(_=>{
             ctx.disable();
         })
+    }));
+
+    it('canonicalize', Mocker.mockIt(function(mokr){
+        assert.equal(MangaModel.canonicalize('a b c'), 'a_b_c');
     }));
 });
