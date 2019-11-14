@@ -1,6 +1,6 @@
 mocha=./node_modules/mocha/bin/mocha --recursive
 folders=models lib e2e activity
-dirs=$(addprefix tests/,$(folders))
+dirs=$(addprefix test/,$(folders))
 
 #allow makefile to be run without npm
 ifeq ($(INIT_CWD),)
@@ -9,19 +9,19 @@ endif
 .PHONY: test $(folders) cover
 test: $(folders)
 models:
-	@$(mocha) tests/models
+	@$(mocha) test/models
 
 lib:
-	@$(mocha) tests/lib
+	@$(mocha) test/lib
 
 externalCalls:
-	@$(mocha) tests/externalCalls
+	@$(mocha) test/externalCalls
 
 activity:
-	@$(mocha) tests/activity
+	@$(mocha) test/activity
 
 e2e:
-	@$(mocha) tests/e2e
+	@$(mocha) test/e2e
 
 #http://stackoverflow.com/questions/6273608/how-to-pass-argument-to-makefile-from-command-line
 custom:
@@ -32,6 +32,3 @@ custom:
 
 cover:
 	./node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha -- --recursive $(dirs)
-
-jenkins:
-	@$(mocha) --reporter mocha-jenkins-reporter --colors --reporter-options junit_report_path=./test-reports/report.xml $(dirs)

@@ -43,7 +43,7 @@ Importer.prototype.allUpdates = function(){
             let li = $(x).find('li:nth-child(2)').eq(0);
             let url = li.find('a').attr('href');
             let last = li.find('i').text();
-            let num = parseFloat(li.find('a').text().match(/[\d\.]+/)[0])
+            let num = parseFloat(li.find('a').attr('href').match(/_([^_]+)$/)[1])
             return {title, last, url, num}
         }).toArray();
     }).then(arr=>{
@@ -74,8 +74,8 @@ Importer.prototype.allUpdates = function(){
  * ]
  * @return {[type]} [description]
  */
-Importer.prototype.fetchMangaDetail = function(uri){
-    uri = uri.split('/');
+Importer.prototype.fetchMangaDetail = function(chap){
+    uri = chap.url.split('/');
     uri.pop();//chapter
     let name = uri.pop();
     let url = this.detailUrl.replace('%%name%%', name);

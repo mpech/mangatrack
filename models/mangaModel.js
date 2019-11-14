@@ -37,15 +37,22 @@ schema.statics.findChapter = function(chap){
 schema.statics.upsertManga = function(manga){
     return this.findOne({nameId: manga.nameId}).then(el=>{
         if(!el){
+            config.logger.dbg('creating ', manga.nameId);
             return this.create(manga);
         }
         let dic = el.chapters.reduce((acc,chap)=>{
             acc[chap.num] = chap;
             return acc;
         }, {});
+        let diff = [];
         manga.chapters.forEach(chap=>{
+            if(!dic[chap.num]){
+                diff.push(chap.num);
+            }
             dic[chap.num] = dic[chap.num] || chap;
         })
+        config.logger.dbg('upserting', el.nameId, diff.map(x=>x.num).join(','))
+
         el.chapters = Object.values(dic).sort((a,b)=>a.num - b.num);
         el.markModified('chapters');
         return el.save();

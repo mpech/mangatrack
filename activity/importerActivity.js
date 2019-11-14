@@ -7,23 +7,28 @@ class ImporterActivity{
         this.imp = importer;
     }
 }
+
 ImporterActivity.prototype.refresh = function(){
     //TODO: retry??
     //do not fail all if one fails
     return this.imp.allUpdates().then(dic=>{
-        
         let detailStack = [];
         let arr = Object.values(dic);
 
         return bulker.bulk(arr, 20, chap=>{
-
+            //TODO: only one request instead of one foreach chapter
             chap.nameId = MangaModel.canonicalize(chap.name);
             return MangaModel.findChapter(chap).then(yes=>{
-                if(yes) return true;
+                if(yes){
+                    config.logger.dbg('found', chap.name, chap.num);
+                    return true;
+                }
+                config.logger.dbg('didnot find', chap)
                 return detailStack.push(chap);
             })
         }).then(_=>detailStack)
     }).then(detailStack=>{
+        config.logger.dbg('detailstack-ok', detailStack.length);
         return bulker.debounce(detailStack, config.manga_detailDebounce, chap=>{
 
             return this.imp.fetchMangaDetail(chap).then(chapters=>{

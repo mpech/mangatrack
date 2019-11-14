@@ -57,3 +57,11 @@ exports.clearColls = function(arr){
         })
     };
 };
+exports.runImport = function(fn){
+    config.selectedDb = config.dbUrl;
+    return dbSingle.open().then(function(){
+        return fn();
+    }).finally(_=>{
+        return dbSingle.close();
+    })
+}

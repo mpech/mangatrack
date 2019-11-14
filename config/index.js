@@ -15,7 +15,7 @@ exports.log_maxsize = 1e5;
 exports.log_usr = true;
 exports.reqlogger_maxRequestTime = 1e6;//ms
 
-exports.manga_detailDebounce = 1000;
+exports.manga_detailDebounce = 3000;
 
 let Logger = require('../lib/logger');
 exports.logger = new Logger({

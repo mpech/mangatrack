@@ -9,7 +9,7 @@ utils.bindApp();
 describe('e2e user', function(){
     beforeEach(utils.clearColls([MangaModel]));
 
-    it('list user', Mocker.mockIt(function(mokr){
+    it.skip('list user', Mocker.mockIt(function(mokr){
         let payload = {name:'bob', avantage:{percent:20}, restrictions:{'@age':{eq:10}}};
         return utils.requester
             .get('/mangas')

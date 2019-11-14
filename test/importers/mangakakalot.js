@@ -36,6 +36,29 @@ describe('importers mangakakalot',function(){
         })
     }));
 
+    it('allUpdates', Mocker.mockIt(mokr=>{
+        let importer = new Importer;
+        let called = false;
+        mokr.mock(Importer.prototype, 'domFetch', _=>{
+            called = true;
+            return pread(__dirname+'/../../samples/mangakakalot/allUpdates_small.html').then(s=>{
+                return cheerio.load(s.toString(), {
+                    xml: {
+                      normalizeWhitespace: true,
+                      decodeEntities: false
+                    }
+                })
+            });
+        })
+        mokr.mock(Importer.prototype, 'parseDate', _=>5)
+        return importer.allUpdates().then(res=>{
+            let v = Object.values(res);
+            assert.equal(v.length, 1);
+            let o = v[0]
+            assert.equal(o.num, 18);
+        })
+    }));
+
     it('parseDate min ago', Mocker.mockIt(mokr=>{
         let importer = new Importer;
         let ref = new Date(2019,10,13,10)
@@ -62,7 +85,7 @@ describe('importers mangakakalot',function(){
             });
         })
         mokr.mock(Importer.prototype, 'parseDate', _=>5)
-        return importer.fetchMangaDetail('https://mangakakalot.com/chapter/to_you_the_immortal/chapter_110').then(res=>{
+        return importer.fetchMangaDetail({url:'https://mangakakalot.com/chapter/to_you_the_immortal/chapter_110'}).then(res=>{
             assert.equal(res.length, 117);
             let dic = res.reduce((acc,x)=>(acc[x.num]=1,acc),{});
             for(let i = 1; i<=113; ++i){
