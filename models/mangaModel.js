@@ -33,6 +33,25 @@ schema.statics.findChapter = function(chap){
         }
     })
 }
-//schema.plugin(require('@mongoosejs/async-hooks'));
 
+schema.statics.upsertManga = function(manga){
+    return this.findOne({nameId: manga.nameId}).then(el=>{
+        if(!el){
+            return this.create(manga);
+        }
+        let dic = el.chapters.reduce((acc,chap)=>{
+            acc[chap.num] = chap;
+            return acc;
+        }, {});
+        manga.chapters.forEach(chap=>{
+            dic[chap.num] = dic[chap.num] || chap;
+        })
+        el.chapters = Object.values(dic).sort((a,b)=>a.num - b.num);
+        el.markModified('chapters');
+        return el.save();
+    })
+}
+
+
+//schema.plugin(require('@mongoosejs/async-hooks'));
 module.exports = mongoose.model('Model', schema, 'mangas');

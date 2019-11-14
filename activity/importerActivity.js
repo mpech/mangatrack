@@ -26,9 +26,8 @@ ImporterActivity.prototype.refresh = function(){
     }).then(detailStack=>{
         return bulker.debounce(detailStack, config.manga_detailDebounce, chap=>{
 
-            return this.imp.fetchMangaDetail(chap).then(chaps=>{
-
-                return MangaModel.upsertManga(chap.nameId, chaps);
+            return this.imp.fetchMangaDetail(chap).then(chapters=>{
+                return MangaModel.upsertManga({chapters, ...chap});
             }).catch(e=>{
                 config.logger.inf('failed to fetch detail', e);
             })

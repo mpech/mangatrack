@@ -41,4 +41,13 @@ describe('mangaModel',function(){
     it('canonicalize', Mocker.mockIt(function(mokr){
         assert.equal(MangaModel.canonicalize('a b c'), 'a_b_c');
     }));
+
+    it('upsert', Mocker.mockIt(function(mokr){
+        return MangaModel.upsertManga({name:'test', chapters:[{num:1, url:'a'}]}).then(_=>{
+            return MangaModel.findOne({name:'test'}).then(x=>{
+                assert.equal(x.chapters.length, 1);
+                assert.equal(x.chapters[0].num, 1);
+            })
+        })
+    }));
 });
