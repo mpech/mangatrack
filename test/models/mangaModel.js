@@ -38,6 +38,32 @@ describe('mangaModel',function(){
         })
     }));
 
+    it('keeps domain while using mongoose with find', Mocker.mockIt(function(mokr){
+        ctx.enable();
+        let run = function(str){
+            return ctx.initContext(_=>{
+                ctx.set('id', str);
+                return MangaModel.create({name:'test'+str}).then(p=>{
+                    let o = ctx.get();
+                    assert.equal(o.id, str);
+                    return MangaModel.find().skip(0).limit(1).exec().then(q=>{
+                        let o = ctx.get();
+                        assert.equal(o.id, str);
+                    })
+                }).then(_=>{
+                    let o = ctx.get();
+                    assert.equal(o.id, str);
+                })
+            })
+        }
+        return Promise.all([
+            run('a'),
+            run('b')
+        ]).finally(_=>{
+            ctx.disable();
+        })
+    }));
+
     it('canonicalize', Mocker.mockIt(function(mokr){
         assert.equal(MangaModel.canonicalize('a b c'), 'a_b_c');
     }));

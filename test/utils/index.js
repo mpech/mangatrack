@@ -21,7 +21,7 @@ function dbClose(conn){
 
 function appStarterConnect(app, out){
     let conf = {
-        port: config.port,
+        port: config.port-1,
         dbUrl: config.dbTestUrl,
         logger: config.logger,
         phase: config.phase

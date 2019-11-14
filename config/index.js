@@ -14,6 +14,7 @@ exports.log_fname = require('path').resolve(__dirname+'/../log/%DATE%_mt.log');
 exports.log_maxsize = 1e5;
 exports.log_usr = true;
 exports.reqlogger_maxRequestTime = 1e6;//ms
+exports.pagination_limit = 50;
 
 exports.manga_detailDebounce = 3000;
 

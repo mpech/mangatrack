@@ -8,7 +8,8 @@ var schema = new Schema({
         url:{type:String, required:true},
         num:{type:Number, required:true}
     }],
-    updatedAt: {type:Number, default:Date.now, required:true}
+    updatedAt: {type:Number, default:Date.now, required:true},
+    type:{type:String, enum:['manga','manhwa','manhua']}
 });
 
 schema.pre('validate', function(){

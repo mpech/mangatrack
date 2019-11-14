@@ -14,6 +14,7 @@ app.use(function(req,res,next){
     o['pfx'] = req.headers.pfx;
     o['tid'] = req.headers.tid;
     o['sid'] = req.headers.sid;
+    o['url'] = req.protocol + '://' + req.get('host') + req.originalUrl;
     return next();
 })
 app.use(reqLogger.express({
@@ -23,7 +24,9 @@ app.use(reqLogger.express({
 
 require('./routes').load(app);
 app.get('/ping', (req,res)=>res.send('OK'));
-
+app.use(function(err, req, res, next){
+    res.status(400).json(err);
+});
 
 if(!module.parent){
     appStarter.open(app, config);
