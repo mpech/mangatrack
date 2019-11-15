@@ -33,6 +33,7 @@ describe('importers mangakakalot',function(){
             assert.equal(v.num, 179);
             assert.equal(v.last, 5);
             assert.equal(v.url, 'https://manganelo.com/chapter/girls_world/chapter_179');
+            assert.equal(v.thumbUrl, 'https://avt.mkklcdnv3.com/avatar_225/18936-girls_world.jpg');
         })
     }));
 
@@ -85,7 +86,7 @@ describe('importers mangakakalot',function(){
             });
         })
         mokr.mock(Importer.prototype, 'parseDate', _=>5)
-        return importer.fetchMangaDetail({url:'https://mangakakalot.com/chapter/to_you_the_immortal/chapter_110'}).then(res=>{
+        return importer.fetchMangaDetail({url:'https://mangakakalot.com/manga/to_you_the_immortal/chapter_110'}).then(res=>{
             assert.equal(res.length, 117);
             let dic = res.reduce((acc,x)=>(acc[x.num]=1,acc),{});
             for(let i = 1; i<=113; ++i){
@@ -94,12 +95,32 @@ describe('importers mangakakalot',function(){
             let c = res[1];
             assert.equal(c.name,'To You, The Immortal Chapter 112.5: Then, Towards the Sunrise (2)');
             assert.equal(c.num,112.5);
-            let date = new Date(c.date);
+            let date = new Date(c.at);
             //is enough to check the date has been parsed
             assert.equal(date.getFullYear(), 2019);
             assert.equal(date.getMonth(), 9);
             assert.equal(date.getDate(), 19);
             assert.equal(c.url, 'https://mangakakalot.com/chapter/to_you_the_immortal/chapter_112.5')
         })
+    }));
+
+    it('fetchMangaDetail', Mocker.mockIt(mokr=>{
+        let importer = new Importer;
+        let called = false;
+        mokr.mock(Importer.prototype, 'domFetch', url=>{
+            assert.equal(url, 'https://mangakakalot.com/manga/to_you_the_immortal');
+            called = true;
+            return Promise.resolve(cheerio.load(''));
+        })
+        return importer.fetchMangaDetail({url:'https://mangakakalot.com/chapter/to_you_the_immortal/chapter_110'}).then(_=>{
+            assert(called);
+        });
+    }));
+
+    it('parseDateDetail', Mocker.mockIt(mokr=>{
+        let importer = new Importer;
+        let ts = importer.parseDateDetail('1 day ago', 1576436400000);
+        let date = new Date(ts);
+        assert.equal(date.getDate(), 14);
     }));
 });

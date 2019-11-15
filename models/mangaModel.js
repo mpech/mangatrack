@@ -9,6 +9,7 @@ var schema = new Schema({
         num:{type:Number, required:true},
         at:{type:Number, required:true, default:Date.now}
     }],
+    thumbUrl:String,
     updatedAt: {type:Number, default:Date.now, required:true},
     type:{type:String, enum:['manga','manhwa','manhua']}
 });

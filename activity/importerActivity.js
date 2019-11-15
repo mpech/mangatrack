@@ -32,9 +32,11 @@ ImporterActivity.prototype.refresh = function(){
         return bulker.debounce(detailStack, config.manga_detailDebounce, chap=>{
 
             return this.imp.fetchMangaDetail(chap).then(chapters=>{
-                return MangaModel.upsertManga({chapters, ...chap});
+                return MangaModel.upsertManga({chapters, ...chap}).catch(e=>{
+                    config.logger.dbg('failed to save', chapters[0],'...');
+                })
             }).catch(e=>{
-                config.logger.inf('failed to fetch detail', e);
+                config.logger.inf('failed to fetch detail', e, chap.url);
             })
         })
     })

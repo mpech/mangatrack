@@ -12,7 +12,7 @@ let tpl = `
                     <span>
                         <a :href="lastItem.url">c<span>{{lastItem.num}}</span>↗</a>
                     </span>
-                    <time :updatedAt="lastItem.at">{{lastItem.at}}</time>
+                    <time :updatedAt="lastItem.at">{{humanDate(lastItem.at)}}</time>
                 </div>
             </div>
             <hr/>
@@ -26,12 +26,16 @@ let tpl = `
 var Card = Vue.component('mt_card',{
     props:['card', 'url'],
     data:function(){
-        let sinceDate = moment(this.card.updatedAt).fromNow();
-        sinceDate = sinceDate.replace('minutes','min')
-        sinceDate = sinceDate.replace('seconds','sec')
         return {
-            sinceDate,
-            lastItem: this.lastItem||{}
+            lastItem: this.card.lastChap||{}
+        }
+    },
+    methods:{
+        humanDate(at){
+            let sinceDate = moment(at).fromNow();
+            sinceDate = sinceDate.replace('minutes','min')
+            sinceDate = sinceDate.replace('seconds','sec')
+            return sinceDate;
         }
     },
     template:tpl

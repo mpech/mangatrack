@@ -1,11 +1,11 @@
 let Base = require('./base');
 var moment = require('moment');
+var config = require('../config');
 
 class Importer extends Base{
     constructor(){
         super();
         this.allUrl = 'https://mangakakalot.com';
-        this.detailUrl = 'https://manganelo.com/manga/%%name%%';
     }
 }
 
@@ -39,27 +39,35 @@ Importer.prototype.allUpdates = function(){
     return this.domFetch(this.allUrl).then($=>{
 
         return $('.itemupdate').map((i,x)=>{
-            let title = $(x).find('h3 a').text();
-            let li = $(x).find('li:nth-child(2)').eq(0);
+            let $x = $(x);
+            let title = $x.find('h3 a').text();
+            let li = $x.find('li:nth-child(2)').eq(0);
             let url = li.find('a').attr('href');
             let last = li.find('i').text();
             let num = parseFloat(li.find('a').attr('href').match(/_([^_]+)$/)[1])
-            return {title, last, url, num}
+            let thumbUrl = $x.find('img').attr('src');
+            return {title, last, url, num, thumbUrl}
         }).toArray();
     }).then(arr=>{
-        return arr.reduce((acc,{title, last, url,num})=>{
+        return arr.reduce((acc,{title, last, url,num, thumbUrl})=>{
             if(!title || !last || !url){
                 config.logger.dbg('failed to parse', title, last, url);
             }
             last = this.parseDate(last);
             if(!acc.hasOwnProperty(title)){
-                acc[title] = {last, url, num, name:title};
+                acc[title] = {last, url, num, name:title, thumbUrl};
             }
             return acc;
         },{})
     })
 }
 
+Importer.prototype.parseDateDetail = function(s, now){
+    if(!s.includes('ago')){
+        return new Date(s).getTime();
+    }
+    return this.parseDate(s, now)
+}
 /**
  * url maps to a chapter view. e.g 
  * https://mangakakalot.com/chapter/to_you_the_immortal/chapter_110
@@ -77,16 +85,17 @@ Importer.prototype.allUpdates = function(){
 Importer.prototype.fetchMangaDetail = function(chap){
     uri = chap.url.split('/');
     uri.pop();//chapter
-    let name = uri.pop();
-    let url = this.detailUrl.replace('%%name%%', name);
+    let url = uri.join('/').replace('chapter', 'manga');
+    config.logger.dbg('fetching', url);
     return this.domFetch(url).then($=>{
         return $('.chapter-list .row').map((i,x)=>{
             let a = $(x).find('a')
             let name = a.attr('title');
             let url = a.attr('href');
             let num = parseFloat(url.match(/_([^_]+)$/)[1]);
-            let at = (new Date($(x).find('span[title]').eq(0).attr('title'))).getTime();
-            return {name, url, num, at}
+            let at = $(x).find('span[title]').eq(0).attr('title');
+            at = this.parseDateDetail(at);
+            return {name, url, num, at};
         }).toArray();
     })
 }
