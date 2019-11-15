@@ -4,11 +4,13 @@ var APH = require('../lib/asyncPromiseHandler');
 var ctx = require('../lib/ctx');
 var refreshProcess = require('../process/refreshProcess');
 var Formatter = require('../formatters/mangaFormatter');
+var ChapterFormatter = require('../formatters/chapterFormatter');
 var validate = require('express-validation')
 var Joi = require('joi');
 
 function load(app){
     this.formatter = new Formatter;
+    this.chapterFormatter = new ChapterFormatter;
 
     //tags is not really meant to be supported. sites do it better
     //Just offer the filtering of manhwa...
@@ -34,6 +36,19 @@ function load(app){
             MangaModel.find(crit).sort({updatedAt:-1}).skip(offset).limit(limit).lean().exec()
         ]).then(([count, coll])=>{
             return module.exports.formatter.formatCollection(coll, {count, offset, limit});
+        }).then(x=>res.send(x)).catch(e=>{
+            res.status(500).send(e);
+        });
+    });
+
+    app.get('/mangas/:nameId/chapters', validate({
+        params:{
+            nameId: Joi.string().min(3),
+        }
+    }), function(req,res){
+
+        return MangaModel.findOne({nameId:req.params.nameId}).then(m=>{
+            return module.exports.chapterFormatter.formatCollection(m.chapters);
         }).then(x=>res.send(x)).catch(e=>{
             res.status(500).send(e);
         });

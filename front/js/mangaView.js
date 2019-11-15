@@ -77,17 +77,17 @@ let MangaView = Vue.component('mt-mangaview',{
             })
         }
 
+        /*TODO: found a way to mock data a front standalone
         this.chapters = [
             {name:'almost dead '+Date.now(), num:5, read: 0,url:'/outthere'},
             {name:'need food', num:4, read: 1},
             {name:'some growth', num:3, read: 1},
             {name:'some heroic initiation', num:2.5, read: 1}
         ].map(x=>(x.isekaied=x.read,x));
-
-
-        return Promise.resolve();
-        return axios.get(routes.chapters.replace('{{nameId}}', this.$route.params.nameId)).then(chapters=>{
-            this.chapters = chapters.map(x=>(x.isekaied=x.read,x));
+        return Promise.resolve();*/
+        let url = routes.chapters.replace('{{nameId}}', this.$route.params.nameId);
+        return axios.get(url).then(({data:{items}})=>{
+            this.chapters = items.map(x=>(x.isekaied=x.read,x));
         }).catch(e=>{
             console.log('failed', e);
         })

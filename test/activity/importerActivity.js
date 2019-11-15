@@ -18,7 +18,8 @@ describe('activity importer',function(){
             allUpdates: _=>Promise.resolve({
                 'Release That Witch':{
                     name:'Release That Witch',
-                    num:10
+                    num:10,
+                    at:0
                 }
             }),
             fetchMangaDetail:function(){
@@ -28,7 +29,7 @@ describe('activity importer',function(){
         };
 
         let activity = new Activity(importer);
-        return MangaModel.create({name:'Release That Witch', chapters:[{num:10, url:'dum'}]}).then(m=>{
+        return MangaModel.create({name:'Release That Witch', chapters:[{num:10, url:'dum',at:0}]}).then(m=>{
             return activity.refresh().then(_=>{
                 assert(!fetchedDetail)
             })  
@@ -47,9 +48,9 @@ describe('activity importer',function(){
             fetchMangaDetail:function(){
                 fetchedDetail = true;
                 return Promise.resolve([
-                    {num:8, url:'dum'},
-                    {num:9, url:'dum'},
-                    {num:10, url:'dum'}
+                    {num:8, url:'dum',at:0},
+                    {num:9, url:'dum',at:2},
+                    {num:10, url:'dum',at:4}
                 ]);
             }
         };
@@ -59,14 +60,15 @@ describe('activity importer',function(){
         });
 
         let activity = new Activity(importer);
-        return MangaModel.create({name:'Release That Witch', chapters:[{num:1, url:'dum'}]}).then(m=>{
+        return MangaModel.create({name:'Release That Witch', chapters:[{num:11, url:'dum',at:6}]}).then(m=>{
             return activity.refresh().then(_=>{
                 assert(fetchedDetail)
             })
         }).then(_=>{
             return MangaModel.findOne().then(m=>{
                 assert.equal(m.chapters.length, 4, 'only replaces missing nums. let old ones be');
-                assert.equal(m.chapters.map(x=>x.num).join(','), '1,8,9,10');
+                assert.equal(m.chapters.map(x=>x.num).join(','), '11,10,9,8');
+                assert.equal(m.chapters.map(x=>x.at).join(','), '6,4,2,0');
             })
         })
     }));

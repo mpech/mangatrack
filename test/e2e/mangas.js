@@ -48,6 +48,24 @@ describe('e2e mangas', function(){
         })
     }))
 
+    it('lists mangas with one existing and a chapter', Mocker.mockIt(function(mokr){
+        return MangaModel.create({name:'a', chapters:[{url:'a',num:0,at:1}]}).then(m=>{
+            return utils.requester
+                .get('/mangas')
+                .expect(200)
+            .then(({body})=>{
+                assert.equal(body.items.length, 1);
+                let item = body.items[0]
+                assert.equal(item.name, 'a');
+                assert(item.lastChap)
+                chap = item.lastChap;
+                assert.equal(chap.url, 'a')
+                assert.equal(chap.num, 0)
+                assert.equal(chap.at, 1)
+            })
+        })
+    }))
+
     it('paginates mangas, limit 1', Mocker.mockIt(function(mokr){
         return Promise.all([
             MangaModel.create({name:'a', updatedAt:0}),
@@ -97,6 +115,26 @@ describe('e2e mangas', function(){
                 assert.equal(body.items.length, 2);
                 assert.equal(body.items[0].name, 'abaaaa');
                 assert.equal(body.items[1].name, 'aaaaaa');
+            })
+        })
+    }))
+
+    it('lists chapters', Mocker.mockIt(function(mokr){
+        return Promise.all([
+            MangaModel.create({name:'abc'}),
+            MangaModel.create({name:'def', chapters:[{num:0,url:'a',at:3},{num:1,url:'b',at:4}]}),
+        ]).then(m=>{
+            return utils.requester
+                .get('/mangas/def/chapters')
+                .expect(200)
+            .then(({body})=>{
+                assert.equal(body.items.length, 2);
+                assert.equal(body.items[0].url, 'a');
+                assert.equal(body.items[0].num, 0);
+                assert.equal(body.items[0].at, 3);
+                assert.equal(body.items[1].url, 'b');
+                assert.equal(body.items[1].num, 1);
+                assert.equal(body.items[1].at, 4);
             })
         })
     }))

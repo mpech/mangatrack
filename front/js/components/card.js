@@ -7,12 +7,12 @@ let tpl = `
                 <img :src="card.thumbUrl"/>
             </figure>
             <div>
-                <h4><span><a :href="url+'/'+card.nameId">{{card.name}}</a></span></h4>
+                <h4><span><router-link :to="url+'/'+card.nameId">{{card.name}}</router-link></span></h4>
                 <div class="chapter">
                     <span>
-                        <a :href="card.lastUrl">c<span>{{card.lastNum}}</span>↗</a>
+                        <a :href="lastItem.url">c<span>{{lastItem.num}}</span>↗</a>
                     </span>
-                    <time :updatedAt="card.updatedAt">{{sinceDate}}</time>
+                    <time :updatedAt="lastItem.at">{{lastItem.at}}</time>
                 </div>
             </div>
             <hr/>
@@ -30,7 +30,8 @@ var Card = Vue.component('mt_card',{
         sinceDate = sinceDate.replace('minutes','min')
         sinceDate = sinceDate.replace('seconds','sec')
         return {
-            sinceDate
+            sinceDate,
+            lastItem: this.lastItem||{}
         }
     },
     template:tpl

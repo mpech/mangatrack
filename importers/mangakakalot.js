@@ -85,8 +85,8 @@ Importer.prototype.fetchMangaDetail = function(chap){
             let name = a.attr('title');
             let url = a.attr('href');
             let num = parseFloat(url.match(/_([^_]+)$/)[1]);
-            let date = (new Date($(x).find('span[title]').eq(0).attr('title'))).getTime();
-            return {name, url, num, date}
+            let at = (new Date($(x).find('span[title]').eq(0).attr('title'))).getTime();
+            return {name, url, num, at}
         }).toArray();
     })
 }

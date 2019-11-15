@@ -6,7 +6,8 @@ var schema = new Schema({
     name:{type:String, required:true, unique:true},
     chapters:[{
         url:{type:String, required:true},
-        num:{type:Number, required:true}
+        num:{type:Number, required:true},
+        at:{type:Number, required:true, default:Date.now}
     }],
     updatedAt: {type:Number, default:Date.now, required:true},
     type:{type:String, enum:['manga','manhwa','manhua']}
@@ -54,7 +55,7 @@ schema.statics.upsertManga = function(manga){
         })
         config.logger.dbg('upserting', el.nameId, diff.map(x=>x.num).join(','))
 
-        el.chapters = Object.values(dic).sort((a,b)=>a.num - b.num);
+        el.chapters = Object.values(dic).sort((a,b)=>b.num - a.num);
         el.markModified('chapters');
         return el.save();
     })

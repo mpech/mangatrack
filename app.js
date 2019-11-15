@@ -4,6 +4,7 @@ var appStarter = require('./lib/appStarter');
 var bodyParser = require('body-parser');
 var ctx = require('./lib/ctx');
 var reqLogger = require('./lib/reqlogger');
+var cors = require('cors');
 
 var app = express();
 app.use(bodyParser.json({limit:'1mb'}));
@@ -17,6 +18,7 @@ app.use(function(req,res,next){
     o['url'] = req.protocol + '://' + req.get('host') + req.originalUrl;
     return next();
 })
+app.use(cors())
 app.use(reqLogger.express({
     maxRequestTime: config.reqlogger_maxRequestTime, 
     logger:config.logger

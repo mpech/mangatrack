@@ -26,10 +26,10 @@ describe('lib bulker',function(){
         let base = Date.now();
         let old = Date.now()-base;
         let arr = [];
-        return bulker.debounce([1,2,3,4], 7, x=>{
+        return bulker.debounce([1,2,3,4], 10, x=>{
             if(x > 1 && x!=4){
                 let t = Date.now()-base;
-                assert(t-old >= 7, t-old);
+                assert(t-old >= 9, t-old);//timeout now always precise
                 old = t;
             }
             arr.push(x);
