@@ -7,7 +7,7 @@ let tpl = `
                 <img :src="card.thumbUrl"/>
             </figure>
             <div>
-                <h4><span><a :href="card.links.self">{{card.name}}</a></span></h4>
+                <h4><span><a :href="url+'/'+card.nameId">{{card.name}}</a></span></h4>
                 <div class="chapter">
                     <span>
                         <a :href="card.lastUrl">c<span>{{card.lastNum}}</span>↗</a>
@@ -21,9 +21,10 @@ let tpl = `
         </div>
     </div>
 
-`
+`;
+
 var Card = Vue.component('mt_card',{
-    props:['card'],
+    props:['card', 'url'],
     data:function(){
         let sinceDate = moment(this.card.updatedAt).fromNow();
         sinceDate = sinceDate.replace('minutes','min')
@@ -34,16 +35,4 @@ var Card = Vue.component('mt_card',{
     },
     template:tpl
 });
-
-(function mt_pagination(Vue){
-let tpl = `
-<div>
-    pagination
-</div>
-`
-    return Vue.component('mt-pagination',{
-        template:tpl
-    });
-})(Vue);
-
 export {Card}

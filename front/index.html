@@ -6,28 +6,28 @@
 <link rel="stylesheet" href="/css/index.css">
 <script src="/js/index.js" type="module"></script>
 <script src="/js/moment.min.js"></script>
+<script src="/js/axios.min.js"></script>
 
 <link rel="apple-touch-icon" sizes="180x180" href="/img/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png">
 <link rel="manifest" href="/site.webmanifest">
 <body>
-    <div class="pure-menu pure-menu-horizontal">
-        <a href="#" class="pure-menu-heading pure-menu-link">HOME</a>
-        <!--
-        <ul class="pure-menu-list">
-            <li class="pure-menu-item"><a href="#" class="pure-menu-link">Profile</a></li>
-        </ul>-->
-    </div>
 
     <div id="main">
+        <div class="pure-menu pure-menu-horizontal">
+            <!-- use router-link component for navigation. -->
+            <!-- specify the link by passing the `to` prop. -->
+            <!-- `<router-link>` will be rendered as an `<a>` tag by default -->
+            <router-link to="/" class="pure-menu-heading pure-menu-link">HOME</router-link>
+            <router-link to="/manga/test" class="pure-menu-heading pure-menu-link">Debug</router-link>
+        </div>
 
-        <mt-grid>
-            <mt-filters></mt-filters>
-            <mt-rows>
-                
-            </mt-rows>
-        </mt-grid>
+        <div id="pageDisplay">
+            <!-- route outlet -->
+            <!-- component matched by the route will render here -->
+            <router-view></router-view>
+        </div>
     </div>
 </body>
 

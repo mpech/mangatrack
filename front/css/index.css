@@ -18,6 +18,12 @@ a:hover {
 a:active {
   text-decoration: underline;
 }
+.truckkun{
+    color:white;
+}
+#pageDisplay{
+    padding:2em;
+}
 .mt-grid{
     text-align:center;
 }
@@ -56,4 +62,21 @@ a:active {
 .card .chapter{
     display: flex;
     justify-content: space-between;
+}
+#mangaView .isekaied{
+    background:#CCCCCC;
+}
+#mangaView .read{
+    background:#CCCCCC;
+}
+#mangaView td:nth-child(2):hover{
+    cursor:pointer;
+    background:#CCCCCC;
+}
+#mangaView .truckkun{
+    background: #1976d2;
+    border-radius: 50%;
+    color:white;
+    display:block;
+    padding:0.2em;
 }
