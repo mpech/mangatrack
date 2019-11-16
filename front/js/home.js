@@ -1,11 +1,10 @@
 import Vue from './vue.esm.browser.js'
 import {Grid} from './components/grid.js'
 import {routes} from './config.js'
-
 let Home = Vue.component('mt-home',{
-    data:function(){
-        return {
-            mangas:[]
+    computed:{
+        mangas(){
+            return this.$store.state.mangas
         }
     },
     components:{
@@ -13,16 +12,9 @@ let Home = Vue.component('mt-home',{
     },
     template:'<mt-grid :mangas="mangas" class="mt-grid"></mt-grid>',
     mounted(){
-
-        return axios.get(routes.mangas).then(({data:{items}})=>{
-            this.mangas = items;
-        }).catch(e=>{
-            console.log('failed', e);
-        })
+        if(!this.mangas.length){
+            return this.$store.dispatch('fetchMangas');
+        }
     }
 });
-/*
-TODO: fetch the stuff
- */
-
 export {Home}

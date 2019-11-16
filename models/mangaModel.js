@@ -41,7 +41,9 @@ schema.statics.upsertManga = function(manga){
     return this.findOne({nameId: manga.nameId}).then(el=>{
         if(!el){
             config.logger.dbg('creating ', manga.nameId);
-            return this.create(manga);
+            manga.chapters.sort((a,b)=>b.num - a.num);
+            let updatedAt = manga.chapters.length && manga.chapters[0].at;
+            return this.create({...manga, updatedAt});
         }
         let dic = el.chapters.reduce((acc,chap)=>{
             acc[chap.num] = chap;
@@ -55,9 +57,9 @@ schema.statics.upsertManga = function(manga){
             dic[chap.num] = dic[chap.num] || chap;
         })
         config.logger.dbg('upserting', el.nameId, diff.map(x=>x.num).join(','))
-
         el.chapters = Object.values(dic).sort((a,b)=>b.num - a.num);
         el.markModified('chapters');
+        el.updatedAt = el.chapters.length && el.chapters[0].at;
         return el.save();
     })
 }

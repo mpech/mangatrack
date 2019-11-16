@@ -3,12 +3,18 @@ import {Card} from './card.js'
 
 (function mt_pagination(Vue){
 let tpl = `
-<div>
-    pagination
+<div class="mt-pagination">
+    <a class="pure-button" href="#">Moar</a>
 </div>
 `
     return Vue.component('mt-pagination',{
-        template:tpl
+        template:tpl,
+        mounted(){
+            this.$el.querySelector('a').onclick = e=>{
+                this.$store.dispatch('fetchMangas');
+                e.preventDefault();
+            }
+        }
     });
 })(Vue);
 

@@ -20,7 +20,6 @@ let tpl = `
             <button>Follow</button>
         </div>
     </div>
-
 `;
 
 var Card = Vue.component('mt_card',{

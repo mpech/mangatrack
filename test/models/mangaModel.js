@@ -69,10 +69,25 @@ describe('mangaModel',function(){
     }));
 
     it('upsert', Mocker.mockIt(function(mokr){
-        return MangaModel.upsertManga({name:'test', chapters:[{num:1, url:'a'}]}).then(_=>{
+        return MangaModel.upsertManga({name:'test', chapters:[{num:1, url:'a', at:5}, {num:2, url:'a', at:10}]}).then(_=>{
             return MangaModel.findOne({name:'test'}).then(x=>{
-                assert.equal(x.chapters.length, 1);
-                assert.equal(x.chapters[0].num, 1);
+                assert.equal(x.chapters.length, 2);
+                assert.equal(x.chapters[0].num, 2);
+                assert.equal(x.chapters[0].at, 10);
+                assert.equal(x.updatedAt, 10);
+            })
+        })
+    }));
+
+    it('upsert existing updatedAt', Mocker.mockIt(function(mokr){
+        return MangaModel.create({name:'test', chapters:[{num:1, url:'a'}]}).then(x=>{
+            return MangaModel.upsertManga({nameId:'test', name:'test', chapters:[{num:1, url:'a', at:5}, {num:2, url:'a', at:10}]})
+        }).then(_=>{
+            return MangaModel.findOne().then(x=>{
+                assert.equal(x.chapters.length, 2);
+                assert.equal(x.chapters[0].num, 2);
+                assert.equal(x.chapters[0].at, 10);
+                assert.equal(x.updatedAt, 10);
             })
         })
     }));
