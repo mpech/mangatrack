@@ -1,6 +1,9 @@
 let routes = {
     mangas: 'http://mangatrackapi/mangas',
     chapters: 'http://mangatrackapi/mangas/{{nameId}}/chapters',
-    tracks: 'http://mangatrackapi/mangas/{{nameId}}/tracks',
+    myMangas: 'http://mangatrackapi/me/mangas/{{nameId}}',
 }
-export {routes}
+let symbols = {
+    ALL_READ: -1
+}
+export {routes, symbols}

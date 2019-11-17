@@ -1,4 +1,5 @@
 import Vue from '../vue.esm.browser.js'
+import {Follow} from './follow.js'
 
 let tpl = `
     <div class="pure-u-1-8 pure-u-lg-1-6">
@@ -7,7 +8,7 @@ let tpl = `
                 <img :src="card.thumbUrl"/>
             </figure>
             <div>
-                <h4><span><router-link :to="url+'/'+card.nameId">{{card.name}}</router-link></span></h4>
+                <h4 :title="card.name"><span><router-link :to="url+'/'+card.nameId">{{card.name}}</router-link></span></h4>
                 <div class="chapter">
                     <span>
                         <a :href="lastItem.url">c<span>{{lastItem.num}}</span>↗</a>
@@ -16,8 +17,9 @@ let tpl = `
                 </div>
             </div>
             <hr/>
-            <!-- if followed, mark it -->
-            <button>Follow</button>
+            <div>
+                <mt-follow :nameId="card.nameId" :followed="card.followed" :name="card.name"></mt-follow>
+            </div>
         </div>
     </div>
 `;
@@ -26,8 +28,11 @@ var Card = Vue.component('mt_card',{
     props:['card', 'url'],
     data:function(){
         return {
-            lastItem: this.card.lastChap||{}
+            lastItem: this.card.lastChap||{},
         }
+    },
+    components:{
+        'mt-follow':Follow
     },
     methods:{
         humanDate(at){

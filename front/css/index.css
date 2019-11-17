@@ -80,3 +80,13 @@ a:active {
     display:block;
     padding:0.2em;
 }
+.card div:last-child{
+    text-align:center;
+}
+.mt-follow a:hover{
+    color:pink;
+    text-decoration:none;
+}
+.mt-follow.followed a{
+    color:red;
+}

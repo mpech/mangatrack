@@ -8,9 +8,9 @@ let Home = Vue.component('mt-home',{
         }
     },
     components:{
-        'mt-grid':Grid
+        'mt-grid': Grid
     },
-    template:'<mt-grid :mangas="mangas" class="mt-grid"></mt-grid>',
+    template: '<mt-grid :mangas="mangas" class="mt-grid"></mt-grid>',
     mounted(){
         if(!this.mangas.length){
             return this.$store.dispatch('fetchMangas');

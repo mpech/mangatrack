@@ -1,5 +1,6 @@
 var routers = [
     require('./mangas'),
+    require('./me/mangas'),
 ]
 module.exports = {
     load: function(app){
