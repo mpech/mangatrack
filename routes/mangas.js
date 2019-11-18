@@ -7,6 +7,7 @@ var Formatter = require('../formatters/mangaFormatter');
 var ChapterFormatter = require('../formatters/chapterFormatter');
 var validate = require('express-validation')
 var Joi = require('joi');
+var prom = require('../lib/prom');
 
 function load(app){
     this.formatter = new Formatter;
@@ -24,7 +25,7 @@ function load(app){
             offset: Joi.number().min(0),
             limit: Joi.number().min(1).max(config.pagination_limit),
         }
-    }), function(req,res){
+    }), prom(function(req,res){
         let offset = parseInt(req.query.offset||0);
         let limit = req.query.limit || config.pagination_limit;
         let crit = {};
@@ -36,35 +37,29 @@ function load(app){
             MangaModel.find(crit).sort({updatedAt:-1}).skip(offset).limit(limit).lean().exec()
         ]).then(([count, coll])=>{
             return module.exports.formatter.formatCollection(coll, {count, offset, limit});
-        }).then(x=>res.send(x)).catch(e=>{
-            res.status(500).send(e);
-        });
-    });
+        })
+    }));
 
     app.get('/mangas/:nameId/chapters', validate({
         params:{
             nameId: Joi.string().min(3),
         }
-    }), function(req,res){
+    }), prom(function(req,res){
 
         return MangaModel.findOne({nameId:req.params.nameId}).then(m=>{
             return module.exports.chapterFormatter.formatCollection(m.chapters);
-        }).then(x=>res.send(x)).catch(e=>{
-            res.status(500).send(e);
-        });
-    });
+        })
+    }));
 
-    app.post('/mangas/refreshs', function(req,res){
+    app.post('/mangas/refreshs', prom(function(req,res){
         if(req.headers.authorization != config.private_bearer){
             return res.status(401).send({err:'insufficient privileges'})
         }
 
         APH.tail = refreshProcess.run(Date.now());
 
-        return Promise.resolve().then(_=>{
-            return res.send({ok:Date.now()})
-        })
-    });
+        return Promise.resolve({ok:Date.now()})
+    }));
 }
 
 module.exports = {

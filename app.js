@@ -5,7 +5,8 @@ var bodyParser = require('body-parser');
 var ctx = require('./lib/ctx');
 var reqLogger = require('./lib/reqlogger');
 var cors = require('cors');
-
+var errorHandler = require('./lib/errorHandler');
+//var oauthModel = require('./services/oauth.js');
 var app = express();
 app.use(bodyParser.json({limit:'1mb'}));
 app.use(ctx.express())
@@ -24,11 +25,17 @@ app.use(reqLogger.express({
     logger:config.logger
 }))
 
+
+//app.oauth = require('oauth2-server')({model:oauthModel,...config.oauth2_server});
+//only supports refresh_token, no credentials
+//get mandatory.
+//app.get('/oauth/token', app.oauth.grant());
+//app.post('/oauth/token', app.oauth.grant());
+//exchange an oauth code for an acess token
+
 require('./routes').load(app);
 app.get('/ping', (req,res)=>res.send('OK'));
-app.use(function(err, req, res, next){
-    res.status(400).json(err);
-});
+app.use(errorHandler.express());
 
 if(!module.parent){
     appStarter.open(app, config);

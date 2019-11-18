@@ -1,0 +1,20 @@
+import Vue from './vue.esm.browser.js'
+import {oauth} from './config.js'
+
+let tpl = `
+    <div>
+        <a :href="facebookUri" class="facebook">Login via facebook</a>
+        <a :href="googleUri" class="google">Login via google</a>
+    </div>
+`
+let SignIn = Vue.component('mt-signin',{
+    data(){
+        return {
+            googleUri: `${oauth.google_endpoint}?response_type=code&client_id=${oauth.google_clientId}&redirect_uri=${oauth.google_redirect_uri}&scope=${oauth.google_scope}`,
+            facebookUri: `${oauth.facebook_endpoint}?response_type=code&client_id=${oauth.facebook_clientId}&redirect_uri=${oauth.facebook_redirect_uri}&scope=${oauth.facebook_scope}`
+        }
+    },
+    template:tpl
+});
+
+export {SignIn};

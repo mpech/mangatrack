@@ -66,4 +66,4 @@ schema.statics.upsertManga = function(manga){
 
 
 //schema.plugin(require('@mongoosejs/async-hooks'));
-module.exports = mongoose.model('Model', schema, 'mangas');
+module.exports = mongoose.model('Manga', schema, 'mangas');

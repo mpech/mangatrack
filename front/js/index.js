@@ -3,6 +3,7 @@ import VueRouter from './vue-router.esm.browser.min.js'
 import Vuex from './vuex.esm.browser.min.js'
 import {Home} from './home.js'
 import {MangaView} from './mangaView.js'
+import {SignIn} from './signIn.js'
 import {routes as apiRoutes, symbols} from './config.js'
 
 Vue.use(VueRouter);
@@ -11,7 +12,8 @@ Vue.use(Vuex)
 
 const routes = [
   { path: '/', component: Home },
-  { path: '/manga/:nameId', component: MangaView }
+  { path: '/manga/:nameId', component: MangaView },
+  { path: '/login', component: SignIn }
 ]
 
 const router = new VueRouter({

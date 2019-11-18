@@ -1,4 +1,5 @@
 var routers = [
+    require('./oauth'),
     require('./mangas'),
     require('./me/mangas'),
 ]
