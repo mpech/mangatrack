@@ -15,10 +15,6 @@ exports.log_maxsize = 1e5;
 exports.log_usr = true;
 exports.reqlogger_maxRequestTime = 1e6;//ms
 exports.pagination_limit = 50;
-/*exports.oauth2_server = {
-    debug: true,
-    grants:['refresh']
-};*/
 exports.oauth2_google_clientId = '936593177518-0spv3m56a0a9nslh6lq669glos9c55na.apps.googleusercontent.com'
 exports.oauth2_google_secret = 'private'
 //this is the redirect callback upon google authorization
@@ -29,8 +25,17 @@ exports.oauth2_facebook_secret = 'private'
 exports.oauth2_facebook_redirect_uri = `http://localhost:${exports.port}/oauth/facebook/callback`;
 exports.front_login_success = 'http://mangatrack/?access_token={{access_token}}&refresh_token={{refresh_token}}';
 
-exports.oauth_refreshToken_duration = 14*24*3600*1000;
 exports.oauth_accessToken_duration  = 7*24*3600*1000;//7days
+exports.oauth_refreshToken_duration = 14*24*3600*1000;
+
+exports.oauth2_server = {
+    debug: true,
+    grants:['refresh_token'],
+    requireClientAuthentication: {refresh_token: false},
+    accessTokenLifetime: exports.oauth_accessToken_duration/1000,//expects second
+    refreshTokenLifetime: exports.oauth_refreshToken_duration/1000
+};
+
 exports.manga_detailDebounce = 3000;
 
 require('fs').existsSync(__dirname+'/privateConfig.json') && Object.assign(exports, require(__dirname+'/privateConfig.json'));

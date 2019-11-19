@@ -5,7 +5,7 @@ var prom = require('../../lib/prom');
 var Joi = require('joi');
 
 function load(app){
-    app.put('/me/mangas/:nameId'/*, auth*/, validate({
+    app.put('/me/mangas/:nameId', app.oauth.authenticate(), validate({
         params:{
             nameId: Joi.string().min(3)
         },
@@ -13,6 +13,7 @@ function load(app){
             num:Joi.number().min(-1)
         }
     }), prom(function(req,res){
+        return Promise.resolve({ok:true})
         return req.user.saveManga({nameId:req.params.nameId}).then(m=>{
             return {nameId: req.params.nameId, num: req.params.num}
         })

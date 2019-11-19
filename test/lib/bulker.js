@@ -46,8 +46,8 @@ describe('lib bulker',function(){
         }).then(_=>{
             assert.equal(arr.join(','), '1,2,3,4,5,6');
             let now = Date.now();
-            assert(now-ref>=14);
-            assert(now-ref<=18)
+            assert(now-ref>=14, `${now}-${ref}`);
+            assert(now-ref<=18, `${now}-${ref}`)
         });
     }));
 });

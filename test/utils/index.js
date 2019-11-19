@@ -65,3 +65,4 @@ exports.runImport = function(fn){
         return dbSingle.close();
     })
 }
+exports.setTimeout = require('util').promisify(setTimeout);

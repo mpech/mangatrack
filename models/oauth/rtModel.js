@@ -5,7 +5,8 @@ var config = require('../../config');
 var ModelSchema = new Schema({
     token: {type:String, required:true},
     userId: {type: Schema.Types.ObjectId, required:true},
-    expiresAt: {type:Number, default:_=>(Date.now()+config.oauth_refreshToken_duration)},
+    expiresAt: {type:Date, default:_=>new Date(Date.now()+config.oauth_refreshToken_duration)},
 });
 
-module.exports = mongoose.model('RefreshToken', ModelSchema, 'oauth-refresh-tokens');
+ModelSchema.index( { "expiresAt": 1 }, { expireAfterSeconds: 0 } )
+module.exports = mongoose.model('RefreshToken', ModelSchema, 'refreshTokens');

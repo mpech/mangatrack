@@ -1,5 +1,5 @@
 mocha=./node_modules/mocha/bin/mocha --recursive
-folders=models lib e2e activity
+folders=models lib activity importers services formatters e2e
 dirs=$(addprefix test/,$(folders))
 
 #allow makefile to be run without npm
@@ -17,8 +17,17 @@ lib:
 externalCalls:
 	@$(mocha) test/externalCalls
 
+importers:
+	@$(mocha) test/importers
+
+services:
+	@$(mocha) test/services
+
 activity:
 	@$(mocha) test/activity
+
+formatters:
+	@$(mocha) test/formatters
 
 e2e:
 	@$(mocha) test/e2e

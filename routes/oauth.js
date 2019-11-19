@@ -6,6 +6,7 @@ var FacebookStrategy = require('passport-facebook').Strategy;
 var passport = require('passport');
 var prom = require('../lib/prom');
 
+
 passport.use(new GoogleStrategy({
     clientID: config.oauth2_google_clientId,
     clientSecret: config.oauth2_google_secret,
@@ -53,8 +54,12 @@ function load(app){
 
             return p.then(data=>{
                 
-                return UserModel.findOneAndUpdate({[endpoint.modelName]:data.id},{displayName:data.displayName},{upsert:true}).then(u=>{
-                    return OauthService.createTokens(u);
+                return UserModel.findOneAndUpdate(
+                    {[endpoint.modelName]:data.id},
+                    {displayName:data.displayName},
+                    {new:true, upsert:true})
+                .then(u=>{
+                    return OauthService.generateTokens({id: u._id.toString()});
                 }).then(({access_token, refresh_token})=>{
                     let url = config.front_login_success
                         .replace('{{access_token}}', access_token)
@@ -77,6 +82,7 @@ function load(app){
         passportName: 'facebook'
     });
 
+    app.all('/oauth/token', app.oauth.token());
 
 }
 
