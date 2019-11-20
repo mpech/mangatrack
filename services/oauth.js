@@ -1,7 +1,8 @@
-var config = require('../config')
-var AtModel = require('../models/oauth/atModel')
-var RtModel = require('../models/oauth/rtModel')
-var GrantType = require('oauth2-server').AbstractGrantType
+const GrantType = require('oauth2-server').AbstractGrantType
+const InvalidTokenError = require('oauth2-server').InvalidTokenError
+const config = require('../config')
+const AtModel = require('../models/oauth/atModel')
+const RtModel = require('../models/oauth/rtModel')
 /*
 https://oauth2-server.readthedocs.io/en/latest/model/overview.html
 Refresh Token Grant
@@ -13,6 +14,9 @@ Refresh Token Grant
  */
 module.exports.getRefreshToken = function (token) {
   return RtModel.findOne({ token }).lean().then(tok => {
+    if(!rt){
+      throw new InvalidTokenError()
+    }
     return {
       refreshToken: token,
       refreshTokenExpiresAt: tok.expiresAt,
@@ -85,6 +89,9 @@ Request Authentication
  */
 module.exports.getAccessToken = function (token) {
   return AtModel.findOne({ token }).lean().then(at => {
+    if(!at){
+      throw new InvalidTokenError()
+    }
     return {
       accessToken: at.token,
       accessTokenExpiresAt: at.expiresAt,
