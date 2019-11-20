@@ -1,7 +1,7 @@
-import Vue from '../vue.esm.browser.js'
-import {Follow} from './follow.js'
+import Vue from '../vue.esm.browser.min.js'
+import { Follow } from './follow.js'
 
-let tpl = `
+const tpl = `
     <div class="pure-u-1-8 pure-u-lg-1-6">
         <div class="card">
             <figure>
@@ -22,26 +22,26 @@ let tpl = `
             </div>
         </div>
     </div>
-`;
+`
 
-var Card = Vue.component('mt_card',{
-    props:['card', 'url'],
-    data:function(){
-        return {
-            lastItem: this.card.lastChap||{},
-        }
-    },
-    components:{
-        'mt-follow':Follow
-    },
-    methods:{
-        humanDate(at){
-            let sinceDate = moment(at).fromNow();
-            sinceDate = sinceDate.replace('minutes','min')
-            sinceDate = sinceDate.replace('seconds','sec')
-            return sinceDate;
-        }
-    },
-    template:tpl
-});
-export {Card}
+var Card = Vue.component('mt_card', {
+  props: ['card', 'url'],
+  data: function () {
+    return {
+      lastItem: this.card.lastChap || {}
+    }
+  },
+  components: {
+    'mt-follow': Follow
+  },
+  methods: {
+    humanDate (at) {
+      let sinceDate = moment(at).fromNow()
+      sinceDate = sinceDate.replace('minutes', 'min')
+      sinceDate = sinceDate.replace('seconds', 'sec')
+      return sinceDate
+    }
+  },
+  template: tpl
+})
+export { Card }

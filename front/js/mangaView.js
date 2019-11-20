@@ -1,6 +1,7 @@
-import Vue from './vue.esm.browser.js';
-import {routes} from './config.js'
-let tpl = `
+import Vue from './vue.esm.browser.min.js'
+import { routes } from './config.js'
+
+const tpl = `
 <section id="mangaView">
     <table class="pure-table">
         <thead>
@@ -17,78 +18,77 @@ let tpl = `
 </section>
 `
 
-let MangaView = Vue.component('mt-mangaview',{
-    data:function(){
-        return {
-            chapters:[]
+const MangaView = Vue.component('mt-mangaview', {
+  data: function () {
+    return {
+      chapters: []
+    }
+  },
+  mounted () {
+    const tbody = this.$el.querySelector('tbody')
+    tbody.onmouseover = e => {
+      if (e.target.nodeName !== 'TD') {
+        return
+      }
+      const td = e.target
+      if (td.parentNode.children[1] !== td) {
+        return
+      }
+
+      // repaint grid
+      const idx = this.chapters.findIndex(c => c.num === parseFloat(td.getAttribute('data-num')))
+      this.chapters.forEach((x, i) => {
+        if (i < idx) {
+          x.isekaied = false
+        } else {
+          x.isekaied = true
         }
-    },
-    mounted(){
-        let tbody = this.$el.querySelector('tbody');
-        tbody.onmouseover = e=>{
-            if(e.target.nodeName != 'TD'){
-                return;
-            }
-            let td = e.target;
-            if(td.parentNode.children[1] != td){
-                return;
-            }
+      })
+    }
 
-            //repaint grid
-            let idx = this.chapters.findIndex(c=>c.num==parseFloat(td.getAttribute('data-num')));
-            this.chapters.forEach((x,i)=>{
-                if(i<idx){
-                    x.isekaied = false;
-                }else{
-                    x.isekaied = true;
-                }
-            });
-        }
+    this.$el.querySelector('tbody').onmouseleave = e => {
+      if (e.target.nodeName === 'TD') {
+        return
+      }
+      this.chapters.forEach((x, i) => {
+        x.isekaied = x.read
+      })
+    }
 
-        this.$el.querySelector('tbody').onmouseleave = e=>{
-            if(e.target.nodeName == 'TD'){
-                return;
-            }
-            this.chapters.forEach((x,i)=>{
-                x.isekaied = x.read;
-            });
-        }
+    tbody.onclick = e => {
+      if (e.target.nodeName !== 'TD') {
+        return
+      }
+      const td = e.target
+      if (td.parentNode.children[1] !== td) {
+        return
+      }
 
-        tbody.onclick = e=>{
-            if(e.target.nodeName != 'TD'){
-                return;
-            }
-            let td = e.target;
-            if(td.parentNode.children[1] != td){
-                return;
-            }
-
-            let num = td.getAttribute('data-num');
-            return axios.put(routes.tracks.replace('{{nameId}}', this.$route.params.nameId), {num}).then(_=>{
-                this.chapters = this.chapters.map((x,i)=>{
-                    if(i >= num){
-                        x.read = true;
-                    }
-                    x.isekaied=x.read
-                    return x;
-                });
-            }).catch(e=>{
-                console.log('failed', e);
-            })
-        }
-
-        let url = routes.chapters.replace('{{nameId}}', this.$route.params.nameId);
-        return axios.get(url).then(({data:{items}})=>{
-            this.chapters = items.map(x=>(x.isekaied=x.read,x));
-        }).catch(e=>{
-            console.log('failed', e);
+      const num = td.getAttribute('data-num')
+      return axios.put(routes.tracks.replace('{{nameId}}', this.$route.params.nameId), { num }).then(_ => {
+        this.chapters = this.chapters.map((x, i) => {
+          if (i >= num) {
+            x.read = true
+          }
+          x.isekaied = x.read
+          return x
         })
-    },
-    template:tpl
-});
+      }).catch(e => {
+        console.log('failed', e)
+      })
+    }
 
+    const url = routes.chapters.replace('{{nameId}}', this.$route.params.nameId)
+    return axios.get(url).then(({ data: { items } }) => {
+      this.chapters = items.map(x => {
+        x.isekaied = x.read
+        return x
+      })
+    }).catch(e => {
+      console.log('failed', e)
+    })
+  },
+  template: tpl
+})
 
-
-
-
-export {MangaView}
+export { MangaView }

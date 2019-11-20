@@ -1,37 +1,35 @@
-import Vue from '../vue.esm.browser.js'
-import {Card} from './card.js'
+import Vue from '../vue.esm.browser.min.js'
+import { Card } from './card.js'
 
-(function mt_pagination(Vue){
-let tpl = `
+(function mtPagination (Vue) {
+  const tpl = `
 <div class="mt-pagination">
     <a class="pure-button" href="#">Moar</a>
 </div>
 `
-    return Vue.component('mt-pagination',{
-        template:tpl,
-        mounted(){
-            this.$el.querySelector('a').onclick = e=>{
-                this.$store.dispatch('fetchMangas');
-                e.preventDefault();
-            }
-        }
-    });
+  return Vue.component('mt-pagination', {
+    template: tpl,
+    mounted () {
+      this.$el.querySelector('a').onclick = e => {
+        this.$store.dispatch('fetchMangas')
+        e.preventDefault()
+      }
+    }
+  })
 })(Vue);
 
-
-(function mt_filters(Vue){
-let tpl = `
+(function mtFilters (Vue) {
+  const tpl = `
 <div>
     filters
 </div>
 `
-    return Vue.component('mt-filters',{
-        template:tpl
-    });
-})(Vue);
+  return Vue.component('mt-filters', {
+    template: tpl
+  })
+})(Vue)
 
-
-let tpl = `
+const tpl = `
 <div>
     <!--<mt-filters></mt-filters>-->
     <div class="pure-g">
@@ -40,11 +38,11 @@ let tpl = `
     <mt-pagination></mt-pagination>
 </div>
 `
-let Grid = Vue.component('mt-grid',{
-    props:['mangas'],
-    components:{
-        'mt-card':Card
-    },
-    template:tpl
-});
-export {Grid}
+const Grid = Vue.component('mt-grid', {
+  props: ['mangas'],
+  components: {
+    'mt-card': Card
+  },
+  template: tpl
+})
+export { Grid }
