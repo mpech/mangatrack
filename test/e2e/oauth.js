@@ -23,6 +23,9 @@ describe('e2e oauth', function () {
       .get('/oauth/google/callback')
       .expect(302)
       .then(function (res) {
+        assert(res.headers.location.includes('access_token'))
+        assert(res.headers.location.includes('refresh_token'))
+        assert(!res.headers.location.includes('undefined'))
         return UserModel.findOne({ googleId: { $exists: true } }).then(u => {
           assert(u.googleId.includes('123'))
           assert.strictEqual(u.displayName, 'Seichiro Kitano')
@@ -41,6 +44,23 @@ describe('e2e oauth', function () {
             })
           ])
         })
+      })
+  }))
+
+  it('generates token on callback', Mocker.mockIt(function (mokr) {
+    mokr.mock(passport, 'authenticate', (endpointName, _, cb) => {
+      assert.strictEqual(endpointName, 'google')
+      return function (req, res) {
+        return cb(null, { id: '123', displayName: 'Seichiro Kitano' })
+      }
+    })
+    return utils.requester
+      .get('/oauth/google/callback?state=https://login')
+      .expect(302)
+      .then(function (res) {
+        assert(res.headers.location.includes('access_token'))
+        assert(res.headers.location.includes('refresh_token'))
+        assert(res.headers.location.startsWith('https://login'))
       })
   }))
 

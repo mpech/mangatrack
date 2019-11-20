@@ -5,6 +5,8 @@ import { Home } from './home.js'
 import { MangaView } from './mangaView.js'
 import { SignIn } from './signIn.js'
 import { routes as apiRoutes, symbols } from './config.js'
+import { NotFoundComponent } from './components/notFound.js'
+import OnOffAxios from './onOffAxios.js'
 
 Vue.use(VueRouter)
 Vue.use(Vuex)
@@ -12,10 +14,12 @@ Vue.use(Vuex)
 const routes = [
   { path: '/', component: Home },
   { path: '/manga/:nameId', component: MangaView },
-  { path: '/login', component: SignIn }
+  { path: '/login', component: SignIn },
+  { path: '*', component: NotFoundComponent }
 ]
 
 const router = new VueRouter({
+  mode: 'history',
   routes,
   // https://router.vuejs.org/guide/advanced/scroll-behavior.html#async-scrolling
   scrollBehavior (to, from, savedPosition) {
@@ -31,7 +35,9 @@ const store = new Vuex.Store({
   state: {
     mangas: [],
     myMangas: [],
-    moreMangas: { next: apiRoutes.mangas }
+    moreMangas: { next: apiRoutes.mangas },
+    accessToken: null,
+    refreshToken: null
   },
   mutations: {
     fetchMangas (state, { items, links }) {
@@ -59,6 +65,13 @@ const store = new Vuex.Store({
         }
         return m
       })
+    },
+    authenticate (state, { accessToken, refreshToken }) {
+      state.accessToken = accessToken
+      state.refreshToken = refreshToken
+    },
+    sync (state, { items }) {
+      state.myMangas = items
     }
   },
   actions: {
@@ -74,27 +87,33 @@ const store = new Vuex.Store({
         url = url.replace(/limit=\d+/, '')// do not send an array of limit
         return axios.get(url, payload).then(({ data }) => {
           context.commit('fetchMangas', data)
-        }).catch(e => {
-          console.log('failed', e)
         })
       }
     },
     trackManga (context, { nameId }) {
-      return axios.put(apiRoutes.myMangas.replace('{{nameId}}', nameId), { num: symbols.ALL_READ }).then(({ data }) => {
+      return this.axios.put(apiRoutes.myMangas.replace('{{nameId}}', nameId), { num: symbols.ALL_READ }).then(({ data }) => {
         context.commit('trackManga', data)
-      }).catch(e => {
-        console.log('failed', e)
       })
     },
     untrackManga (context, { nameId }) {
-      return axios.delete(apiRoutes.myMangas.replace('{{nameId}}', nameId)).then(({ data }) => {
+      return this.axios.delete(apiRoutes.myMangas.replace('{{nameId}}', nameId)).then(({ data }) => {
         context.commit('untrackManga', { nameId })
-      }).catch(e => {
-        console.log('failed', e)
       })
+    },
+    sync (context) {
+      return this.axios.patch(apiRoutes.myMangaSuite, context.state.myMangas).then(({ data }) => {
+        context.commit('sync', data)
+      })
+    }
+  },
+  getters: {
+    accessToken (state) {
+      return state.accessToken
     }
   }
 })
+
+store.axios = new OnOffAxios(store)
 
 new Vue({
   router,

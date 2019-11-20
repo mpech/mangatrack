@@ -56,11 +56,11 @@ function load (app) {
           { new: true, upsert: true })
           .then(u => {
             return OauthService.generateTokens({ id: u._id.toString() })
-          }).then(tokens => {
-            const url = config.front_login_success
-              .replace('{{access_token}}', tokens.access_token)
-              .replace('{{refresh_token}}', tokens.refresh_token)
-            return res.redirect(url)
+          }).then(({ accessToken, refreshToken }) => {
+            const myURL = new URL(req.query.state || config.front_login_success)
+            myURL.searchParams.append('access_token', accessToken)
+            myURL.searchParams.append('refresh_token', refreshToken)
+            return res.redirect(myURL.href)
           })
       })
     }))

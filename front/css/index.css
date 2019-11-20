@@ -90,3 +90,11 @@ a:active {
 .mt-follow.followed a{
     color:red;
 }
+h1{
+    font-weight: 600;
+    font-size: 2.35rem;
+    border-bottom: 1px solid #f4f4f4;
+    color: #4c4e55;
+    padding-bottom: 0.5rem;
+    margin: 1.5rem 0 1rem;
+}
