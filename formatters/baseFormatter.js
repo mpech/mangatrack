@@ -30,10 +30,9 @@ Formatter.prototype.paginate = function (o, { count, offset, limit }) {
   return { count, links, ...o }
 }
 
-Formatter.prototype.formatCollection = function (arr, pagination) {
-  return Promise.all(arr.map(x => this.format(x))).then(items => {
-    return this.paginate({ items }, pagination)
-  })
+Formatter.prototype.formatCollection = async function (arr, pagination) {
+  const items = await Promise.all(arr.map(x => this.format(x)))
+  return this.paginate({ items }, pagination)
 }
 
 module.exports = Formatter

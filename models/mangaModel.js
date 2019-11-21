@@ -38,31 +38,30 @@ schema.statics.findChapter = function (chap) {
   })
 }
 
-schema.statics.upsertManga = function (manga) {
-  return this.findOne({ nameId: manga.nameId }).then(el => {
-    if (!el) {
-      config.logger.dbg('creating ', manga.nameId)
-      manga.chapters.sort((a, b) => b.num - a.num)
-      const updatedAt = manga.chapters.length && manga.chapters[0].at
-      return this.create({ ...manga, updatedAt })
+schema.statics.upsertManga = async function (manga) {
+  const el = await this.findOne({ nameId: manga.nameId })
+  if (!el) {
+    config.logger.dbg('creating ', manga.nameId)
+    manga.chapters.sort((a, b) => b.num - a.num)
+    const updatedAt = manga.chapters.length && manga.chapters[0].at
+    return this.create({ ...manga, updatedAt })
+  }
+  const dic = el.chapters.reduce((acc, chap) => {
+    acc[chap.num] = chap
+    return acc
+  }, {})
+  const diff = []
+  manga.chapters.forEach(chap => {
+    if (!dic[chap.num]) {
+      diff.push(chap.num)
     }
-    const dic = el.chapters.reduce((acc, chap) => {
-      acc[chap.num] = chap
-      return acc
-    }, {})
-    const diff = []
-    manga.chapters.forEach(chap => {
-      if (!dic[chap.num]) {
-        diff.push(chap.num)
-      }
-      dic[chap.num] = dic[chap.num] || chap
-    })
-    config.logger.dbg('upserting', el.nameId, diff.map(x => x.num).join(','))
-    el.chapters = Object.values(dic).sort((a, b) => b.num - a.num)
-    el.markModified('chapters')
-    el.updatedAt = el.chapters.length && el.chapters[0].at
-    return el.save()
+    dic[chap.num] = dic[chap.num] || chap
   })
+  config.logger.dbg('upserting', el.nameId, diff.map(x => x.num).join(','))
+  el.chapters = Object.values(dic).sort((a, b) => b.num - a.num)
+  el.markModified('chapters')
+  el.updatedAt = el.chapters.length && el.chapters[0].at
+  return el.save()
 }
 
 mongooseUtil.setStatic('findOneForSure', schema)

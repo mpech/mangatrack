@@ -49,19 +49,17 @@ function load (app) {
         }
       })
 
-      return p.then(data => {
-        return UserModel.findOneAndUpdate(
+      return p.then(async data => {
+        const u = await UserModel.findOneAndUpdate(
           { [endpoint.modelName]: data.id },
           { displayName: data.displayName },
           { new: true, upsert: true })
-          .then(u => {
-            return OauthService.generateTokens({ id: u._id.toString() })
-          }).then(({ accessToken, refreshToken }) => {
-            const myURL = new URL(req.query.state || config.front_login_success)
-            myURL.searchParams.append('access_token', accessToken)
-            myURL.searchParams.append('refresh_token', refreshToken)
-            return res.redirect(myURL.href)
-          })
+
+        const { accessToken, refreshToken } = await OauthService.generateTokens({ id: u._id.toString() })
+        const myURL = new URL(req.query.state || config.front_login_success)
+        myURL.searchParams.append('access_token', accessToken)
+        myURL.searchParams.append('refresh_token', refreshToken)
+        return res.redirect(myURL.href)
       })
     }))
   }

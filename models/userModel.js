@@ -10,24 +10,22 @@ var schema = new Schema({
   mangas: { type: Schema.Types.Map, of: Number, default: _ => new Map() }
 })
 
-schema.methods.saveManga = function ({ nameId, num }) {
+schema.methods.saveManga = async function ({ nameId, num }) {
   this.mangas.set(nameId, num)
-  return this.save().then(m => {
-    return {
-      nameId: nameId,
-      num: m.mangas.get(nameId)
-    }
-  })
+  const m = await this.save()
+  return {
+    nameId: nameId,
+    num: m.mangas.get(nameId)
+  }
 }
 
-schema.methods.removeManga = function ({ nameId, num }) {
+schema.methods.removeManga = async function ({ nameId, num }) {
   this.mangas.delete(nameId)
-  return this.save().then(m => {
-    return {}
-  })
+  await this.save()
+  return {}
 }
 
-schema.methods.saveMangas = function (mangas) {
+schema.methods.saveMangas = async function (mangas) {
   const back = []
   mangas.forEach(({ nameId, num }) => {
     let n = num
@@ -42,7 +40,8 @@ schema.methods.saveMangas = function (mangas) {
     this.mangas.set(nameId, n)
     back.push({ nameId, num: n })
   })
-  return this.save().then(_ => back)
+  await this.save()
+  return back
 }
 
 mongooseUtil.setStatic('findOneForSure', schema)

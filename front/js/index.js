@@ -69,7 +69,7 @@ const store = new Vuex.Store({
     }
   },
   actions: {
-    fetchMangas (context) {
+    async fetchMangas (context) {
       const payload = {
         params: {
           limit: 18
@@ -79,27 +79,22 @@ const store = new Vuex.Store({
       if (url) {
         // should not occur, but should not fail either
         url = url.replace(/limit=\d+/, '')// do not send an array of limit
-        return axios.get(url, payload).then(({ data }) => {
-          context.commit('fetchMangas', data)
-        })
+        const { data } = await axios.get(url, payload)
+        context.commit('fetchMangas', data)
       }
     },
-    trackManga (context, { nameId }) {
-      return this.axios.put(apiRoutes.myMangas.replace('{{nameId}}', nameId), { num: symbols.ALL_READ }).then(({ data }) => {
-        context.commit('trackManga', data)
-      })
+    async trackManga (context, { nameId }) {
+      const { data } = await this.axios.put(apiRoutes.myMangas.replace('{{nameId}}', nameId), { num: symbols.ALL_READ })
+      context.commit('trackManga', data)
     },
-    untrackManga (context, { nameId }) {
-      return this.axios.delete(apiRoutes.myMangas.replace('{{nameId}}', nameId)).then(({ data }) => {
-        context.commit('untrackManga', { nameId })
-      })
+    async untrackManga (context, { nameId }) {
+      const { data } = await this.axios.delete(apiRoutes.myMangas.replace('{{nameId}}', nameId))
+      context.commit('untrackManga', { nameId })
     },
-    sync (context) {
-      return this.axios.patch(apiRoutes.myMangaSuite, { items: context.state.myMangas }).then(_ => {
-        return this.axios.get(apiRoutes.myMangaSuite).then(({ data }) => {
-          context.commit('sync', data)
-        })
-      })
+    async sync (context) {
+      await this.axios.patch(apiRoutes.myMangaSuite, { items: context.state.myMangas })
+      const { data } = await this.axios.get(apiRoutes.myMangaSuite)
+      context.commit('sync', data)
     }
   },
   getters: {

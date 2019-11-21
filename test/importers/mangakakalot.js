@@ -9,55 +9,51 @@ var Importer = require('../../importers/mangakakalot')
 var cheerio = require('cheerio')
 utils.bindDb()
 describe('importers mangakakalot', function () {
-  it('allUpdates', Mocker.mockIt(mokr => {
+  it('allUpdates', Mocker.mockIt(async mokr => {
     const importer = new Importer()
     let called = false
-    mokr.mock(Importer.prototype, 'domFetch', _ => {
+    mokr.mock(Importer.prototype, 'domFetch', async _ => {
       called = true
-      return pread(path.resolve(__dirname, '../../samples/mangakakalot/main.html')).then(s => {
-        return cheerio.load(s.toString(), {
-          xml: {
-            normalizeWhitespace: true,
-            decodeEntities: false
-          }
-        })
+      const s = await pread(path.resolve(__dirname, '../../samples/mangakakalot/main.html'))
+      return cheerio.load(s.toString(), {
+        xml: {
+          normalizeWhitespace: true,
+          decodeEntities: false
+        }
       })
     })
     mokr.mock(Importer.prototype, 'parseDate', _ => 5)
-    return importer.allUpdates().then(res => {
-      assert(called)
-      assert.strictEqual(Object.keys(res).length, 56)
-      assert.strictEqual(Object.keys(res)[0], "Girl's World")
-      const v = res["Girl's World"]
-      assert.strictEqual(v.num, 179)
-      assert.strictEqual(v.last, 5)
-      assert.strictEqual(v.url, 'https://manganelo.com/chapter/girls_world/chapter_179')
-      assert.strictEqual(v.thumbUrl, 'https://avt.mkklcdnv3.com/avatar_225/18936-girls_world.jpg')
-    })
+    const res = await importer.allUpdates()
+    assert(called)
+    assert.strictEqual(Object.keys(res).length, 56)
+    assert.strictEqual(Object.keys(res)[0], "Girl's World")
+    const v = res["Girl's World"]
+    assert.strictEqual(v.num, 179)
+    assert.strictEqual(v.last, 5)
+    assert.strictEqual(v.url, 'https://manganelo.com/chapter/girls_world/chapter_179')
+    assert.strictEqual(v.thumbUrl, 'https://avt.mkklcdnv3.com/avatar_225/18936-girls_world.jpg')
   }))
 
-  it('allUpdates', Mocker.mockIt(mokr => {
+  it('allUpdates', Mocker.mockIt(async mokr => {
     const importer = new Importer()
     let called = false
-    mokr.mock(Importer.prototype, 'domFetch', _ => {
+    mokr.mock(Importer.prototype, 'domFetch', async _ => {
       called = true
-      return pread(path.resolve(__dirname, '../../samples/mangakakalot/allUpdates_small.html')).then(s => {
-        return cheerio.load(s.toString(), {
-          xml: {
-            normalizeWhitespace: true,
-            decodeEntities: false
-          }
-        })
+      const s = await pread(path.resolve(__dirname, '../../samples/mangakakalot/allUpdates_small.html'))
+      return cheerio.load(s.toString(), {
+        xml: {
+          normalizeWhitespace: true,
+          decodeEntities: false
+        }
       })
     })
     mokr.mock(Importer.prototype, 'parseDate', _ => 5)
-    return importer.allUpdates().then(res => {
-      assert(called)
-      const v = Object.values(res)
-      assert.strictEqual(v.length, 1)
-      const o = v[0]
-      assert.strictEqual(o.num, 18)
-    })
+    const res = await importer.allUpdates()
+    assert(called)
+    const v = Object.values(res)
+    assert.strictEqual(v.length, 1)
+    const o = v[0]
+    assert.strictEqual(o.num, 18)
   }))
 
   it('parseDate min ago', Mocker.mockIt(mokr => {
@@ -71,44 +67,42 @@ describe('importers mangakakalot', function () {
     assert(d.toString().includes('Nov 05 2019 16:04:00'))
   }))
 
-  it('fetchMangaDetail', Mocker.mockIt(mokr => {
+  it('fetchMangaDetail', Mocker.mockIt(async mokr => {
     const importer = new Importer()
     let called = false
-    mokr.mock(Importer.prototype, 'domFetch', _ => {
+    mokr.mock(Importer.prototype, 'domFetch', async _ => {
       called = true
-      return pread(path.resolve(__dirname, '../../samples/mangakakalot/detail.html')).then(s => {
-        return cheerio.load(s.toString(), {
-          xml: {
-            normalizeWhitespace: true,
-            decodeEntities: false
-          }
-        })
+      const s = await pread(path.resolve(__dirname, '../../samples/mangakakalot/detail.html'))
+      return cheerio.load(s.toString(), {
+        xml: {
+          normalizeWhitespace: true,
+          decodeEntities: false
+        }
       })
     })
     mokr.mock(Importer.prototype, 'parseDate', _ => 5)
-    return importer.fetchMangaDetail({ url: 'https://mangakakalot.com/manga/to_you_the_immortal/chapter_110' }).then(res => {
-      assert(called)
-      assert.strictEqual(res.length, 117)
-      const dic = res.reduce((acc, x) => {
-        acc[x.num] = 1
-        return acc
-      }, {})
-      for (let i = 1; i <= 113; ++i) {
-        assert(dic[i], ' has ' + i)
-      }
-      const c = res[1]
-      assert.strictEqual(c.name, 'To You, The Immortal Chapter 112.5: Then, Towards the Sunrise (2)')
-      assert.strictEqual(c.num, 112.5)
-      const date = new Date(c.at)
-      // is enough to check the date has been parsed
-      assert.strictEqual(date.getFullYear(), 2019)
-      assert.strictEqual(date.getMonth(), 9)
-      assert.strictEqual(date.getDate(), 19)
-      assert.strictEqual(c.url, 'https://mangakakalot.com/chapter/to_you_the_immortal/chapter_112.5')
-    })
+    const res = await importer.fetchMangaDetail({ url: 'https://mangakakalot.com/manga/to_you_the_immortal/chapter_110' })
+    assert(called)
+    assert.strictEqual(res.length, 117)
+    const dic = res.reduce((acc, x) => {
+      acc[x.num] = 1
+      return acc
+    }, {})
+    for (let i = 1; i <= 113; ++i) {
+      assert(dic[i], ' has ' + i)
+    }
+    const c = res[1]
+    assert.strictEqual(c.name, 'To You, The Immortal Chapter 112.5: Then, Towards the Sunrise (2)')
+    assert.strictEqual(c.num, 112.5)
+    const date = new Date(c.at)
+    // is enough to check the date has been parsed
+    assert.strictEqual(date.getFullYear(), 2019)
+    assert.strictEqual(date.getMonth(), 9)
+    assert.strictEqual(date.getDate(), 19)
+    assert.strictEqual(c.url, 'https://mangakakalot.com/chapter/to_you_the_immortal/chapter_112.5')
   }))
 
-  it('fetchMangaDetail', Mocker.mockIt(mokr => {
+  it('fetchMangaDetail', Mocker.mockIt(async mokr => {
     const importer = new Importer()
     let called = false
     mokr.mock(Importer.prototype, 'domFetch', url => {
@@ -116,9 +110,8 @@ describe('importers mangakakalot', function () {
       called = true
       return Promise.resolve(cheerio.load(''))
     })
-    return importer.fetchMangaDetail({ url: 'https://mangakakalot.com/chapter/to_you_the_immortal/chapter_110' }).then(_ => {
-      assert(called)
-    })
+    await importer.fetchMangaDetail({ url: 'https://mangakakalot.com/chapter/to_you_the_immortal/chapter_110' })
+    assert(called)
   }))
 
   it('parseDateDetail', Mocker.mockIt(mokr => {

@@ -22,29 +22,27 @@ function load (app) {
       offset: Joi.number().min(0),
       limit: Joi.number().min(1).max(config.pagination_limit)
     }
-  }), prom(function (req, res) {
+  }), prom(async function (req, res) {
     const offset = parseInt(req.query.offset || 0)
     const limit = req.query.limit || config.pagination_limit
     const crit = {}
     if (req.query.name) { crit.name = new RegExp(req.query.name, 'i') }
     if (req.query.type) { crit.type = req.query.type }
 
-    return Promise.all([
+    const [count, coll] = await Promise.all([
       MangaModel.countDocuments(crit),
       MangaModel.find(crit).sort({ updatedAt: -1 }).skip(offset).limit(limit).lean().exec()
-    ]).then(([count, coll]) => {
-      return module.exports.formatter.formatCollection(coll, { count, offset, limit })
-    })
+    ])
+    return module.exports.formatter.formatCollection(coll, { count, offset, limit })
   }))
 
   app.get('/mangas/:nameId/chapters', validate({
     params: {
       nameId: Joi.string().min(3)
     }
-  }), prom(function (req, res) {
-    return MangaModel.findOne({ nameId: req.params.nameId }).then(m => {
-      return module.exports.chapterFormatter.formatCollection(m.chapters)
-    })
+  }), prom(async function (req, res) {
+    const m = await MangaModel.findOne({ nameId: req.params.nameId })
+    return module.exports.chapterFormatter.formatCollection(m.chapters)
   }))
 }
 

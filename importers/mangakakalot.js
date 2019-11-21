@@ -35,30 +35,29 @@ Importer.prototype.parseDate = function (s, now) {
  * }
  * @return {[type]} [description]
  */
-Importer.prototype.allUpdates = function () {
-  return this.domFetch(this.allUrl).then($ => {
-    return $('.itemupdate').map((i, x) => {
-      const $x = $(x)
-      const title = $x.find('h3 a').text()
-      const li = $x.find('li:nth-child(2)').eq(0)
-      const url = li.find('a').attr('href')
-      const last = li.find('i').text()
-      const num = parseFloat(li.find('a').attr('href').match(/_([^_]+)$/)[1])
-      const thumbUrl = $x.find('img').attr('src')
-      return { title, last, url, num, thumbUrl }
-    }).toArray()
-  }).then(arr => {
-    return arr.reduce((acc, { title, last, url, num, thumbUrl }) => {
-      if (!title || !last || !url) {
-        config.logger.dbg('failed to parse', title, last, url)
-      }
-      last = this.parseDate(last)
-      if (!acc[title]) {
-        acc[title] = { last, url, num, name: title, thumbUrl }
-      }
-      return acc
-    }, {})
-  })
+Importer.prototype.allUpdates = async function () {
+  const $ = await this.domFetch(this.allUrl)
+  const arr = $('.itemupdate').map((i, x) => {
+    const $x = $(x)
+    const title = $x.find('h3 a').text()
+    const li = $x.find('li:nth-child(2)').eq(0)
+    const url = li.find('a').attr('href')
+    const last = li.find('i').text()
+    const num = parseFloat(li.find('a').attr('href').match(/_([^_]+)$/)[1])
+    const thumbUrl = $x.find('img').attr('src')
+    return { title, last, url, num, thumbUrl }
+  }).toArray()
+
+  return arr.reduce((acc, { title, last, url, num, thumbUrl }) => {
+    if (!title || !last || !url) {
+      config.logger.dbg('failed to parse', title, last, url)
+    }
+    last = this.parseDate(last)
+    if (!acc[title]) {
+      acc[title] = { last, url, num, name: title, thumbUrl }
+    }
+    return acc
+  }, {})
 }
 
 Importer.prototype.parseDateDetail = function (s, now) {
@@ -81,21 +80,21 @@ Importer.prototype.parseDateDetail = function (s, now) {
  * ]
  * @return {[type]} [description]
  */
-Importer.prototype.fetchMangaDetail = function (chap) {
+Importer.prototype.fetchMangaDetail = async function (chap) {
   const uri = chap.url.split('/')
   uri.pop()// chapter
   const url = uri.join('/').replace('chapter', 'manga')
   config.logger.dbg('fetching', url)
-  return this.domFetch(url).then($ => {
-    return $('.chapter-list .row').map((i, x) => {
-      const a = $(x).find('a')
-      const name = a.attr('title')
-      const url = a.attr('href')
-      const num = parseFloat(url.match(/_([^_]+)$/)[1])
-      let at = $(x).find('span[title]').eq(0).attr('title')
-      at = this.parseDateDetail(at)
-      return { name, url, num, at }
-    }).toArray()
-  })
+
+  const $ = await this.domFetch(url)
+  return $('.chapter-list .row').map((i, x) => {
+    const a = $(x).find('a')
+    const name = a.attr('title')
+    const url = a.attr('href')
+    const num = parseFloat(url.match(/_([^_]+)$/)[1])
+    let at = $(x).find('span[title]').eq(0).attr('title')
+    at = this.parseDateDetail(at)
+    return { name, url, num, at }
+  }).toArray()
 }
 module.exports = Importer

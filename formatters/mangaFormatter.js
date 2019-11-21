@@ -7,20 +7,19 @@ class Formatter extends Base {
   }
 }
 
-Formatter.prototype.format = function (x) {
+Formatter.prototype.format = async function (x) {
   let p = Promise.resolve()
   if (x.chapters[0]) {
     p = this.chapterFormatter.format(x.chapters[0])
   }
 
-  return p.then(chap => {
-    return {
-      name: x.name,
-      nameId: x.nameId,
-      thumbUrl: x.thumbUrl,
-      lastChap: chap || null
-    }
-  })
+  const chap = await p
+  return {
+    name: x.name,
+    nameId: x.nameId,
+    thumbUrl: x.thumbUrl,
+    lastChap: chap || null
+  }
 }
 
 module.exports = Formatter
