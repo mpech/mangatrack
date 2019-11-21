@@ -34,7 +34,7 @@ exports.oauth2_server = {
   grants: ['refresh_token'],
   requireClientAuthentication: { refresh_token: false },
   accessTokenLifetime: exports.oauth_accessToken_duration / 1000, // expects second
-  refreshTokenLifetime: exports.oauth_refreshToken_duration / 1000,
+  refreshTokenLifetime: exports.oauth_refreshToken_duration / 1000
 }
 
 exports.manga_detailDebounce = 3000

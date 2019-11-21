@@ -4,12 +4,15 @@ const Home = Vue.component('mt-home', {
   computed: {
     mangas () {
       return this.$store.state.mangas
+    },
+    myMangas () {
+      return this.$store.state.myMangas
     }
   },
   components: {
     'mt-grid': Grid
   },
-  template: '<mt-grid :mangas="mangas" class="mt-grid"></mt-grid>',
+  template: '<mt-grid :mangas="mangas" :myMangas="myMangas" class="mt-grid"></mt-grid>',
   mounted () {
     if (!this.mangas.length) {
       return this.$store.dispatch('fetchMangas')

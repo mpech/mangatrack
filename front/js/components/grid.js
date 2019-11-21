@@ -33,15 +33,29 @@ const tpl = `
 <div>
     <!--<mt-filters></mt-filters>-->
     <div class="pure-g">
-        <mt_card v-for="manga in mangas" v-bind:key="manga.nameId" v-bind:card="manga" url="/manga"></mt_card>
+        <mt_card
+          v-for="manga in followMangas"
+          :key="manga.nameId"
+          :card="manga"
+          url="/manga">
+        </mt_card>
     </div>
     <mt-pagination></mt-pagination>
 </div>
 `
 const Grid = Vue.component('mt-grid', {
-  props: ['mangas'],
+  props: ['mangas', 'myMangas'],
   components: {
     'mt-card': Card
+  },
+  computed: {
+    followMangas () {
+      const s = new Set(this.myMangas.map(m => m.nameId))
+      return this.mangas.map(m => {
+        Vue.set(m, 'followed', s.has(m.nameId))
+        return m
+      })
+    }
   },
   template: tpl
 })

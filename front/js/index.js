@@ -7,7 +7,6 @@ import { SignIn } from './signIn.js'
 import { routes as apiRoutes, symbols } from './config.js'
 import { NotFoundComponent } from './components/notFound.js'
 import OnOffAxios from './onOffAxios.js'
-
 Vue.use(VueRouter)
 Vue.use(Vuex)
 
@@ -31,6 +30,13 @@ const router = new VueRouter({
 
 })
 
+const vuexLocal = new VuexPersistence.VuexPersistence({
+  storage: window.localStorage,
+  reducer: ({ accessToken, refreshToken, myMangas }) => {
+    return { accessToken, refreshToken, myMangas }
+  }
+})
+
 const store = new Vuex.Store({
   state: {
     mangas: [],
@@ -39,6 +45,7 @@ const store = new Vuex.Store({
     accessToken: null,
     refreshToken: null
   },
+  plugins: [vuexLocal.plugin],
   mutations: {
     fetchMangas (state, { items, links }) {
       state.mangas = state.mangas.concat(items)
@@ -46,25 +53,12 @@ const store = new Vuex.Store({
     },
     trackManga (state, trackedManga) {
       state.myMangas.push(trackedManga)
-      state.mangas = state.mangas.map(m => {
-        if (m.nameId === trackedManga.nameId) {
-          Vue.set(m, 'followed', true)
-          m.followed = true
-        }
-        return m
-      })
     },
     untrackManga (state, untrackedManga) {
       const idx = state.myMangas.findIndex(m => m.nameId === untrackedManga.nameId)
       if (idx !== -1) {
         state.myMangas.splice(idx, 1)
       }
-      state.mangas = state.mangas.map(m => {
-        if (m.nameId === untrackedManga.nameId) {
-          m.followed = false
-        }
-        return m
-      })
     },
     authenticate (state, { accessToken, refreshToken }) {
       state.accessToken = accessToken
@@ -101,8 +95,10 @@ const store = new Vuex.Store({
       })
     },
     sync (context) {
-      return this.axios.patch(apiRoutes.myMangaSuite, context.state.myMangas).then(({ data }) => {
-        context.commit('sync', data)
+      return this.axios.patch(apiRoutes.myMangaSuite, { items: context.state.myMangas }).then(_ => {
+        return this.axios.get(apiRoutes.myMangaSuite).then(({ data }) => {
+          context.commit('sync', data)
+        })
       })
     }
   },

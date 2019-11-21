@@ -14,7 +14,7 @@ Refresh Token Grant
  */
 module.exports.getRefreshToken = function (token) {
   return RtModel.findOne({ token }).lean().then(tok => {
-    if(!rt){
+    if (!tok) {
       throw new InvalidTokenError()
     }
     return {
@@ -89,7 +89,7 @@ Request Authentication
  */
 module.exports.getAccessToken = function (token) {
   return AtModel.findOne({ token }).lean().then(at => {
-    if(!at){
+    if (!at) {
       throw new InvalidTokenError()
     }
     return {

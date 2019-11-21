@@ -3,11 +3,11 @@ class OnOffAxios {
     this.$store = store
   }
 
-  _forward (verb, axiosArgs) {
+  _forward (verb, axiosArgs, bypass) {
     const args = [...axiosArgs]
     if (this.$store.getters.accessToken) {
-      if (args.length !== 2) {
-        throw new Error('unhandled case: expects payload')
+      if (args.length !== 2 && !bypass) {
+        throw new Error(`unhandled case: expects payload for ${verb}`)
       }
       // axios ought to be configured beforehand anyway
       args.push({
@@ -27,11 +27,11 @@ class OnOffAxios {
   }
 
   get () {
-    // The GET does not concern unauthenticated flows but offline flows
-    // Treat the offline/online. Maybe.
-    // For now just fail if you can't get anything
-    // instead of taking the localStorage
-    return axios.get(axios, arguments)
+    const args = arguments
+    if (args.length >= 2) {
+      throw new Error('poor design, expects GET to only present url as arguments')
+    }
+    return this._forward('get', args, true)
   }
 
   put () {
@@ -46,7 +46,7 @@ class OnOffAxios {
 
   delete () {
     const args = arguments
-    return this._forward('delete', args)
+    return this._forward('delete', args, true)
   }
 }
 export default OnOffAxios

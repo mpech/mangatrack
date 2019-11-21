@@ -1,6 +1,8 @@
 var mongoose = require('mongoose')
 var Schema = mongoose.Schema
 var config = require('../config')
+const mongooseUtil = require('../lib/mongooseUtil')
+
 var schema = new Schema({
   nameId: { type: String, required: true, unique: true, index: true },
   name: { type: String, required: true, unique: true },
@@ -62,6 +64,8 @@ schema.statics.upsertManga = function (manga) {
     return el.save()
   })
 }
+
+mongooseUtil.setStatic('findOneForSure', schema)
 
 // schema.plugin(require('@mongoosejs/async-hooks'));
 module.exports = mongoose.model('Manga', schema, 'mangas')
