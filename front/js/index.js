@@ -2,6 +2,7 @@ import Vue from './vue.esm.browser.min.js'
 import VueRouter from './vue-router.esm.browser.min.js'
 import Vuex from './vuex.esm.browser.min.js'
 import { Home } from './home.js'
+import './menu.js'
 import { MangaView } from './mangaView.js'
 import { SignIn } from './signIn.js'
 import { routes as apiRoutes, symbols } from './config.js'
@@ -66,6 +67,10 @@ const store = new Vuex.Store({
     },
     sync (state, { items }) {
       state.myMangas = items
+    },
+    logout (state) {
+      state.accessToken = null
+      state.refreshToken = null
     }
   },
   actions: {
@@ -88,7 +93,7 @@ const store = new Vuex.Store({
       context.commit('trackManga', data)
     },
     async untrackManga (context, { nameId }) {
-      const { data } = await this.axios.delete(apiRoutes.myMangas.replace('{{nameId}}', nameId))
+      await this.axios.delete(apiRoutes.myMangas.replace('{{nameId}}', nameId))
       context.commit('untrackManga', { nameId })
     },
     async sync (context) {

@@ -27,7 +27,7 @@ function load (app) {
       nameId: req.params.nameId,
       num: req.body.num
     }
-    const m = await MangaModel.findOneForSure({ nameId: manga.nameId })
+    await MangaModel.findOneForSure({ nameId: manga.nameId })
     return req.user.saveManga(manga)
   }))
 

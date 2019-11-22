@@ -17,7 +17,7 @@ describe('e2e mangas', function () {
   }))
 
   it('lists mangas with one existing', Mocker.mockIt(async function (mokr) {
-    const m = await MangaModel.create({ name: 'a' })
+    await MangaModel.create({ name: 'a' })
 
     const { body } = await utils.requester
       .get('/mangas')
@@ -29,7 +29,7 @@ describe('e2e mangas', function () {
   }))
 
   it('lists mangas with one existing and a chapter', Mocker.mockIt(async function (mokr) {
-    const m = await MangaModel.create({ name: 'a', chapters: [{ url: 'a', num: 0, at: 1 }] })
+    await MangaModel.create({ name: 'a', chapters: [{ url: 'a', num: 0, at: 1 }] })
 
     const { body } = await utils.requester
       .get('/mangas')
@@ -69,7 +69,7 @@ describe('e2e mangas', function () {
       MangaModel.create({ name: 'c', updatedAt: 1 })
     ])
     mokr.mock(config, 'pagination_limit', 2)
-    
+
     const { body } = await utils.requester
       .get('/mangas?offset=1')
       .expect(200)
@@ -101,9 +101,9 @@ describe('e2e mangas', function () {
       MangaModel.create({ name: 'def', chapters: [{ num: 0, url: 'a', at: 3 }, { num: 1, url: 'b', at: 4 }] })
     ])
 
-    const {body} = await utils.requester
-        .get('/mangas/def/chapters')
-        .expect(200)
+    const { body } = await utils.requester
+      .get('/mangas/def/chapters')
+      .expect(200)
 
     assert.strictEqual(body.items.length, 2)
     assert.strictEqual(body.items[0].url, 'a')

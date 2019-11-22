@@ -62,11 +62,11 @@ describe('e2e me/mangas', function () {
   it('deletes a manga', Mocker.mockIt(async function (mokr) {
     const userId = '0'.repeat(24)
     const token = 'abc'
-    const [_, at] = await Promise.all([
+    const [, at] = await Promise.all([
       UserModel.create({ _id: userId, googleId: 'g', displayName: 'moran', mangas: { dbz: 5 } }),
       AtModel.create({ token, userId })
     ])
-    
+
     await utils.requester
       .delete('/me/mangas/dbz')
       .set({ Authorization: `Bearer ${at.token}` })
@@ -85,7 +85,7 @@ describe('e2e me/mangas', function () {
       bbb: 5,
       ccc: 3
     }
-    const [_, at] = await Promise.all([
+    const [, at] = await Promise.all([
       UserModel.create({ _id: userId, googleId: 'g', displayName: 'moran', mangas }),
       AtModel.create({ token, userId }),
       MangaModel.create({ name: 'dbz' }),
@@ -120,7 +120,7 @@ describe('e2e me/mangas', function () {
       bbb: 5,
       ccc: 3
     }
-    const [u, at] = await Promise.all([
+    const [, at] = await Promise.all([
       UserModel.create({ _id: userId, googleId: 'g', displayName: 'moran', mangas }),
       AtModel.create({ token, userId }),
       MangaModel.create({ name: 'dbz' }),
@@ -151,7 +151,7 @@ describe('e2e me/mangas', function () {
       bbb: 5,
       ccc: 3
     }
-    const [u, at] = await Promise.all([
+    const [, at] = await Promise.all([
       UserModel.create({ _id: userId, googleId: 'g', displayName: 'moran', mangas }),
       AtModel.create({ token, userId }),
       MangaModel.create({ name: 'e' }),

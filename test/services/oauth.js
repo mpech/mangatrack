@@ -56,7 +56,7 @@ describe('services oauth', function () {
   it('revokeToken indeed', async function () {
     const userId = '0'.repeat(24)
     await RtModel.create({ token: 'a', userId })
-    const count = await  oauth.revokeToken({ refreshToken: 'a', user: { id: userId } })
+    const count = await oauth.revokeToken({ refreshToken: 'a', user: { id: userId } })
     assert.strictEqual(count, 1)
   })
 
