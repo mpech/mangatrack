@@ -23,12 +23,10 @@ function load (app) {
       num: rules.chapterNum
     }
   }), helper.userOnReq, prom(async function (req, res) {
-    const manga = {
-      nameId: req.params.nameId,
-      num: req.body.num
-    }
-    await MangaModel.findOneForSure({ nameId: manga.nameId })
-    return req.user.saveManga(manga)
+    const nameId = req.params.nameId
+    const num = req.body.num
+    await MangaModel.findOneForSure({ nameId, chapters: { $elemMatch: { num } } })
+    return req.user.saveManga({ nameId, num })
   }))
 
   app.delete('/me/mangas/:nameId', app.oauth.authenticate(), validate({
@@ -47,21 +45,38 @@ function load (app) {
       })).required()
     }
   }), helper.userOnReq, prom(async function (req, res) {
-    const ids = new Set(req.body.items.map(x => x.nameId))
-    const items = await MangaModel.find({ nameId: { $in: [...ids] } })
-      .select('nameId')
+    const items = req.body.items
+    const matchedItems = await MangaModel.find({ nameId: { $in: [...items.map(x => x.nameId)] } })
+      .select('nameId chapters.num')
       .lean()
-    if (items.length !== ids.size) {
-      const found = new Set(items.map(x => x.nameId))
-      const notFound = [...ids].reduce((acc, id) => {
-        if (!found.has(id)) {
-          acc.push(id)
+
+    const nameIdToManga = matchedItems.reduce((m, { nameId, chapters }) => {
+      m.set(nameId, chapters)
+      return m
+    }, new Map())
+
+    if (nameIdToManga.size !== items.length) {
+      const notFound = items.reduce((acc, { nameId }) => {
+        if (!nameIdToManga.has(nameId)) {
+          acc.push(nameId)
         }
         return acc
       }, [])
       return errorHandler.unknownMangas(notFound)
     }
-    return req.user.saveMangas(req.body.items).then(mangas => ({}))
+
+    const invalids = items.reduce((acc, { nameId, num }) => {
+      const s = new Set(nameIdToManga.get(nameId).map(c => c.num))
+      if (!s.has(num)) {
+        acc.push({ nameId, num })
+      }
+      return acc
+    }, [])
+
+    if (invalids.length) {
+      return errorHandler.unknownChapters(JSON.stringify(invalids))
+    }
+    return req.user.saveMangas(items).then(mangas => ({}))
   }))
 
   app.get('/me/mangas', app.oauth.authenticate(), helper.userOnReq, prom(function (req, res) {

@@ -1,11 +1,11 @@
 import Vue from '../vue.esm.browser.min.js'
 
 const tpl = `
-    <span :class="{followed:followed, 'mt-follow':1}" :title="title"><a href="#">♥</a></span>
+    <span @click="onclick" :class="{followed:followed, 'mt-follow':1}" :title="title"><a href="#">♥</a></span>
 `
 
 var Follow = Vue.component('mt_follow', {
-  props: ['nameId', 'followed', 'name'],
+  props: ['followed', 'name'],
   computed: {
     title () {
       if (this.followed) {
@@ -15,13 +15,10 @@ var Follow = Vue.component('mt_follow', {
     }
   },
   template: tpl,
-  mounted () {
-    this.$el.onclick = e => {
+  methods: {
+    onclick (e) {
       e.preventDefault()
-      if (!this.followed) {
-        return this.$store.dispatch('trackManga', { nameId: this.nameId })
-      }
-      return this.$store.dispatch('untrackManga', { nameId: this.nameId })
+      return this.$emit(!this.followed ? 'follow' : 'unfollow')
     }
   }
 })

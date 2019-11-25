@@ -26,22 +26,11 @@ schema.methods.removeManga = async function ({ nameId, num }) {
 }
 
 schema.methods.saveMangas = async function (mangas) {
-  const back = []
   mangas.forEach(({ nameId, num }) => {
-    let n = num
-    if (this.mangas.has(nameId)) {
-      /*
-      We assume that a user does not want to unread a chapter
-      But most likely he forgot to login and randomly clicked even though
-      he actually did read the chapter
-       */
-      n = num === -1 ? num : Math.max(this.mangas.get(nameId), num)
-    }
-    this.mangas.set(nameId, n)
-    back.push({ nameId, num: n })
+    this.mangas.set(nameId, num)
   })
   await this.save()
-  return back
+  return mangas
 }
 
 mongooseUtil.setStatic('findOneForSure', schema)

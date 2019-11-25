@@ -76,17 +76,17 @@ h1{
     display: flex;
     justify-content: space-between;
 }
-#mangaView .isekaied{
+.mangaView .isekaied{
     background:#CCCCCC;
 }
-#mangaView .read{
+.mangaView .read{
     background:#CCCCCC;
 }
-#mangaView td:nth-child(2):hover{
+.mangaView td:nth-child(2):hover{
     cursor:pointer;
     background:#CCCCCC;
 }
-#mangaView .truckkun{
+.mangaView .truckkun{
     background: #1976d2;
     border-radius: 50%;
     color:white;

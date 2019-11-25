@@ -41,7 +41,7 @@ function load (app) {
       nameId: Joi.string().min(3)
     }
   }), prom(async function (req, res) {
-    const m = await MangaModel.findOne({ nameId: req.params.nameId })
+    const m = await MangaModel.findOneForSure({ nameId: req.params.nameId })
     return module.exports.chapterFormatter.formatCollection(m.chapters)
   }))
 }

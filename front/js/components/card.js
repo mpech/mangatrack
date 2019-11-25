@@ -18,7 +18,7 @@ const tpl = `
             </div>
             <hr/>
             <div>
-                <mt-follow :nameId="card.nameId" :followed="card.followed" :name="card.name"></mt-follow>
+                <mt-follow @follow="follow" @unfollow="unfollow" :nameId="card.nameId" :followed="card.followed" :name="card.name"></mt-follow>
             </div>
         </div>
     </div>
@@ -40,6 +40,12 @@ var Card = Vue.component('mt_card', {
       sinceDate = sinceDate.replace('minutes', 'min')
       sinceDate = sinceDate.replace('seconds', 'sec')
       return sinceDate
+    },
+    follow () {
+      return this.$store.dispatch('trackManga', { nameId: this.card.nameId, num: this.lastItem.num })
+    },
+    unfollow () {
+      return this.$store.dispatch('untrackManga', { nameId: this.card.nameId, num: this.lastItem.num })
     }
   },
   template: tpl

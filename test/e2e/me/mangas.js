@@ -14,7 +14,7 @@ describe('e2e me/mangas', function () {
     const token = 'abc'
     await Promise.all([
       UserModel.create({ _id: userId, googleId: 'g', displayName: 'moran' }),
-      MangaModel.create({ name: 'dbz' }),
+      MangaModel.create({ name: 'dbz', chapters: [{ num: 5, url: 'xx' }] }),
       AtModel.create({ token, userId })
     ])
 
@@ -80,35 +80,43 @@ describe('e2e me/mangas', function () {
     const userId = '0'.repeat(24)
     const token = 'abc'
     const mangas = {
-      dbz: 5,
-      untouched: 7,
-      bbb: 5,
-      ccc: 3
+      ignored: 1,
+      overridenEvenIfInferior: 7,
+      overriden: 5
     }
     const [, at] = await Promise.all([
       UserModel.create({ _id: userId, googleId: 'g', displayName: 'moran', mangas }),
       AtModel.create({ token, userId }),
-      MangaModel.create({ name: 'dbz' }),
-      MangaModel.create({ name: 'untouched' }),
-      MangaModel.create({ name: 'bbb' }),
-      MangaModel.create({ name: 'ccc' })
+      MangaModel.create({ name: 'ignored', chapters: [{ num: mangas.ignored, url: 'xx' }] }),
+      MangaModel.create({
+        name: 'overridenEvenIfInferior',
+        chapters: [
+          { num: 5, url: 'x' },
+          { num: 7, url: 'x' }
+        ]
+      }),
+      MangaModel.create({
+        name: 'overriden',
+        chapters: [
+          { num: 5, url: 'x' },
+          { num: 7, url: 'x' }
+        ]
+      })
     ])
     await utils.requester
       .patch('/me/mangas')
       .set({ Authorization: `Bearer ${at.token}` })
       .send({
         items: [
-          { nameId: 'untouched', num: 5 },
-          { nameId: 'bbb', num: -1 },
-          { nameId: 'ccc', num: 5 }
+          { nameId: 'overridenEvenIfInferior', num: 5 },
+          { nameId: 'overriden', num: 7 }
         ]
       })
       .expect(200)
 
     const u = await UserModel.findOne({ _id: userId })
-    assert.strictEqual(u.mangas.get('untouched'), 7)
-    assert.strictEqual(u.mangas.get('bbb'), -1)
-    assert.strictEqual(u.mangas.get('ccc'), 5)
+    assert.strictEqual(u.mangas.get('overridenEvenIfInferior'), 5)
+    assert.strictEqual(u.mangas.get('overriden'), 7)
   }))
 
   it('gives me back my failing mangas', Mocker.mockIt(async function (mokr) {
@@ -123,8 +131,8 @@ describe('e2e me/mangas', function () {
     const [, at] = await Promise.all([
       UserModel.create({ _id: userId, googleId: 'g', displayName: 'moran', mangas }),
       AtModel.create({ token, userId }),
-      MangaModel.create({ name: 'dbz' }),
-      MangaModel.create({ name: 'ccc' })
+      MangaModel.create({ name: 'dbz', num: mangas.dbz }),
+      MangaModel.create({ name: 'ccc', num: mangas.ccc })
     ])
 
     const { body } = await utils.requester
@@ -133,13 +141,39 @@ describe('e2e me/mangas', function () {
       .send({
         items: [
           { nameId: 'untouched', num: 5 },
-          { nameId: 'bbb', num: -1 },
+          { nameId: 'bbb', num: 1 },
           { nameId: 'ccc', num: 5 }
         ]
       })
       .expect(400)
-
     assert.strictEqual(body.reason, 'unknown mangas(untouched,bbb)')
+  }))
+
+  it('rejects if unknown num', Mocker.mockIt(async function (mokr) {
+    const userId = '0'.repeat(24)
+    const token = 'abc'
+    const mangas = {
+      dbz: 5,
+      ccc: 7
+    }
+    const [, at] = await Promise.all([
+      UserModel.create({ _id: userId, googleId: 'g', displayName: 'moran', mangas }),
+      AtModel.create({ token, userId }),
+      MangaModel.create({ name: 'dbz', num: mangas.dbz, chapters: [{ num: 1, url: 'a' }] }),
+      MangaModel.create({ name: 'ccc', num: mangas.ccc, chapters: [{ num: 2, url: 'a' }] })
+    ])
+
+    const { body } = await utils.requester
+      .patch('/me/mangas')
+      .set({ Authorization: `Bearer ${at.token}` })
+      .send({
+        items: [
+          { nameId: 'dbz', num: 3 },
+          { nameId: 'ccc', num: 4 }
+        ]
+      })
+      .expect(400)
+    assert.strictEqual(body.reason, 'unknown chapters([{"nameId":"dbz","num":3},{"nameId":"ccc","num":4}])')
   }))
 
   it('fetches my collection', Mocker.mockIt(async function (mokr) {

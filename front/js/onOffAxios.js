@@ -3,12 +3,14 @@ class OnOffAxios {
     this.$store = store
   }
 
-  _forward (verb, axiosArgs, bypass) {
-    const args = [...axiosArgs]
+  _forward (verb, args) {
+    args = [...args]
+    let fallback = true
+    if (typeof (args[args.length - 1]) === 'function') {
+      fallback = args.pop()
+    }
+
     if (this.$store.getters.accessToken) {
-      if (args.length !== 2 && !bypass) {
-        throw new Error(`unhandled case: expects payload for ${verb}`)
-      }
       // axios ought to be configured beforehand anyway
       args.push({
         headers: {
@@ -16,37 +18,35 @@ class OnOffAxios {
         }
       })
       return axios[verb].apply(axios, args).catch(e => {
+        console.log('failed', verb, args, fallback, e)
         throw new Error(e)
       })
     }
-    return this._local(args[1])
+
+    return typeof (fallback) === 'function' ? fallback() : this._local(args[1], args)
   }
 
-  _local (data) {
+  _local (data, verb, args) {
+    if (!data) {
+      throw new Error(`expect payload or fallback when not authenticated for ${JSON.stringify(args)}`)
+    }
     return Promise.resolve({ data })
   }
 
   get () {
-    const args = arguments
-    if (args.length >= 2) {
-      throw new Error('poor design, expects GET to only present url as arguments')
-    }
-    return this._forward('get', args, true)
+    return this._forward('get', arguments)
   }
 
   put () {
-    const args = arguments
-    return this._forward('put', args)
+    return this._forward('put', arguments)
   }
 
   patch () {
-    const args = arguments
-    return this._forward('patch', args)
+    return this._forward('patch', arguments)
   }
 
   delete () {
-    const args = arguments
-    return this._forward('delete', args, true)
+    return this._forward('delete', arguments)
   }
 }
 export default OnOffAxios

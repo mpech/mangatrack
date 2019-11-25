@@ -5,7 +5,7 @@ import { Home } from './home.js'
 import './menu.js'
 import { MangaView } from './mangaView.js'
 import { SignIn } from './signIn.js'
-import { routes as apiRoutes, symbols } from './config.js'
+import { routes as apiRoutes } from './config.js'
 import { NotFoundComponent } from './components/notFound.js'
 import OnOffAxios from './onOffAxios.js'
 Vue.use(VueRouter)
@@ -41,7 +41,7 @@ const vuexLocal = new VuexPersistence.VuexPersistence({
 const store = new Vuex.Store({
   state: {
     mangas: [],
-    myMangas: [],
+    myMangas: {},
     moreMangas: { next: apiRoutes.mangas },
     accessToken: null,
     refreshToken: null
@@ -52,21 +52,26 @@ const store = new Vuex.Store({
       state.mangas = state.mangas.concat(items)
       state.moreMangas = links
     },
+    fetchMyMangas (state, data) {
+      if (data === state.myMangas) {
+        return
+      }
+      state.myMangas = data.items.reduce((acc, { nameId, num }) => {
+        acc[nameId] = num
+        return acc
+      }, {})
+    },
     trackManga (state, trackedManga) {
-      state.myMangas.push(trackedManga)
+      state.myMangas[trackedManga.nameId] = trackedManga.num
+      state.myMangas = { ...state.myMangas }
     },
     untrackManga (state, untrackedManga) {
-      const idx = state.myMangas.findIndex(m => m.nameId === untrackedManga.nameId)
-      if (idx !== -1) {
-        state.myMangas.splice(idx, 1)
-      }
+      const { [untrackedManga.nameId]: del, ...others } = { ...state.myMangas }
+      state.myMangas = others
     },
     authenticate (state, { accessToken, refreshToken }) {
       state.accessToken = accessToken
       state.refreshToken = refreshToken
-    },
-    sync (state, { items }) {
-      state.myMangas = items
     },
     logout (state) {
       state.accessToken = null
@@ -88,8 +93,14 @@ const store = new Vuex.Store({
         context.commit('fetchMangas', data)
       }
     },
-    async trackManga (context, { nameId }) {
-      const { data } = await this.axios.put(apiRoutes.myMangas.replace('{{nameId}}', nameId), { num: symbols.ALL_READ })
+    async fetchMyMangas (context) {
+      const { data } = await this.axios.get(apiRoutes.myMangaSuite, _ => {
+        return ({ data: context.state.myMangas })
+      })
+      context.commit('fetchMyMangas', data)
+    },
+    async trackManga (context, { nameId, num }) {
+      const { data } = await this.axios.put(apiRoutes.myMangas.replace('{{nameId}}', nameId), { num }, _ => ({ data: { nameId, num } }))
       context.commit('trackManga', data)
     },
     async untrackManga (context, { nameId }) {
@@ -97,9 +108,13 @@ const store = new Vuex.Store({
       context.commit('untrackManga', { nameId })
     },
     async sync (context) {
-      await this.axios.patch(apiRoutes.myMangaSuite, { items: context.state.myMangas })
-      const { data } = await this.axios.get(apiRoutes.myMangaSuite)
-      context.commit('sync', data)
+      await this.axios.patch(apiRoutes.myMangaSuite, {
+        items: Object.keys(context.state.myMangas).reduce((acc, nameId) => {
+          acc.push({ nameId, num: context.state.myMangas[nameId] })
+          return acc
+        }, [])
+      })
+      this.dispatch('fetchMyMangas')
     }
   },
   getters: {
