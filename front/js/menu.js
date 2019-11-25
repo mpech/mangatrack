@@ -1,4 +1,4 @@
-import Vue from './vue.esm.browser.min.js'
+import Vue from './vendors/vue.esm.browser.min.js'
 
 const tpl = `
   <div class="pure-menu pure-menu-horizontal">

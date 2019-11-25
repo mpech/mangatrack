@@ -1,4 +1,4 @@
-import Vue from '../vue.esm.browser.min.js'
+import Vue from '../vendors/vue.esm.browser.min.js'
 
 const tpl = `
     <span @click="onclick" :class="{followed:followed, 'mt-follow':1}" :title="title"><a href="#">♥</a></span>
