@@ -13,7 +13,7 @@ exports.dbUrl = 'mongodb://localhost:27017/mangatrack'
 exports.dbTestUrl = 'mongodb://localhost:27017/tests'
 exports.log_fname = path.resolve(__dirname, '../log/%DATE%_mt.log')
 exports.log_maxsize = 1e5
-exports.log_usr = true
+exports.log_lvl = 'usr'
 exports.reqlogger_maxRequestTime = 1e6// ms
 exports.pagination_limit = 50
 exports.oauth2_google_clientId = '936593177518-0spv3m56a0a9nslh6lq669glos9c55na.apps.googleusercontent.com'
@@ -45,5 +45,5 @@ const Logger = require('../lib/logger')
 exports.logger = new Logger({
   fname: exports.log_fname,
   maxsize: exports.log_maxsize,
-  usr: exports.log_usr
+  loglvl: exports.log_lvl
 })

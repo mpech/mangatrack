@@ -8,10 +8,10 @@ const tpl = `
     <!-- actually, DO reload on home click -->
     <a href="/" class="pure-menu-heading pure-menu-link">MangaTrack</a>
 
-    <router-link to="/me" 
+    <a href="/me"
       class="pure-menu-heading pure-menu-link"
       title="my space"
-    >Me</router-link>
+    >Me</a>
 
     <router-link to="/login" 
       class="pure-menu-heading pure-menu-link login" 
