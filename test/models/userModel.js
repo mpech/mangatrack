@@ -4,7 +4,7 @@ var UserModel = require('../../models/userModel')
 var Mocker = require('../../lib/mocker')
 
 utils.bindDb()
-describe('models userModel', function () {
+describe('models/userModel', function () {
   beforeEach(utils.clearColls([UserModel]))
 
   it('finds a user for sure', Mocker.mockIt(function (mokr) {

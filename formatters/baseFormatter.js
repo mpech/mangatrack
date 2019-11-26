@@ -30,9 +30,24 @@ Formatter.prototype.paginate = function (o, { count, offset, limit }) {
   return { count, links, ...o }
 }
 
-Formatter.prototype.formatCollection = async function (arr, pagination) {
+Formatter.prototype.formatCollection = async function (arr, pagination = false) {
   const items = await Promise.all(arr.map(x => this.format(x)))
+  if (!pagination) {
+    return { items }
+  }
   return this.paginate({ items }, pagination)
+}
+
+Formatter.prototype.formatFullCollection = async function (arr, pagination = false) {
+  const items = await Promise.all(arr.map(x => this.formatFull(x)))
+  if (!pagination) {
+    return { items }
+  }
+  return this.paginate({ items }, pagination)
+}
+
+Formatter.prototype.formatFull = async function (x) {
+  return this.format.apply(this, arguments)
 }
 
 module.exports = Formatter

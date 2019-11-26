@@ -5,8 +5,10 @@ const MangaModel = require('../../models/mangaModel')
 const prom = require('../../lib/prom')
 const rules = require('../../lib/rules')
 const errorHandler = require('../../lib/errorHandler')
+const Formatter = require('../../formatters/me/mangaFormatter')
 
 function load (app) {
+  module.exports.formatter = new Formatter()
   const helper = {
     userOnReq: function (req, res, next) {
       return UserModel.findOneForSure({ _id: res.locals.oauth.token.user.id }).then(user => {
@@ -17,7 +19,7 @@ function load (app) {
 
   app.put('/me/mangas/:nameId', app.oauth.authenticate(), validate({
     params: {
-      nameId: rules.mangaName
+      nameId: rules.nameId
     },
     body: {
       num: rules.chapterNum
@@ -26,12 +28,14 @@ function load (app) {
     const nameId = req.params.nameId
     const num = req.body.num
     await MangaModel.findOneForSure({ nameId, chapters: { $elemMatch: { num } } })
-    return req.user.saveManga({ nameId, num })
+    const manga = await req.user.saveManga({ nameId, num })
+
+    return module.exports.formatter.format(manga)
   }))
 
   app.delete('/me/mangas/:nameId', app.oauth.authenticate(), validate({
     params: {
-      nameId: rules.mangaName
+      nameId: rules.nameId
     }
   }), helper.userOnReq, prom(function (req, res) {
     return req.user.removeManga({ nameId: req.params.nameId }).then(m => ({}))
@@ -40,7 +44,7 @@ function load (app) {
   app.patch('/me/mangas', app.oauth.authenticate(), validate({
     body: {
       items: Joi.array().items(Joi.object({
-        nameId: rules.mangaName,
+        nameId: rules.nameId,
         num: rules.chapterNum
       })).required()
     }
@@ -79,9 +83,30 @@ function load (app) {
     return req.user.saveMangas(items).then(mangas => ({}))
   }))
 
-  app.get('/me/mangas', app.oauth.authenticate(), helper.userOnReq, prom(function (req, res) {
+  app.get('/me/mangas', app.oauth.authenticate(), validate({
+    query: {
+      details: Joi.string().valid('populate')
+    }
+  }), helper.userOnReq, prom(async (req, res) => {
     const items = [...req.user.mangas.entries()].map(([nameId, num]) => ({ nameId, num }))
-    return Promise.resolve({ items })
+    if (!req.query.details) {
+      return { items }
+    }
+    // not by date but title asc here
+    const mangas = await MangaModel
+      .find({ nameId: { $in: items.map(x => x.nameId) } }, {
+        name: 1,
+        nameId: 1,
+        thumbUrl: 1,
+        chapters: { $slice: 1 }
+      })
+      .sort({ nameId: 1 })
+      .lean().exec()
+    // .select('name nameId thumbUrl chapters.0')
+    mangas.forEach(m => {
+      m.num = req.user.mangas.get(m.nameId)
+    })
+    return module.exports.formatter.formatFullCollection(mangas)
   }))
 }
 

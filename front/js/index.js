@@ -5,6 +5,7 @@ import { Home } from './home.js'
 import './menu.js'
 import { MangaView } from './mangaView.js'
 import { SignIn } from './signIn.js'
+import { Me } from './me.js'
 import { routes as apiRoutes } from './config.js'
 import { NotFoundComponent } from './components/notFound.js'
 import OnOffAxios from './onOffAxios.js'
@@ -14,6 +15,7 @@ Vue.use(Vuex)
 const routes = [
   { path: '/', component: Home },
   { path: '/manga/:nameId', component: MangaView },
+  { path: '/me', component: Me },
   { path: '/login', component: SignIn },
   { path: '*', component: NotFoundComponent }
 ]
@@ -42,6 +44,7 @@ const store = new Vuex.Store({
   state: {
     mangas: [],
     myMangas: {},
+    myPopulatedMangas: [],
     moreMangas: { next: apiRoutes.mangas },
     accessToken: null,
     refreshToken: null
@@ -60,6 +63,9 @@ const store = new Vuex.Store({
         acc[nameId] = num
         return acc
       }, {})
+    },
+    fetchMyPopulatedMangas (state, { items, links }) {
+      state.myPopulatedMangas = items
     },
     trackManga (state, trackedManga) {
       state.myMangas[trackedManga.nameId] = trackedManga.num
@@ -95,9 +101,20 @@ const store = new Vuex.Store({
     },
     async fetchMyMangas (context) {
       const { data } = await this.axios.get(apiRoutes.myMangaSuite, _ => {
-        return ({ data: context.state.myMangas })
+        return ({ data: { items: context.state.myMangas } })
       })
       context.commit('fetchMyMangas', data)
+    },
+    async fetchMyPopulatedMangas (context) {
+      const payload = {
+        params: {
+          details: 'populate'
+        }
+      }
+      const { data } = await this.axios.get(apiRoutes.myMangaSuite, payload, _ => {
+        return ({ data: { items: context.state.myPopulatedMangas } })
+      })
+      context.commit('fetchMyPopulatedMangas', data)
     },
     async trackManga (context, { nameId, num }) {
       const { data } = await this.axios.put(apiRoutes.myMangas.replace('{{nameId}}', nameId), { num }, _ => ({ data: { nameId, num } }))

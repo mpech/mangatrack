@@ -2,7 +2,7 @@ var assert = require('assert')
 var errorHandler = require('../../lib/errorHandler')
 var Mocker = require('../../lib/mocker')
 
-describe('lib errorHandler', function () {
+describe('lib/errorHandler', function () {
   it('unknownMangas', Mocker.mockIt(mokr => {
     let thrown = false
     return Promise.resolve().then(_ => {

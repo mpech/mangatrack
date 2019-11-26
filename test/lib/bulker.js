@@ -2,7 +2,7 @@ var assert = require('assert')
 var bulker = require('../../lib/bulker')
 var Mocker = require('../../lib/mocker')
 
-describe('lib bulker', function () {
+describe('lib/bulker', function () {
   it('bulk', Mocker.mockIt(mokr => {
     const arr = []
     return bulker.bulk([1, 2, 3], 1, x => {

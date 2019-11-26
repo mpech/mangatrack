@@ -3,7 +3,7 @@ var Mocker = require('../../lib/mocker')
 var Formatter = require('../../formatters/mangaFormatter')
 var ctx = require('../../lib/ctx')
 
-describe('formatter mangaFormatter', function () {
+describe('formatters/mangaFormatter', function () {
   it('make next link', Mocker.mockIt(async function (mokr) {
     mokr.pre(_ => ctx.enable())
     mokr.aft(_ => ctx.disable())

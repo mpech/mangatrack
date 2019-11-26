@@ -5,7 +5,7 @@ var AtModel = require('../../models/oauth/atModel')
 var RtModel = require('../../models/oauth/rtModel')
 
 utils.bindDb()
-describe('services oauth', function () {
+describe('services/oauth', function () {
   beforeEach(utils.clearColls([AtModel, RtModel]))
 
   it('getRefreshToken', async function () {

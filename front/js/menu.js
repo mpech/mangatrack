@@ -7,12 +7,19 @@ const tpl = `
     <!-- <router-link> will be rendered as an <a> tag by default -->
     <!-- actually, DO reload on home click -->
     <a href="/" class="pure-menu-heading pure-menu-link">MangaTrack</a>
+
+    <router-link to="/me" 
+      class="pure-menu-heading pure-menu-link"
+      title="my space"
+    >Me</router-link>
+
     <router-link to="/login" 
       class="pure-menu-heading pure-menu-link login" 
       :class="{hide:logged}"
       title="Mainly sync your tracked stuff"
     >Login</router-link>
-    
+
+
     <router-link to="/login" 
       class="pure-menu-heading pure-menu-link logout"
       :class="{hide:!logged}"

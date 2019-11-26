@@ -5,7 +5,7 @@ var Activity = require('../../activity/importerActivity')
 var MangaModel = require('../../models/mangaModel')
 
 utils.bindDb()
-describe('activity importer', function () {
+describe('activity/importerActivity', function () {
   beforeEach(utils.clearColls([MangaModel]))
   it('refreshes with existing manga: nothing happens', Mocker.mockIt(async mokr => {
     let fetchedDetail = false

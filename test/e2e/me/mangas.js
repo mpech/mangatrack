@@ -6,7 +6,7 @@ const UserModel = require('../../../models/userModel')
 const AtModel = require('../../../models/oauth/atModel')
 
 utils.bindApp()
-describe('e2e me/mangas', function () {
+describe('e2e/me/mangas', function () {
   beforeEach(utils.clearColls([MangaModel, AtModel, UserModel]))
 
   it('authenticate and set a manga', Mocker.mockIt(async function (mokr) {
@@ -201,5 +201,33 @@ describe('e2e me/mangas', function () {
     assert.strictEqual(items[0].num, 5)
     assert.strictEqual(items[3].nameId, 'ccc')
     assert.strictEqual(items[3].num, 3)
+  }))
+
+  it('fetches my populated collection', Mocker.mockIt(async function (mokr) {
+    const userId = '0'.repeat(24)
+    const token = 'abc'
+    const mangas = {
+      def: 1,
+      dbz: 5,
+      ccc: 3
+    }
+    const [, at] = await Promise.all([
+      UserModel.create({ _id: userId, googleId: 'g', displayName: 'moran', mangas }),
+      AtModel.create({ token, userId }),
+      MangaModel.create({ name: 'def', chapters: [{ num: 8, url: 'a' }] }),
+      MangaModel.create({ name: 'dbz' }),
+      MangaModel.create({ name: 'ccc' })
+    ])
+    const { body: { items: [a, b, c] } } = await utils.requester
+      .get('/me/mangas?details=populate')
+      .set({ Authorization: `Bearer ${at.token}` })
+      .expect(200)
+    assert.strictEqual(a.nameId, 'ccc')
+    assert.strictEqual(a.num, 3)
+    assert.strictEqual(b.nameId, 'dbz')
+    assert.strictEqual(b.num, 5)
+    assert.strictEqual(c.nameId, 'def')
+    assert.strictEqual(c.num, 1)
+    assert.strictEqual(c.lastChap.num, 8)
   }))
 })

@@ -5,7 +5,7 @@ var Mocker = require('../../lib/mocker')
 var ctx = require('../../lib/ctx')
 
 utils.bindDb()
-describe('models mangaModel', function () {
+describe('models/mangaModel', function () {
   beforeEach(utils.clearColls([MangaModel]))
 
   it('keeps domain while using mongoose', Mocker.mockIt(function (mokr) {

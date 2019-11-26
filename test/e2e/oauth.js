@@ -8,7 +8,7 @@ var UserModel = require('../../models/userModel')
 var passport = require('passport')
 
 utils.bindApp()
-describe('e2e oauth', function () {
+describe('e2e/oauth', function () {
   beforeEach(utils.clearColls([UserModel, AtModel, RtModel]))
 
   it('generates token on callback', Mocker.mockIt(async function (mokr) {

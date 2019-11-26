@@ -8,7 +8,7 @@ var pread = util.promisify(fs.readFile)
 var Importer = require('../../importers/mangakakalot')
 var cheerio = require('cheerio')
 utils.bindDb()
-describe('importers mangakakalot', function () {
+describe('importers/mangakakalot', function () {
   it('allUpdates', Mocker.mockIt(async mokr => {
     const importer = new Importer()
     let called = false
