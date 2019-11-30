@@ -1,21 +1,25 @@
+let api = 'http://localhost:4020'
+if(window.location.host.includes('.com')){
+  api = 'https://mangatrackapi.nodekoko.com'
+}
 const routes = {
-  mangas: 'http://mangatrackapi/mangas',
-  chapters: 'http://mangatrackapi/mangas/{{nameId}}/chapters',
-  myMangas: 'http://mangatrackapi/me/mangas/{{nameId}}',
-  myMangaSuite: 'http://mangatrackapi/me/mangas'
+  mangas: `${api}/mangas`,
+  chapters: `${api}/mangas/{{nameId}}/chapters`,
+  myMangas: `${api}/me/mangas/{{nameId}}`,
+  myMangaSuite: `${api}/me/mangas`
 }
 const oauth = {
   google_clientId: '936593177518-0spv3m56a0a9nslh6lq669glos9c55na.apps.googleusercontent.com',
-  google_redirect_uri: 'http://localhost:4020/oauth/google/callback',
+  google_redirect_uri: `${api}/oauth/google/callback`,
   google_scope: 'profile',
   google_endpoint: 'https://accounts.google.com/o/oauth2/v2/auth',
 
   facebook_clientId: '2145773262189943',
-  facebook_redirect_uri: 'http://localhost:4020/oauth/facebook/callback',
+  facebook_redirect_uri: `${api}/oauth/facebook/callback`,
   facebook_scope: 'public_profile',
   facebook_endpoint: 'https://www.facebook.com/v5.0/dialog/oauth',
 
-  self_callback: 'http://mangatrack/login'
+  self_callback: `${location.origin}/login`
 }
 const ops = {
   bug_tracker: 'https://github.com/mpech/mangatrack/issues',

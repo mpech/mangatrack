@@ -32,22 +32,25 @@ class OnOffAxios {
       fallback = args.pop()
     }
 
-    if (this.$store.getters.accessToken) {
-      const headers = {
-        headers: {
-          Authorization: `Bearer ${this.$store.getters.accessToken}`
+    if (this.$store.getters.accessToken || args[args.length-1].anonAllowed) {
+      if (this.$store.getters.accessToken) {
+        const headers = {
+          headers: {
+            Authorization: `Bearer ${this.$store.getters.accessToken}`
+          }
         }
-      }
-      if (['post', 'put', 'patch'].includes(verb)) {
-        if (args.length === 2) {
-          // push args not to merge conf to data
-          args.push(headers)
+        if (['post', 'put', 'patch'].includes(verb)) {
+          if (args.length === 2) {
+            // push args not to merge conf to data
+            args.push(headers)
+          } else {
+            this._mergeOrPush(args, headers)
+          }
         } else {
           this._mergeOrPush(args, headers)
         }
-      } else {
-        this._mergeOrPush(args, headers)
       }
+
       return axios[verb].apply(axios, args).catch(e => {
         console.log('failed', verb, args, fallback, e)
         throw new Error(e)

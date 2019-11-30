@@ -89,13 +89,14 @@ const store = new Vuex.Store({
       const payload = {
         params: {
           limit: 18
-        }
+        },
+        anonAllowed: true
       }
       let url = context.state.moreMangas.next
       if (url) {
         // should not occur, but should not fail either
         url = url.replace(/limit=\d+/, '')// do not send an array of limit
-        const { data } = await axios.get(url, payload)
+        const { data } = await this.axios.get(url, payload)
         context.commit('fetchMangas', data)
       }
     },
