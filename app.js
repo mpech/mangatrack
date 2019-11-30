@@ -11,6 +11,7 @@ var errorHandler = require('./lib/errorHandler')
 var OauthService = require('./services/oauth')
 
 var app = express()
+app.enable('trust proxy')
 app.use(bodyParser.json({ limit: '1mb' }))
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(ctx.express())
@@ -20,7 +21,6 @@ app.use(reqLogger.express({
   maxRequestTime: config.reqlogger_maxRequestTime,
   logger: config.logger
 }))
-
 app.oauth = new OAuthServer({ model: OauthService, ...config.oauth2_server })
 
 require('./routes').load(app)

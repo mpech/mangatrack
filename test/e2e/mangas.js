@@ -28,6 +28,20 @@ describe('e2e/mangas', function () {
     assert.strictEqual(item.name, 'a')
   }))
 
+  it('makes an https link by forwarding proto', Mocker.mockIt(async function (mokr) {
+    await Promise.all([
+      MangaModel.create({ name: 'a' }),
+      MangaModel.create({ name: 'b' })
+    ])
+
+    const { body } = await utils.requester
+      .get('/mangas?limit=1')
+      .set('x-forwarded-proto', 'https')
+      .expect(200)
+
+    assert(body.links.next.startsWith('https'))
+  }))
+
   it('lists mangas with one existing and a chapter', Mocker.mockIt(async function (mokr) {
     await MangaModel.create({ name: 'a', chapters: [{ url: 'a', num: 0, at: 1 }] })
 

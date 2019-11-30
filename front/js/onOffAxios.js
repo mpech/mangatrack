@@ -32,7 +32,7 @@ class OnOffAxios {
       fallback = args.pop()
     }
 
-    if (this.$store.getters.accessToken || args[args.length-1].anonAllowed) {
+    if (this.$store.getters.accessToken || args[args.length - 1].anonAllowed) {
       if (this.$store.getters.accessToken) {
         const headers = {
           headers: {

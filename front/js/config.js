@@ -1,5 +1,5 @@
 let api = 'http://localhost:4020'
-if(window.location.host.includes('.com')){
+if (window.location.host.includes('.com')) {
   api = 'https://mangatrackapi.nodekoko.com'
 }
 const routes = {
@@ -19,7 +19,7 @@ const oauth = {
   facebook_scope: 'public_profile',
   facebook_endpoint: 'https://www.facebook.com/v5.0/dialog/oauth',
 
-  self_callback: `${location.origin}/login`
+  self_callback: `${window.location.origin}/login`
 }
 const ops = {
   bug_tracker: 'https://github.com/mpech/mangatrack/issues',
