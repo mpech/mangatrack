@@ -28,11 +28,11 @@ ImporterActivity.prototype.refresh = async function () {
     })
   })
 
-  config.logger.dbg('detailstack-ok', detailStack.length)
+  config.logger.inf('detailstack-ok', detailStack.length)
   return bulker.debounce(detailStack, config.manga_detailDebounce, chap => {
     return this.imp.fetchMangaDetail(chap).then(chapters => {
       return MangaModel.upsertManga({ chapters, ...chap }).catch(e => {
-        config.logger.dbg('failed to save', chapters[0], '...')
+        config.logger.inf('failed to save', chapters[0], '...')
       })
     }).catch(e => {
       config.logger.inf('failed to fetch detail', e, chap.url)
