@@ -76,6 +76,15 @@ time{
     display: flex;
     justify-content: space-between;
 }
+.card div:last-child{
+    text-align:center;
+}
+.card-stats{
+  display:block;
+  position:absolute;
+  right:0px;
+  font-size:0.8em;
+}
 .mangaView .isekaied{
     background:#CCCCCC;
 }
@@ -92,9 +101,6 @@ time{
     color:white;
     display:block;
     padding:0.2em;
-}
-.card div:last-child{
-    text-align:center;
 }
 .mt-follow a:hover{
     color:pink;

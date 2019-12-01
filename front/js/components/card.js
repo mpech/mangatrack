@@ -2,7 +2,7 @@ import Vue from '../vendors/vue.esm.browser.min.js'
 import { Follow } from './follow.js'
 
 const tpl = `
-    <div class="pure-u-1-8 pure-u-lg-1-6">
+    <div class="pure-u-1-6 pure-u-lg-1-6">
         <div class="card">
             <figure>
                 <img :src="card.thumbUrl"/>
@@ -17,7 +17,8 @@ const tpl = `
                 </div>
             </div>
             <hr/>
-            <div>
+            <div style="position:relative;">
+                <span v-if="card.followed" class="card-stats">{{card.num}}/{{lastItem.num}}</span>
                 <mt-follow @follow="follow" @unfollow="unfollow" :followed="card.followed" :name="card.name"></mt-follow>
             </div>
         </div>

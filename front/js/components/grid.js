@@ -52,6 +52,7 @@ const Grid = Vue.component('mt-grid', {
     followMangas () {
       return this.mangas.map(m => {
         Vue.set(m, 'followed', typeof (this.myMangas[m.id]) !== 'undefined')
+        Vue.set(m, 'num', this.myMangas[m.id])
         return m
       })
     }
