@@ -10,24 +10,24 @@ var schema = new Schema({
   mangas: { type: Schema.Types.Map, of: Number, default: _ => new Map() }
 })
 
-schema.methods.saveManga = async function ({ nameId, num }) {
-  this.mangas.set(nameId, num)
+schema.methods.saveManga = async function ({ mangaId, num }) {
+  this.mangas.set(mangaId.toString(), num)
   const m = await this.save()
   return {
-    nameId: nameId,
-    num: m.mangas.get(nameId)
+    mangaId,
+    num: m.mangas.get(mangaId.toString())
   }
 }
 
-schema.methods.removeManga = async function ({ nameId, num }) {
-  this.mangas.delete(nameId)
+schema.methods.removeManga = async function ({ mangaId, num }) {
+  this.mangas.delete(mangaId.toString())
   await this.save()
   return {}
 }
 
 schema.methods.saveMangas = async function (mangas) {
-  mangas.forEach(({ nameId, num }) => {
-    this.mangas.set(nameId, num)
+  mangas.forEach(({ mangaId, num }) => {
+    this.mangas.set(mangaId.toString(), num)
   })
   await this.save()
   return mangas

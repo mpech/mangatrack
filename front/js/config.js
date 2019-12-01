@@ -4,8 +4,8 @@ if (window.location.host.includes('.com')) {
 }
 const routes = {
   mangas: `${api}/mangas`,
-  chapters: `${api}/mangas/{{nameId}}/chapters`,
-  myMangas: `${api}/me/mangas/{{nameId}}`,
+  mangaDetail: `${api}/mangas/{{nameId}}`,
+  myMangas: `${api}/me/mangas/{{mangaId}}`,
   myMangaSuite: `${api}/me/mangas`
 }
 const oauth = {

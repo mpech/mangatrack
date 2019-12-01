@@ -35,7 +35,7 @@ const tpl = `
     <div class="pure-g">
         <mt_card
           v-for="manga in followMangas"
-          :key="manga.nameId"
+          :key="manga.id"
           :card="manga"
           url="/manga">
         </mt_card>
@@ -51,7 +51,7 @@ const Grid = Vue.component('mt-grid', {
   computed: {
     followMangas () {
       return this.mangas.map(m => {
-        Vue.set(m, 'followed', typeof (this.myMangas[m.nameId]) !== 'undefined')
+        Vue.set(m, 'followed', typeof (this.myMangas[m.id]) !== 'undefined')
         return m
       })
     }

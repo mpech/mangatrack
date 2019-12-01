@@ -1,4 +1,5 @@
 const validate = require('express-validation')
+const mongoose = require('mongoose')
 const Joi = require('joi')
 const UserModel = require('../../models/userModel')
 const MangaModel = require('../../models/mangaModel')
@@ -17,62 +18,63 @@ function load (app) {
     }
   }
 
-  app.put('/me/mangas/:nameId', app.oauth.authenticate(), validate({
+  app.put('/me/mangas/:mangaId', app.oauth.authenticate(), validate({
     params: {
-      nameId: rules.nameId
+      mangaId: rules.objId
     },
     body: {
       num: rules.chapterNum
     }
   }), helper.userOnReq, prom(async function (req, res) {
-    const nameId = req.params.nameId
+    const mangaId = req.params.mangaId
     const num = req.body.num
-    await MangaModel.findOneForSure({ nameId, chapters: { $elemMatch: { num } } })
-    const manga = await req.user.saveManga({ nameId, num })
+    await MangaModel.findOneForSure({ _id: mangaId, chapters: { $elemMatch: { num } } })
+    const manga = await req.user.saveManga({ mangaId, num })
 
     return module.exports.formatter.format(manga)
   }))
 
-  app.delete('/me/mangas/:nameId', app.oauth.authenticate(), validate({
+  app.delete('/me/mangas/:mangaId', app.oauth.authenticate(), validate({
     params: {
-      nameId: rules.nameId
+      mangaId: rules.objId
     }
   }), helper.userOnReq, prom(function (req, res) {
-    return req.user.removeManga({ nameId: req.params.nameId }).then(m => ({}))
+    const mangaId = req.params.mangaId
+    return req.user.removeManga({ mangaId }).then(m => ({}))
   }))
 
   app.patch('/me/mangas', app.oauth.authenticate(), validate({
     body: {
       items: Joi.array().items(Joi.object({
-        nameId: rules.nameId,
+        mangaId: rules.objId,
         num: rules.chapterNum
       })).required()
     }
   }), helper.userOnReq, prom(async function (req, res) {
     const items = req.body.items
-    const matchedItems = await MangaModel.find({ nameId: { $in: [...items.map(x => x.nameId)] } })
-      .select('nameId chapters.num')
+    const matchedItems = await MangaModel.find({ _id: { $in: [...items.map(x => mongoose.Types.ObjectId(x.mangaId))] } })
+      .select('_id chapters.num')
       .lean()
 
-    const nameIdToManga = matchedItems.reduce((m, { nameId, chapters }) => {
-      m.set(nameId, chapters)
+    const idToManga = matchedItems.reduce((m, { _id, chapters }) => {
+      m.set(_id.toString(), chapters)
       return m
     }, new Map())
 
-    if (nameIdToManga.size !== items.length) {
-      const notFound = items.reduce((acc, { nameId }) => {
-        if (!nameIdToManga.has(nameId)) {
-          acc.push(nameId)
+    if (idToManga.size !== items.length) {
+      const notFound = items.reduce((acc, { mangaId }) => {
+        if (!idToManga.has(mangaId)) {
+          acc.push(mangaId)
         }
         return acc
       }, [])
       return errorHandler.unknownMangas(notFound)
     }
 
-    const invalids = items.reduce((acc, { nameId, num }) => {
-      const s = new Set(nameIdToManga.get(nameId).map(c => c.num))
+    const invalids = items.reduce((acc, { mangaId, num }) => {
+      const s = new Set(idToManga.get(mangaId).map(c => c.num))
       if (!s.has(num)) {
-        acc.push({ nameId, num })
+        acc.push({ mangaId, num })
       }
       return acc
     }, [])
@@ -83,30 +85,9 @@ function load (app) {
     return req.user.saveMangas(items).then(mangas => ({}))
   }))
 
-  app.get('/me/mangas', app.oauth.authenticate(), validate({
-    query: {
-      details: Joi.string().valid('populate')
-    }
-  }), helper.userOnReq, prom(async (req, res) => {
-    const items = [...req.user.mangas.entries()].map(([nameId, num]) => ({ nameId, num }))
-    if (!req.query.details) {
-      return { items }
-    }
-    // not by date but title asc here
-    const mangas = await MangaModel
-      .find({ nameId: { $in: items.map(x => x.nameId) } }, {
-        name: 1,
-        nameId: 1,
-        thumbUrl: 1,
-        chapters: { $slice: 1 }
-      })
-      .sort({ nameId: 1 })
-      .lean().exec()
-    // .select('name nameId thumbUrl chapters.0')
-    mangas.forEach(m => {
-      m.num = req.user.mangas.get(m.nameId)
-    })
-    return module.exports.formatter.formatFullCollection(mangas)
+  app.get('/me/mangas', app.oauth.authenticate(), helper.userOnReq, prom(async (req, res) => {
+    const items = [...req.user.mangas.entries()].map(([mangaId, num]) => ({ mangaId, num }))
+    return { items }
   }))
 }
 

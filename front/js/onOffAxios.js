@@ -67,8 +67,40 @@ class OnOffAxios {
     return Promise.resolve({ data })
   }
 
+  async _follow (url, payload, onitems) {
+    const { data } = await this._forward('get', [url, payload])
+    onitems(data.items)
+    if (data.links && data.links.next) {
+      return this._follow(data.links.next, payload, onitems)
+    }
+  }
+
   get () {
     return this._forward('get', arguments)
+  }
+
+  async getAll (url, payload, fallback) {
+    const items = []
+    let fallbacked = false
+    const args = [...arguments]
+    if (fallback) {
+      args[args.length - 1] = _ => {
+        fallbacked = true
+        return fallback(arguments)
+      }
+    }
+    const { data } = await this._forward('get', args)
+    if (fallbacked) {
+      return data
+    }
+    items.push(...data.items)
+    if (data.links.next) {
+      const p = payload = { anonAllowed: payload.anonAllowed }
+      await this._follow(data.links.next, p, its => {
+        items.push(...its)
+      })
+    }
+    return { data: { items } }
   }
 
   delete () {

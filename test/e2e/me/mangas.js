@@ -12,22 +12,23 @@ describe('e2e/me/mangas', function () {
   it('authenticate and set a manga', Mocker.mockIt(async function (mokr) {
     const userId = '0'.repeat(24)
     const token = 'abc'
+    const dbz = '1'.repeat(24)
     await Promise.all([
       UserModel.create({ _id: userId, googleId: 'g', displayName: 'moran' }),
-      MangaModel.create({ name: 'dbz', chapters: [{ num: 5, url: 'xx' }] }),
+      MangaModel.create({ _id: dbz, name: 'dbz', chapters: [{ num: 5, url: 'xx' }] }),
       AtModel.create({ token, userId })
     ])
 
-    const { body: { nameId, num } } = await utils.requester
-      .put('/me/mangas/dbz')
+    const { body: { mangaId, num } } = await utils.requester
+      .put(`/me/mangas/${dbz}`)
       .send({ num: 5 })
       .set({ Authorization: 'Bearer ' + token })
       .expect(200)
 
-    assert.strictEqual(nameId, 'dbz')
+    assert.strictEqual(mangaId, dbz)
     assert.strictEqual(num, 5)
     const u = await UserModel.findOne({ _id: userId })
-    assert.strictEqual(u.mangas.get('dbz'), 5)
+    assert.strictEqual(u.mangas.get(dbz), 5)
   }))
 
   it('rejects if not existing manga', Mocker.mockIt(async function (mokr) {
@@ -35,12 +36,12 @@ describe('e2e/me/mangas', function () {
     const token = 'abc'
     await Promise.all([
       UserModel.create({ _id: userId, googleId: 'g', displayName: 'moran' }),
-      MangaModel.create({ name: 'b' }),
+      MangaModel.create({ _id: '1'.repeat(24), name: 'b' }),
       AtModel.create({ token, userId })
     ])
 
     return utils.requester
-      .put('/me/mangas/dbz')
+      .put(`/me/mangas/${'1'.repeat(24)}`)
       .send({ num: 5 })
       .set({ Authorization: 'Bearer ' + token })
       .expect(404)
@@ -54,7 +55,7 @@ describe('e2e/me/mangas', function () {
       AtModel.create({ token, userId })
     ])
     return utils.requester
-      .put('/me/mangas/dbz')
+      .put(`/me/mangas/${'1'.repeat(24)}`)
       .set({ Authorization: 'Bearer a' })
       .expect(401)
   }))
@@ -63,32 +64,37 @@ describe('e2e/me/mangas', function () {
     const userId = '0'.repeat(24)
     const token = 'abc'
     const [, at] = await Promise.all([
-      UserModel.create({ _id: userId, googleId: 'g', displayName: 'moran', mangas: { dbz: 5 } }),
+      UserModel.create({ _id: userId, googleId: 'g', displayName: 'moran', mangas: { ['1'.repeat(24)]: 5 } }),
       AtModel.create({ token, userId })
     ])
 
     await utils.requester
-      .delete('/me/mangas/dbz')
+      .delete(`/me/mangas/${'1'.repeat(24)}`)
       .set({ Authorization: `Bearer ${at.token}` })
       .expect(200)
 
     const u = await UserModel.findOne({ _id: userId })
-    assert(!u.mangas.has('dbz'))
+    assert(!u.mangas.size)
   }))
 
   it('patches my manga collection', Mocker.mockIt(async function (mokr) {
     const userId = '0'.repeat(24)
     const token = 'abc'
+
+    const ignored = '0'.repeat(24)
+    const overridenEvenIfInferior = '7'.repeat(24)
+    const overriden = '5'.repeat(24)
     const mangas = {
-      ignored: 1,
-      overridenEvenIfInferior: 7,
-      overriden: 5
+      [ignored]: 1,
+      [overridenEvenIfInferior]: 7,
+      [overriden]: 5
     }
     const [, at] = await Promise.all([
       UserModel.create({ _id: userId, googleId: 'g', displayName: 'moran', mangas }),
       AtModel.create({ token, userId }),
-      MangaModel.create({ name: 'ignored', chapters: [{ num: mangas.ignored, url: 'xx' }] }),
+      MangaModel.create({ _id: ignored, name: 'ignored', chapters: [{ num: mangas[ignored], url: 'xx' }] }),
       MangaModel.create({
+        _id: overridenEvenIfInferior,
         name: 'overridenEvenIfInferior',
         chapters: [
           { num: 5, url: 'x' },
@@ -96,6 +102,7 @@ describe('e2e/me/mangas', function () {
         ]
       }),
       MangaModel.create({
+        _id: overriden,
         name: 'overriden',
         chapters: [
           { num: 5, url: 'x' },
@@ -108,31 +115,35 @@ describe('e2e/me/mangas', function () {
       .set({ Authorization: `Bearer ${at.token}` })
       .send({
         items: [
-          { nameId: 'overridenEvenIfInferior', num: 5 },
-          { nameId: 'overriden', num: 7 }
+          { mangaId: overridenEvenIfInferior, num: 5 },
+          { mangaId: overriden, num: 7 }
         ]
       })
       .expect(200)
 
     const u = await UserModel.findOne({ _id: userId })
-    assert.strictEqual(u.mangas.get('overridenEvenIfInferior'), 5)
-    assert.strictEqual(u.mangas.get('overriden'), 7)
+    assert.strictEqual(u.mangas.get(overridenEvenIfInferior), 5)
+    assert.strictEqual(u.mangas.get(overriden), 7)
   }))
 
   it('gives me back my failing mangas', Mocker.mockIt(async function (mokr) {
     const userId = '0'.repeat(24)
     const token = 'abc'
+    const failingOnes = '1'.repeat(24)
+    const failingTwos = '2'.repeat(24)
+    const dbz = '0'.repeat(24)
+    const ccc = '4'.repeat(24)
     const mangas = {
-      dbz: 5,
-      untouched: 7,
-      bbb: 5,
-      ccc: 3
+      [dbz]: 5,
+      ['1'.repeat(24)]: 7,
+      ['2'.repeat(24)]: 5,
+      [ccc]: 3
     }
     const [, at] = await Promise.all([
       UserModel.create({ _id: userId, googleId: 'g', displayName: 'moran', mangas }),
       AtModel.create({ token, userId }),
-      MangaModel.create({ name: 'dbz', num: mangas.dbz }),
-      MangaModel.create({ name: 'ccc', num: mangas.ccc })
+      MangaModel.create({ _id: dbz, name: 'dbz', num: mangas.dbz }),
+      MangaModel.create({ _id: ccc, name: 'ccc', num: mangas.ccc })
     ])
 
     const { body } = await utils.requester
@@ -140,27 +151,29 @@ describe('e2e/me/mangas', function () {
       .set({ Authorization: `Bearer ${at.token}` })
       .send({
         items: [
-          { nameId: 'untouched', num: 5 },
-          { nameId: 'bbb', num: 1 },
-          { nameId: 'ccc', num: 5 }
+          { mangaId: failingOnes, num: 5 },
+          { mangaId: failingTwos, num: 1 },
+          { mangaId: ccc, num: 5 }
         ]
       })
       .expect(400)
-    assert.strictEqual(body.reason, 'unknown mangas(untouched,bbb)')
+    assert.strictEqual(body.reason, `unknown mangas(${failingOnes},${failingTwos})`)
   }))
 
   it('rejects if unknown num', Mocker.mockIt(async function (mokr) {
     const userId = '0'.repeat(24)
     const token = 'abc'
+    const dbz = '0'.repeat(24)
+    const ccc = '1'.repeat(24)
     const mangas = {
-      dbz: 5,
-      ccc: 7
+      [dbz]: 1,
+      [ccc]: 2
     }
     const [, at] = await Promise.all([
       UserModel.create({ _id: userId, googleId: 'g', displayName: 'moran', mangas }),
       AtModel.create({ token, userId }),
-      MangaModel.create({ name: 'dbz', num: mangas.dbz, chapters: [{ num: 1, url: 'a' }] }),
-      MangaModel.create({ name: 'ccc', num: mangas.ccc, chapters: [{ num: 2, url: 'a' }] })
+      MangaModel.create({ _id: dbz, name: 'dbz', chapters: [{ num: 1, url: 'a' }] }),
+      MangaModel.create({ _id: ccc, name: 'ccc', chapters: [{ num: 2, url: 'a' }] })
     ])
 
     const { body } = await utils.requester
@@ -168,28 +181,28 @@ describe('e2e/me/mangas', function () {
       .set({ Authorization: `Bearer ${at.token}` })
       .send({
         items: [
-          { nameId: 'dbz', num: 3 },
-          { nameId: 'ccc', num: 4 }
+          { mangaId: dbz, num: 3 },
+          { mangaId: ccc, num: 4 }
         ]
       })
       .expect(400)
-    assert.strictEqual(body.reason, 'unknown chapters([{"nameId":"dbz","num":3},{"nameId":"ccc","num":4}])')
+    assert.strictEqual(body.reason, `unknown chapters([{"mangaId":"${dbz}","num":3},{"mangaId":"${ccc}","num":4}])`)
   }))
 
   it('fetches my collection', Mocker.mockIt(async function (mokr) {
     const userId = '0'.repeat(24)
     const token = 'abc'
+    const dbz = '0'.repeat(24)
+    const ccc = '4'.repeat(24)
     const mangas = {
-      dbz: 5,
-      untouched: 7,
-      bbb: 5,
-      ccc: 3
+      [dbz]: 5,
+      ['1'.repeat(24)]: 7,
+      ['2'.repeat(24)]: 5,
+      [ccc]: 3
     }
     const [, at] = await Promise.all([
       UserModel.create({ _id: userId, googleId: 'g', displayName: 'moran', mangas }),
-      AtModel.create({ token, userId }),
-      MangaModel.create({ name: 'e' }),
-      MangaModel.create({ name: 'ccc' })
+      AtModel.create({ token, userId })
     ])
     const { body: { items } } = await utils.requester
       .get('/me/mangas')
@@ -197,37 +210,9 @@ describe('e2e/me/mangas', function () {
       .expect(200)
 
     assert.strictEqual(items.length, 4)
-    assert.strictEqual(items[0].nameId, 'dbz')
+    assert.strictEqual(items[0].mangaId, dbz)
     assert.strictEqual(items[0].num, 5)
-    assert.strictEqual(items[3].nameId, 'ccc')
+    assert.strictEqual(items[3].mangaId, ccc)
     assert.strictEqual(items[3].num, 3)
-  }))
-
-  it('fetches my populated collection', Mocker.mockIt(async function (mokr) {
-    const userId = '0'.repeat(24)
-    const token = 'abc'
-    const mangas = {
-      def: 1,
-      dbz: 5,
-      ccc: 3
-    }
-    const [, at] = await Promise.all([
-      UserModel.create({ _id: userId, googleId: 'g', displayName: 'moran', mangas }),
-      AtModel.create({ token, userId }),
-      MangaModel.create({ name: 'def', chapters: [{ num: 8, url: 'a' }] }),
-      MangaModel.create({ name: 'dbz' }),
-      MangaModel.create({ name: 'ccc' })
-    ])
-    const { body: { items: [a, b, c] } } = await utils.requester
-      .get('/me/mangas?details=populate')
-      .set({ Authorization: `Bearer ${at.token}` })
-      .expect(200)
-    assert.strictEqual(a.nameId, 'ccc')
-    assert.strictEqual(a.num, 3)
-    assert.strictEqual(b.nameId, 'dbz')
-    assert.strictEqual(b.num, 5)
-    assert.strictEqual(c.nameId, 'def')
-    assert.strictEqual(c.num, 1)
-    assert.strictEqual(c.lastChap.num, 8)
   }))
 })

@@ -15,10 +15,24 @@ Formatter.prototype.format = async function (x) {
 
   const chap = await p
   return {
+    id: x._id,
     name: x.name,
     nameId: x.nameId,
     thumbUrl: x.thumbUrl,
     lastChap: chap || null
+  }
+}
+
+Formatter.prototype.formatFull = async function (x) {
+  const chapters = await Promise.all(x.chapters.map(c => this.chapterFormatter.format(c)))
+
+  return {
+    id: x._id,
+    name: x.name,
+    nameId: x.nameId,
+    thumbUrl: x.thumbUrl,
+    lastChap: chapters[0] || null,
+    chapters: chapters
   }
 }
 

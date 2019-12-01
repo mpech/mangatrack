@@ -24,6 +24,11 @@ const MangaChapters = {
       lastTracked: this.lastRead
     }
   },
+  computed: {
+    lastTracked () {
+      return this.lastRead
+    }
+  },
   methods: {
     _ensureTd (e, fn) {
       if (e.target.nodeName !== 'TD') {
@@ -58,14 +63,16 @@ const MangaChapters = {
 
 const MangaView = Vue.component('mt-mangaView', {
   data () {
+    // assumes when getting details of a manga, manga is in the store
     return {
       chapters: [],
-      nameId: this.$route.params.nameId
+      mangaId: '',
+      ready: false
     }
   },
   computed: {
     lastRead () {
-      const m = this.$store.state.myMangas[this.nameId]
+      const m = this.$store.state.myMangas[this.mangaId]
       return typeof m !== 'undefined' ? m : -1
     }
   },
@@ -74,20 +81,26 @@ const MangaView = Vue.component('mt-mangaView', {
   },
   template: `
     <div class="mangaView">
-      <mt-chapters :chapters="chapters" :lastRead="lastRead" @trackchapter="trackchapter"></mt-chapters>
+      <mt-chapters v-if="ready" :chapters="chapters" :lastRead="lastRead" @trackchapter="trackchapter"></mt-chapters>
     </div>
   `,
   methods: {
     trackchapter (num) {
-      this.$store.dispatch('trackManga', { nameId: this.nameId, num })
+      this.$store.dispatch('trackManga', { id: this.mangaId, num })
     }
   },
   mounted () {
+    const dfds = []
+    // fetch my chapter
+    dfds.push(this.$store.dispatch('fetchMyMangas'))
     // fetch available chapters
-    const url = routes.chapters.replace('{{nameId}}', this.nameId)
-    this.$store.dispatch('fetchMyMangas')
-    return axios.get(url).then(({ data: { items } }) => {
-      this.chapters = items
+    const url = routes.mangaDetail.replace('{{nameId}}', this.$route.params.nameId)
+    dfds.push(axios.get(url).then(({ data }) => {
+      this.mangaId = data.id
+      this.chapters = data.chapters
+    }))
+    return Promise.all(dfds).then(_ => {
+      this.ready = true
     })
   }
 })

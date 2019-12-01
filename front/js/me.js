@@ -9,10 +9,7 @@ const tpl = `
 const Me = Vue.component('mt-me', {
   computed: {
     myMangas () {
-      return this.$store.state.myPopulatedMangas.reduce((acc, x) => {
-        acc[x.nameId] = x.num
-        return acc
-      }, {})
+      return this.$store.state.myMangas
     },
     myPopulatedMangas () {
       return this.$store.state.myPopulatedMangas

@@ -5,7 +5,7 @@ const mongooseUtil = require('../lib/mongooseUtil')
 
 var schema = new Schema({
   nameId: { type: String, required: true, unique: true, index: true },
-  name: { type: String, required: true, unique: true },
+  name: { type: String, required: true, unique: true, index: true },
   chapters: [{
     url: { type: String, required: true },
     num: { type: Number, required: true },

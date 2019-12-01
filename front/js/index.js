@@ -59,8 +59,8 @@ const store = new Vuex.Store({
       if (data === state.myMangas) {
         return
       }
-      state.myMangas = data.items.reduce((acc, { nameId, num }) => {
-        acc[nameId] = num
+      state.myMangas = data.items.reduce((acc, { mangaId, num }) => {
+        acc[mangaId] = num
         return acc
       }, {})
     },
@@ -68,11 +68,11 @@ const store = new Vuex.Store({
       state.myPopulatedMangas = items
     },
     trackManga (state, trackedManga) {
-      state.myMangas[trackedManga.nameId] = trackedManga.num
+      state.myMangas[trackedManga.id] = trackedManga.num
       state.myMangas = { ...state.myMangas }
     },
     untrackManga (state, untrackedManga) {
-      const { [untrackedManga.nameId]: del, ...others } = { ...state.myMangas }
+      const { [untrackedManga.id]: del, ...others } = { ...state.myMangas }
       state.myMangas = others
     },
     authenticate (state, { accessToken, refreshToken }) {
@@ -102,36 +102,41 @@ const store = new Vuex.Store({
     },
     async fetchMyMangas (context) {
       const { data } = await this.axios.get(apiRoutes.myMangaSuite, _ => {
-        return ({ data: { items: context.state.myMangas } })
+        return ({ data: context.state.myMangas })
       })
       context.commit('fetchMyMangas', data)
     },
     async fetchMyPopulatedMangas (context) {
       const payload = {
         params: {
-          details: 'populate'
-        }
+          id: Object.keys(context.state.myMangas),
+          limit: 50
+        },
+        anonAllowed: true
       }
-      const { data } = await this.axios.get(apiRoutes.myMangaSuite, payload, _ => {
-        return ({ data: { items: context.state.myPopulatedMangas } })
-      })
-      context.commit('fetchMyPopulatedMangas', data)
+      if (payload.params.id.length > 0) {
+        const { data } = await this.axios.getAll(apiRoutes.mangas, payload, _ => {
+          return ({ data: { items: context.state.myPopulatedMangas } })
+        })
+        context.commit('fetchMyPopulatedMangas', data)
+      } else {
+        context.commit('fetchMyPopulatedMangas', { items: [] })
+      }
     },
-    async trackManga (context, { nameId, num }) {
-      const { data } = await this.axios.put(apiRoutes.myMangas.replace('{{nameId}}', nameId), { num }, _ => ({ data: { nameId, num } }))
-      context.commit('trackManga', data)
+    async trackManga (context, { id, num }) {
+      const { data } = await this.axios.put(apiRoutes.myMangas.replace('{{mangaId}}', id), { num }, _ => ({ data: { mangaId: id, num } }))
+      context.commit('trackManga', { id: data.mangaId, num: data.num })
     },
-    async untrackManga (context, { nameId }) {
-      await this.axios.delete(apiRoutes.myMangas.replace('{{nameId}}', nameId))
-      context.commit('untrackManga', { nameId })
+    async untrackManga (context, { id }) {
+      await this.axios.delete(apiRoutes.myMangas.replace('{{mangaId}}', id), _=>{})
+      context.commit('untrackManga', { id })
     },
     async sync (context) {
-      await this.axios.patch(apiRoutes.myMangaSuite, {
-        items: Object.keys(context.state.myMangas).reduce((acc, nameId) => {
-          acc.push({ nameId, num: context.state.myMangas[nameId] })
-          return acc
-        }, [])
-      })
+      const items = Object.keys(context.state.myMangas).reduce((acc, id) => {
+        acc.push({ mangaId: id, num: context.state.myMangas[id] })
+        return acc
+      }, [])
+      await this.axios.patch(apiRoutes.myMangaSuite, { items })
       this.dispatch('fetchMyMangas')
     }
   },
