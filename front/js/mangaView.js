@@ -5,11 +5,13 @@ const tpl = `
   <table class="pure-table" :lastRead="lastRead">
       <thead>
           <th>Chapter</th>
+          <th>when</th>
           <th title="mark as read"><span class="truckkun">⛟</span></th>
       </thead>
       <tbody @mouseleave="rollback" @mouseover="paintSelection" @click="select">
           <tr v-for="chapter in chapters" v-bind:key="chapter.num" :class="{read:chapter.num <= lastTracked}">
               <td><a :href="chapter.url">c{{chapter.num}}</a></td>
+              <td><time :updatedAt="chapter.at">{{humanDate(chapter.at)}}</time></td>
               <td :data-num="chapter.num"></td>
           </tr>
       </tbody>
@@ -35,7 +37,7 @@ const MangaChapters = {
         return
       }
       const td = e.target
-      if (td.parentNode.children[1] !== td) {
+      if (td.parentNode.children[2] !== td) {
         return
       }
       return fn(td)
@@ -56,6 +58,9 @@ const MangaChapters = {
         this.$emit('trackchapter', num)
         this.oldTracked = num
       })
+    },
+    humanDate (at) {
+      return moment(at).format('YYYY-MM-DD')
     }
   },
   template: tpl

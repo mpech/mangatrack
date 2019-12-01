@@ -27,6 +27,12 @@ h1{
     padding-bottom: 0.5rem;
     margin: 1.5rem 0 1rem;
 }
+time{
+    color:grey;
+    font-style:italic;
+    font-size:1em;
+    text-align:right;
+}
 .truckkun{
     color:white;
 }
@@ -66,12 +72,6 @@ h1{
     width:100%;
     height:10em;
 }
-.card time{
-    color:grey;
-    font-style:italic;
-    font-size:1em;
-    text-align:right;
-}
 .card .chapter{
     display: flex;
     justify-content: space-between;
@@ -82,7 +82,7 @@ h1{
 .mangaView .read{
     background:#CCCCCC;
 }
-.mangaView td:nth-child(2):hover{
+.mangaView td:last-child:hover{
     cursor:pointer;
     background:#CCCCCC;
 }
