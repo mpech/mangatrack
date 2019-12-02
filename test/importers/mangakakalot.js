@@ -56,17 +56,6 @@ describe('importers/mangakakalot', function () {
     assert.strictEqual(o.num, 18)
   }))
 
-  it('parseDate min ago', Mocker.mockIt(mokr => {
-    const importer = new Importer()
-    const ref = new Date(2019, 10, 13, 10)
-    let d = new Date(importer.parseDate('42 mins ago', ref.getTime()))
-    assert(d.toString().includes('Nov 13 2019 09:18:00'))
-    d = new Date(importer.parseDate('2 hour ago', ref.getTime()))
-    assert(d.toString().includes('Nov 13 2019 08:00:00'))
-    d = new Date(importer.parseDate('11-05 16:04', ref.getTime()))
-    assert(d.toString().includes('Nov 05 2019 16:04:00'))
-  }))
-
   it('fetchMangaDetail', Mocker.mockIt(async mokr => {
     const importer = new Importer()
     let called = false
@@ -112,12 +101,5 @@ describe('importers/mangakakalot', function () {
     })
     await importer.fetchMangaDetail({ url: 'https://mangakakalot.com/chapter/to_you_the_immortal/chapter_110' })
     assert(called)
-  }))
-
-  it('parseDateDetail', Mocker.mockIt(mokr => {
-    const importer = new Importer()
-    const ts = importer.parseDateDetail('1 day ago', 1576436400000)
-    const date = new Date(ts)
-    assert.strictEqual(date.getDate(), 14)
   }))
 })

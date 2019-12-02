@@ -10,7 +10,6 @@ class ImporterActivity {
 
 ImporterActivity.prototype.refresh = async function () {
   // TODO: retry??
-  // do not fail all if one fails
   const dic = await this.imp.allUpdates()
   const detailStack = []
   const arr = Object.values(dic)

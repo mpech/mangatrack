@@ -1,5 +1,4 @@
 const Base = require('./base')
-var moment = require('moment')
 var config = require('../config')
 
 class Importer extends Base {
@@ -7,22 +6,6 @@ class Importer extends Base {
     super()
     this.allUrl = 'https://mangakakalot.com'
   }
-}
-
-Importer.prototype.parseDate = function (s, now) {
-  now = now || Date.now()
-  if (s.includes('ago')) {
-    s = s.replace('ago', '')
-    const num = parseInt(s.match(/\d+/))
-    if (s.includes('day')) {
-      return moment(now - num * 3600 * 24 * 1000).valueOf()
-    } else if (s.includes('hour')) {
-      return moment(now - num * 3600 * 1000).valueOf()
-    } else {
-      return moment(now - num * 60 * 1000).valueOf()
-    }
-  }
-  return (moment(s, 'MM-DD HH:mm')).valueOf()
 }
 
 /**
@@ -60,12 +43,6 @@ Importer.prototype.allUpdates = async function () {
   }, {})
 }
 
-Importer.prototype.parseDateDetail = function (s, now) {
-  if (!s.includes('ago')) {
-    return new Date(s).getTime()
-  }
-  return this.parseDate(s, now)
-}
 /**
  * url maps to a chapter view. e.g
  * https://mangakakalot.com/chapter/to_you_the_immortal/chapter_110
