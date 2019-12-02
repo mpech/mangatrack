@@ -128,7 +128,7 @@ const store = new Vuex.Store({
       context.commit('trackManga', { id: data.mangaId, num: data.num })
     },
     async untrackManga (context, { id }) {
-      await this.axios.delete(apiRoutes.myMangas.replace('{{mangaId}}', id), _=>{})
+      await this.axios.delete(apiRoutes.myMangas.replace('{{mangaId}}', id), _ => {})
       context.commit('untrackManga', { id })
     },
     async sync (context) {

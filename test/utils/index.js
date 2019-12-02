@@ -55,12 +55,12 @@ exports.clearColls = function (arr) {
     })
   }
 }
-exports.runImport = function (fn) {
+exports.runImport = async function (fn) {
   config.selectedDb = config.dbUrl
-  return dbSingle.open().then(function () {
-    return fn()
-  }).finally(_ => {
-    return dbSingle.close()
-  })
+  await dbSingle.open()
+  try {
+    await fn()
+  } catch (e) { console.log('runImport', e) }
+  return dbSingle.close()
 }
 exports.setTimeout = require('util').promisify(setTimeout)

@@ -24,7 +24,10 @@ schema.pre('validate', function () {
 })
 
 schema.statics.canonicalize = function (s) {
-  return s.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9-_]/g, '')
+  return s
+    .replace(/\s+/g, '_')
+    .replace(/[^a-zA-Z0-9-_]/g, '')
+    .substring(0, config.nameId_maxLength)
 }
 
 schema.statics.findChapter = function (chap) {
