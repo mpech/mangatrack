@@ -1,11 +1,11 @@
 const Base = require('./base')
-var moment = require('moment')
-var config = require('../config')
+const config = require('../config')
 
 class Importer extends Base {
   constructor () {
     super()
     this.allUrl = 'http://fanfox.net/releases/'
+    this.from = 'fanfox'
   }
 }
 
@@ -76,7 +76,7 @@ Importer.prototype.fetchMangaDetail = async function (chap) {
     const $x = $(x)
     const a = $x.find('a')
     let name = $x.find('.title3').text()
-    name = name.substring(name.indexOf('-')+1).trim()
+    name = name.substring(name.indexOf('-') + 1).trim()
     const url = a.attr('href')
     const num = parseFloat(url.match(/c[0-9.]+/)[0].substring(1))
     let at = $x.find('.detail-main-list-main .title2').text()

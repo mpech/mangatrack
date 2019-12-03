@@ -3,6 +3,7 @@ const mongoose = require('mongoose')
 const Joi = require('joi')
 const UserModel = require('../../models/userModel')
 const MangaModel = require('../../models/mangaModel')
+const ChapterModel = require('../../models/chapterModel')
 const prom = require('../../lib/prom')
 const rules = require('../../lib/rules')
 const errorHandler = require('../../lib/errorHandler')
@@ -28,9 +29,11 @@ function load (app) {
   }), helper.userOnReq, prom(async function (req, res) {
     const mangaId = req.params.mangaId
     const num = req.body.num
-    await MangaModel.findOneForSure({ _id: mangaId, chapters: { $elemMatch: { num } } })
+    const m = await MangaModel.findChapter({ _id: mangaId, num }, '*')
+    if (!m) {
+      return errorHandler.notFound('Manga')
+    }
     const manga = await req.user.saveManga({ mangaId, num })
-
     return module.exports.formatter.format(manga)
   }))
 
@@ -52,36 +55,61 @@ function load (app) {
     }
   }), helper.userOnReq, prom(async function (req, res) {
     const items = req.body.items
-    const matchedItems = await MangaModel.find({ _id: { $in: [...items.map(x => mongoose.Types.ObjectId(x.mangaId))] } })
-      .select('_id chapters.num')
-      .lean()
 
-    const idToManga = matchedItems.reduce((m, { _id, chapters }) => {
-      m.set(_id.toString(), chapters)
-      return m
-    }, new Map())
+    { // check manga existence
+      const matchedIds = await ChapterModel.find({
+        mangaId: {
+          $in: items.map(x => mongoose.Types.ObjectId(x.mangaId))
+        }
+      }).select('mangaId').lean()
+      const foundMangaIds = new Set(matchedIds.map(x => x.mangaId.toString()))
+      if (foundMangaIds.size !== items.length) {
+        const notFound = items.reduce((acc, { mangaId }) => {
+          if (!foundMangaIds.has(mangaId)) {
+            acc.push(mangaId)
+          }
+          return acc
+        }, [])
+        return errorHandler.unknownMangas(notFound)
+      }
+    }
 
-    if (idToManga.size !== items.length) {
-      const notFound = items.reduce((acc, { mangaId }) => {
-        if (!idToManga.has(mangaId)) {
-          acc.push(mangaId)
+    { // check chapter existence
+      const ids = items.map(({ mangaId, num }) => {
+        return {
+          mangaId: mongoose.Types.ObjectId(mangaId),
+          chapters: {
+            $elemMatch: {
+              num
+            }
+          }
+        }
+      })
+      const matchedChapters = await ChapterModel.aggregate([
+        {
+          $match: {
+            $or: ids
+          }
+        },
+        {
+          $group: {
+            _id: '$mangaId'
+          }
+        }
+      ])
+      const foundMangaIds = new Set(matchedChapters.map(x => x._id.toString()))
+      const invalids = items.reduce((acc, { mangaId, num }) => {
+        if (!foundMangaIds.has(mangaId)) {
+          acc.push({ mangaId, num })
         }
         return acc
       }, [])
-      return errorHandler.unknownMangas(notFound)
-    }
 
-    const invalids = items.reduce((acc, { mangaId, num }) => {
-      const s = new Set(idToManga.get(mangaId).map(c => c.num))
-      if (!s.has(num)) {
-        acc.push({ mangaId, num })
+      if (invalids.length) {
+        return errorHandler.unknownChapters(JSON.stringify(invalids))
       }
-      return acc
-    }, [])
-
-    if (invalids.length) {
-      return errorHandler.unknownChapters(JSON.stringify(invalids))
     }
+
     return req.user.saveMangas(items).then(mangas => ({}))
   }))
 

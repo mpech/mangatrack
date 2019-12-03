@@ -43,7 +43,7 @@ describe('e2e/mangas', function () {
   }))
 
   it('lists mangas with one existing and a chapter', Mocker.mockIt(async function (mokr) {
-    await MangaModel.create({ name: 'a', chapters: [{ url: 'a', num: 0, at: 1 }] })
+    await MangaModel.create({ name: 'a', lastChap_num: 0, lastChap_at: 1, lastChap_url: 'a' })
 
     const { body: { items } } = await utils.requester
       .get('/mangas')
@@ -61,9 +61,9 @@ describe('e2e/mangas', function () {
 
   it('paginates mangas, limit 1', Mocker.mockIt(async function (mokr) {
     await Promise.all([
-      MangaModel.create({ name: 'a', updatedAt: 0 }),
-      MangaModel.create({ name: 'b', updatedAt: 5 }),
-      MangaModel.create({ name: 'c', updatedAt: 1 })
+      MangaModel.create({ name: 'a', lastChap_at: 0 }),
+      MangaModel.create({ name: 'b', lastChap_at: 5 }),
+      MangaModel.create({ name: 'c', lastChap_at: 1 })
     ])
     mokr.mock(config, 'pagination_limit', 1)
 
@@ -78,9 +78,9 @@ describe('e2e/mangas', function () {
 
   it('paginates mangas, skip 1, limit 2', Mocker.mockIt(async function (mokr) {
     await Promise.all([
-      MangaModel.create({ name: 'a', updatedAt: 0 }),
-      MangaModel.create({ name: 'b', updatedAt: 5 }),
-      MangaModel.create({ name: 'c', updatedAt: 1 })
+      MangaModel.create({ name: 'a', lastChap_at: 0 }),
+      MangaModel.create({ name: 'b', lastChap_at: 5 }),
+      MangaModel.create({ name: 'c', lastChap_at: 1 })
     ])
     mokr.mock(config, 'pagination_limit', 2)
 
@@ -95,9 +95,9 @@ describe('e2e/mangas', function () {
 
   it('paginates mangas, filters by q', Mocker.mockIt(async function (mokr) {
     await Promise.all([
-      MangaModel.create({ name: 'aaaaaa', updatedAt: 0 }),
-      MangaModel.create({ name: 'abaaaa', updatedAt: 5 }),
-      MangaModel.create({ name: 'abcabc', updatedAt: 5 })
+      MangaModel.create({ name: 'aaaaaa', lastChap_at: 0 }),
+      MangaModel.create({ name: 'abaaaa', lastChap_at: 5 }),
+      MangaModel.create({ name: 'abcabc', lastChap_at: 5 })
     ])
 
     const { body: { items } } = await utils.requester
@@ -111,9 +111,9 @@ describe('e2e/mangas', function () {
 
   it('filters mangas by id', Mocker.mockIt(async function (mokr) {
     await Promise.all([
-      MangaModel.create({ _id: '0'.repeat(24), name: 'aaaaaa', updatedAt: 0 }),
-      MangaModel.create({ _id: '1'.repeat(24), name: 'abaaaa', updatedAt: 5 }),
-      MangaModel.create({ _id: '2'.repeat(24), name: 'abcabc', updatedAt: 5 })
+      MangaModel.create({ _id: '0'.repeat(24), name: 'aaaaaa', lastChap_at: 0 }),
+      MangaModel.create({ _id: '1'.repeat(24), name: 'abaaaa', lastChap_at: 5 }),
+      MangaModel.create({ _id: '2'.repeat(24), name: 'abcabc', lastChap_at: 5 })
     ])
 
     const { body: { items } } = await utils.requester
@@ -127,9 +127,9 @@ describe('e2e/mangas', function () {
 
   it('filters mangas by id', Mocker.mockIt(async function (mokr) {
     await Promise.all([
-      MangaModel.create({ _id: '0'.repeat(24), name: 'aaaaaa', updatedAt: 0 }),
-      MangaModel.create({ _id: '1'.repeat(24), name: 'abaaaa', updatedAt: 5 }),
-      MangaModel.create({ _id: '2'.repeat(24), name: 'abcabc', updatedAt: 5 })
+      MangaModel.create({ _id: '0'.repeat(24), name: 'aaaaaa', lastChap_at: 0 }),
+      MangaModel.create({ _id: '1'.repeat(24), name: 'abaaaa', lastChap_at: 5 }),
+      MangaModel.create({ _id: '2'.repeat(24), name: 'abcabc', lastChap_at: 5 })
     ])
 
     const { body: { items } } = await utils.requester
@@ -143,7 +143,7 @@ describe('e2e/mangas', function () {
   it('list one manga', Mocker.mockIt(async function (mokr) {
     await Promise.all([
       MangaModel.create({ name: 'abc' }),
-      MangaModel.create({ name: 'def', chapters: [{ num: 0, url: 'a', at: 3 }, { num: 1, url: 'b', at: 4 }] })
+      MangaModel.upsertManga({ name: 'def', chapters: [{ num: 0, url: 'a', at: 3 }, { num: 1, url: 'b', at: 4 }] }, 'mangakakalot')
     ])
 
     const { body } = await utils.requester
@@ -151,13 +151,16 @@ describe('e2e/mangas', function () {
       .expect(200)
 
     const items = body.chapters
+    assert.strictEqual(items.length, 1)
     assert.strictEqual(body.name, 'def')
-    assert.strictEqual(items.length, 2)
-    assert.strictEqual(items[0].url, 'a')
-    assert.strictEqual(items[0].num, 0)
-    assert.strictEqual(items[0].at, 3)
-    assert.strictEqual(items[1].url, 'b')
-    assert.strictEqual(items[1].num, 1)
-    assert.strictEqual(items[1].at, 4)
+    const { from, chapters } = items[0]
+    assert.strictEqual(from, 'mangakakalot')
+    assert.strictEqual(chapters.length, 2)
+    assert.strictEqual(chapters[0].url, 'b')
+    assert.strictEqual(chapters[0].num, 1)
+    assert.strictEqual(chapters[0].at, 4)
+    assert.strictEqual(chapters[1].url, 'a')
+    assert.strictEqual(chapters[1].num, 0)
+    assert.strictEqual(chapters[1].at, 3)
   }))
 })

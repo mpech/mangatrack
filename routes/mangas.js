@@ -2,6 +2,7 @@ const validate = require('express-validation')
 const mongoose = require('mongoose')
 const Joi = require('joi')
 const MangaModel = require('../models/mangaModel')
+const ChapterModel = require('../models/chapterModel')
 const config = require('../config')
 const Formatter = require('../formatters/mangaFormatter')
 const prom = require('../lib/prom')
@@ -44,7 +45,7 @@ function load (app) {
 
     const [count, coll] = await Promise.all([
       MangaModel.countDocuments(crit),
-      MangaModel.find(crit).sort({ updatedAt: -1 }).skip(offset).limit(limit).lean().exec()
+      MangaModel.find(crit).sort({ lastChap_at: -1 }).skip(offset).limit(limit).lean().exec()
     ])
     return module.exports.formatter.formatCollection(coll, { count, offset, limit })
   }))
@@ -55,6 +56,8 @@ function load (app) {
     }
   }), prom(async function (req, res) {
     const m = await MangaModel.findOneForSure({ nameId: req.params.nameId })
+    const chapters = await ChapterModel.find({ mangaId: m._id })
+    m.chapters = chapters
     return module.exports.formatter.formatFull(m)
   }))
 }

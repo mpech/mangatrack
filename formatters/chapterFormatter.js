@@ -3,9 +3,10 @@ class Formatter extends Base {}
 
 Formatter.prototype.format = function (x) {
   return Promise.resolve({
-    num: x.num,
-    url: x.url,
-    at: x.at
+    from: x.from,
+    chapters: x.chapters.map(({ num, url, at }) => {
+      return { num, url, at }
+    })
   })
 }
 

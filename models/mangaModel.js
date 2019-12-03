@@ -1,19 +1,19 @@
-var mongoose = require('mongoose')
-var Schema = mongoose.Schema
-var config = require('../config')
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
+const config = require('../config')
 const mongooseUtil = require('../lib/mongooseUtil')
+const ChapterModel = require('./chapterModel')
+const errorHandler = require('../lib/errorHandler')
 
-var schema = new Schema({
+const schema = new Schema({
   nameId: { type: String, required: true, unique: true, index: true },
   name: { type: String, required: true, unique: true, index: true },
-  chapters: [{
-    url: { type: String, required: true },
-    num: { type: Number, required: true },
-    at: { type: Number, required: true, default: Date.now }
-  }],
   thumbUrl: String,
-  updatedAt: { type: Number, default: Date.now, required: true },
-  type: { type: String, enum: ['manga', 'manhwa', 'manhua'] }
+  type: { type: String, enum: ['manga', 'manhwa', 'manhua'] },
+  lastChap_at: { type: Number, default: Date.now, required: true },
+  // simplify the update query, assuming no chap will be negative
+  lastChap_num: { type: Number, default: -1 },
+  lastChap_url: { type: String }
 })
 
 schema.pre('validate', function () {
@@ -30,41 +30,67 @@ schema.statics.canonicalize = function (s) {
     .substring(0, config.nameId_maxLength)
 }
 
-schema.statics.findChapter = function (chap) {
-  return this.findOne({
-    nameId: chap.nameId,
+schema.statics.findChapter = async function ({ nameId, _id, num }, from) {
+  const m = await this.findOne(_id ? { _id } : { nameId }).select('_id').lean()
+  if (!m) {
+    return null
+  }
+  const pred = {
+    mangaId: m._id,
     chapters: {
       $elemMatch: {
-        num: chap.num
+        num
       }
     }
-  })
+  }
+  if (from !== '*') {
+    pred.from = from
+  }
+  return mongoose.model('Chapter').findOne(pred)
 }
 
-schema.statics.upsertManga = async function (manga) {
-  const el = await this.findOne({ nameId: manga.nameId })
+/**
+ * @param  {nameId, name, thumbUrl, chapters} manga
+ * @from MUST be a valid enum from ChapterModel
+ * Assumes chapter is sorted by num desc
+ * @return {[type]}       [description]
+ */
+schema.statics.upsertManga = async function (manga, from) {
+  // run the validator over 'from' field
+  {
+    const b = new ChapterModel({ from, mangaId: '0'.repeat(24) })
+    const err = b.validateSync()
+    if (err) {
+      throw err
+    }
+  }
+
+  if (!manga.chapters.length) {
+    throw errorHandler.noEmptyMangas(manga.nameId)
+  }
+
+  const lastChap = {
+    lastChap_num: manga.chapters[0].num,
+    lastChap_url: manga.chapters[0].url,
+    lastChap_at: manga.chapters[0].at
+  }
+
+  manga.nameId = manga.nameId || this.canonicalize(manga.name)
+  let el = await this.findOne({ nameId: manga.nameId })
   if (!el) {
     config.logger.dbg('creating ', manga.nameId)
-    manga.chapters.sort((a, b) => b.num - a.num)
-    const updatedAt = manga.chapters.length && manga.chapters[0].at
-    return this.create({ ...manga, updatedAt })
+    el = await this.create({ ...manga, ...lastChap })
+  } else {
+    await this.updateOne(
+      { nameId: manga.nameId, lastChap_num: { $lt: lastChap.lastChap_num } },
+      { $set: lastChap }
+    )
   }
-  const dic = el.chapters.reduce((acc, chap) => {
-    acc[chap.num] = chap
-    return acc
-  }, {})
-  const diff = []
-  manga.chapters.forEach(chap => {
-    if (!dic[chap.num]) {
-      diff.push(chap.num)
-    }
-    dic[chap.num] = dic[chap.num] || chap
+  return ChapterModel.upsertChapter({
+    mangaId: el._id,
+    from,
+    chapters: manga.chapters
   })
-  config.logger.dbg('upserting', el.nameId, diff.map(x => x.num).join(','))
-  el.chapters = Object.values(dic).sort((a, b) => b.num - a.num)
-  el.markModified('chapters')
-  el.updatedAt = el.chapters.length && el.chapters[0].at
-  return el.save()
 }
 
 mongooseUtil.setStatic('findOneForSure', schema)

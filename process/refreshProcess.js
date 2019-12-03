@@ -2,16 +2,17 @@ const Activity = require('../activity/importerActivity')
 const bulker = require('../lib/bulker')
 const utils = require('../test/utils')
 
-function run (name, ts) {
+async function run (name, ts) {
   const importers = [
-    require('../importers/mangakakalot')
+    require('../importers/mangakakalot'),
+    require('../importers/fanfox')
   ]
 
   const activities = importers.map(x => {
     return new Activity(Reflect.construct(x, []))
   })
 
-  const res = bulker.bulk(activities, 10, activity => {
+  const res = await bulker.bulk(activities, 1, activity => {
     return activity.refresh()
   })
   return res

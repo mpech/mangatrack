@@ -1,12 +1,13 @@
-var assert = require('assert')
-var utils = require('../utils/')
-var MangaModel = require('../../models/mangaModel')
-var Mocker = require('../../lib/mocker')
-var ctx = require('../../lib/ctx')
+const assert = require('assert')
+const utils = require('../utils/')
+const MangaModel = require('../../models/mangaModel')
+const ChapterModel = require('../../models/chapterModel')
+const Mocker = require('../../lib/mocker')
+const ctx = require('../../lib/ctx')
 
 utils.bindDb()
 describe('models/mangaModel', function () {
-  beforeEach(utils.clearColls([MangaModel]))
+  beforeEach(utils.clearColls([MangaModel, ChapterModel]))
 
   it('keeps domain while using mongoose', Mocker.mockIt(function (mokr) {
     ctx.enable()
@@ -61,22 +62,36 @@ describe('models/mangaModel', function () {
     assert.strictEqual(MangaModel.canonicalize('a b c'), 'a_b_c')
   }))
 
-  it('upsert', Mocker.mockIt(async function (mokr) {
-    await MangaModel.upsertManga({ name: 'test', chapters: [{ num: 1, url: 'a', at: 5 }, { num: 2, url: 'a', at: 10 }] })
+  it('upsert: create all', Mocker.mockIt(async function (mokr) {
+    await MangaModel.upsertManga({
+      name: 'test',
+      chapters: [{ num: 2, url: 'b', at: 10 }, { num: 1, url: 'a', at: 5 }]
+    }, 'mangakakalot')
     const x = await MangaModel.findOne({ name: 'test' })
-    assert.strictEqual(x.chapters.length, 2)
-    assert.strictEqual(x.chapters[0].num, 2)
-    assert.strictEqual(x.chapters[0].at, 10)
-    assert.strictEqual(x.updatedAt, 10)
+    assert.strictEqual(x.lastChap_num, 2)
+    assert.strictEqual(x.lastChap_at, 10)
+    const { mangaId, from, chapters } = await ChapterModel.findOne({ mangaId: x._id })
+    assert(mangaId.equals(x._id))
+    assert.strictEqual(from, 'mangakakalot')
+    assert.strictEqual(chapters.length, 2)
+    assert.strictEqual(chapters[0].num, 2)
+    assert.strictEqual(chapters[0].at, 10)
+    assert.strictEqual(chapters[0].url, 'b')
+    assert.strictEqual(chapters[1].num, 1)
+    assert.strictEqual(chapters[1].at, 5)
+    assert.strictEqual(chapters[1].url, 'a')
   }))
 
-  it('upsert existing updatedAt', Mocker.mockIt(async function (mokr) {
-    await MangaModel.create({ name: 'test', chapters: [{ num: 1, url: 'a' }] })
-    await MangaModel.upsertManga({ nameId: 'test', name: 'test', chapters: [{ num: 1, url: 'a', at: 5 }, { num: 2, url: 'a', at: 10 }] })
-    const x = await MangaModel.findOne()
-    assert.strictEqual(x.chapters.length, 2)
-    assert.strictEqual(x.chapters[0].num, 2)
-    assert.strictEqual(x.chapters[0].at, 10)
-    assert.strictEqual(x.updatedAt, 10)
+  it('upsert: reject if unknown from', Mocker.mockIt(async function (mokr) {
+    let called = false
+    try {
+      await MangaModel.upsertManga({ nameId: 'test', name: 'test', chapters: [{ num: 1, url: 'a', at: 5 }] })
+    } catch (e) {
+      assert(e.errors.from.message.includes('Path `from` is required'))
+      called = true
+    }
+    const got = await MangaModel.findOne()
+    assert(!got, 'post cond: no manga touched on invalid from')
+    assert(called)
   }))
 })

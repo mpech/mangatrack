@@ -5,6 +5,7 @@ class Importer extends Base {
   constructor () {
     super()
     this.allUrl = 'https://mangakakalot.com'
+    this.from = 'mangakakalot'
   }
 }
 
@@ -74,4 +75,5 @@ Importer.prototype.fetchMangaDetail = async function (chap) {
     return { name, url, num, at }
   }).toArray()
 }
+
 module.exports = Importer

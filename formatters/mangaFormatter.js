@@ -8,30 +8,31 @@ class Formatter extends Base {
 }
 
 Formatter.prototype.format = async function (x) {
-  let p = Promise.resolve()
-  if (x.chapters[0]) {
-    p = this.chapterFormatter.format(x.chapters[0])
-  }
-
-  const chap = await p
   return {
     id: x._id,
     name: x.name,
     nameId: x.nameId,
     thumbUrl: x.thumbUrl,
-    lastChap: chap || null
+    lastChap: {
+      num: x.lastChap_num,
+      url: x.lastChap_url,
+      at: x.lastChap_at
+    }
   }
 }
 
 Formatter.prototype.formatFull = async function (x) {
   const chapters = await Promise.all(x.chapters.map(c => this.chapterFormatter.format(c)))
-
   return {
     id: x._id,
     name: x.name,
     nameId: x.nameId,
     thumbUrl: x.thumbUrl,
-    lastChap: chapters[0] || null,
+    lastChap: {
+      num: x.lastChap_num,
+      url: x.lastChap_url,
+      at: x.lastChap_at
+    },
     chapters: chapters
   }
 }

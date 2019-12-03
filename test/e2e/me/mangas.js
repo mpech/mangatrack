@@ -2,12 +2,13 @@ const assert = require('assert')
 const utils = require('../../utils')
 const Mocker = require('../../../lib/mocker')
 const MangaModel = require('../../../models/mangaModel')
+const ChapterModel = require('../../../models/chapterModel')
 const UserModel = require('../../../models/userModel')
 const AtModel = require('../../../models/oauth/atModel')
 
 utils.bindApp()
 describe('e2e/me/mangas', function () {
-  beforeEach(utils.clearColls([MangaModel, AtModel, UserModel]))
+  beforeEach(utils.clearColls([MangaModel, ChapterModel, AtModel, UserModel]))
 
   it('authenticate and set a manga', Mocker.mockIt(async function (mokr) {
     const userId = '0'.repeat(24)
@@ -15,7 +16,12 @@ describe('e2e/me/mangas', function () {
     const dbz = '1'.repeat(24)
     await Promise.all([
       UserModel.create({ _id: userId, googleId: 'g', displayName: 'moran' }),
-      MangaModel.create({ _id: dbz, name: 'dbz', chapters: [{ num: 5, url: 'xx' }] }),
+      MangaModel.upsertManga({
+        _id: dbz,
+        name: 'dbz',
+        lastChap_num: 5,
+        chapters: [{ num: 5, url: 'xx' }]
+      }, 'mangakakalot'),
       AtModel.create({ token, userId })
     ])
 
@@ -93,22 +99,22 @@ describe('e2e/me/mangas', function () {
       UserModel.create({ _id: userId, googleId: 'g', displayName: 'moran', mangas }),
       AtModel.create({ token, userId }),
       MangaModel.create({ _id: ignored, name: 'ignored', chapters: [{ num: mangas[ignored], url: 'xx' }] }),
-      MangaModel.create({
+      MangaModel.upsertManga({
         _id: overridenEvenIfInferior,
         name: 'overridenEvenIfInferior',
         chapters: [
           { num: 5, url: 'x' },
           { num: 7, url: 'x' }
         ]
-      }),
-      MangaModel.create({
+      }, 'fanfox'),
+      MangaModel.upsertManga({
         _id: overriden,
         name: 'overriden',
         chapters: [
           { num: 5, url: 'x' },
           { num: 7, url: 'x' }
         ]
-      })
+      }, 'fanfox')
     ])
     await utils.requester
       .patch('/me/mangas')
@@ -142,8 +148,8 @@ describe('e2e/me/mangas', function () {
     const [, at] = await Promise.all([
       UserModel.create({ _id: userId, googleId: 'g', displayName: 'moran', mangas }),
       AtModel.create({ token, userId }),
-      MangaModel.create({ _id: dbz, name: 'dbz', num: mangas.dbz }),
-      MangaModel.create({ _id: ccc, name: 'ccc', num: mangas.ccc })
+      MangaModel.upsertManga({ _id: dbz, name: 'dbz', chapters: [{ num: mangas[dbz], url: 'a' }] }, 'fanfox'),
+      MangaModel.upsertManga({ _id: ccc, name: 'ccc', chapters: [{ num: mangas[ccc], url: 'a' }] }, 'fanfox')
     ])
 
     const { body } = await utils.requester
@@ -172,8 +178,8 @@ describe('e2e/me/mangas', function () {
     const [, at] = await Promise.all([
       UserModel.create({ _id: userId, googleId: 'g', displayName: 'moran', mangas }),
       AtModel.create({ token, userId }),
-      MangaModel.create({ _id: dbz, name: 'dbz', chapters: [{ num: 1, url: 'a' }] }),
-      MangaModel.create({ _id: ccc, name: 'ccc', chapters: [{ num: 2, url: 'a' }] })
+      MangaModel.upsertManga({ _id: dbz, name: 'dbz', chapters: [{ num: 1, url: 'a' }] }, 'fanfox'),
+      MangaModel.upsertManga({ _id: ccc, name: 'ccc', chapters: [{ num: 2, url: 'a' }] }, 'fanfox')
     ])
 
     const { body } = await utils.requester
