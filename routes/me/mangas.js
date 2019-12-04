@@ -48,7 +48,7 @@ function load (app) {
 
   app.patch('/me/mangas', app.oauth.authenticate(), validate({
     body: {
-      items: Joi.array().items(Joi.object({
+      items: Joi.array().min(1).items(Joi.object({
         mangaId: rules.objId,
         num: rules.chapterNum
       })).required()

@@ -136,7 +136,9 @@ const store = new Vuex.Store({
         acc.push({ mangaId: id, num: context.state.myMangas[id] })
         return acc
       }, [])
-      await this.axios.patch(apiRoutes.myMangaSuite, { items })
+      if (items.length) {
+        await this.axios.patch(apiRoutes.myMangaSuite, { items })
+      }
       this.dispatch('fetchMyMangas')
     }
   },

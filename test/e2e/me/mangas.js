@@ -195,6 +195,21 @@ describe('e2e/me/mangas', function () {
     assert.strictEqual(body.reason, `unknown chapters([{"mangaId":"${dbz}","num":3},{"mangaId":"${ccc}","num":4}])`)
   }))
 
+  it('rejects if no array', Mocker.mockIt(async function (mokr) {
+    const userId = '0'.repeat(24)
+    const [, at] = await Promise.all([
+      UserModel.create({ _id: userId, googleId: 'g', displayName: 'moran' }),
+      AtModel.create({ token: 'abc', userId })
+    ])
+    await utils.requester
+      .patch('/me/mangas')
+      .set({ Authorization: `Bearer ${at.token}` })
+      .send({
+        items: []
+      })
+      .expect(400)
+  }))
+
   it('fetches my collection', Mocker.mockIt(async function (mokr) {
     const userId = '0'.repeat(24)
     const token = 'abc'
