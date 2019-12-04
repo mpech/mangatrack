@@ -32,7 +32,7 @@ ImporterActivity.prototype.buildMissingChapters = async function (dic) {
 }
 
 ImporterActivity.prototype.upsertChapters = async function (chapters) {
-  config.logger.inf('detailstack-ok', chapters.length)
+  config.logger.inf(`will upsert ${chapters.length} chapters`)
   return bulker.debounce(chapters, config.manga_detailDebounce, chap => {
     return this.imp.fetchMangaDetail(chap).then(chapters => {
       return MangaModel.upsertManga({ chapters, ...chap }, this.imp.from).catch(e => {

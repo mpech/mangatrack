@@ -29,6 +29,7 @@ app.use(errorHandler.express())
 
 if (!module.parent) {
   appStarter.open(app, config)
+  config.logger.inf('started', new Date())
   var onDeath = function (signal, e) {
     console.log('crashed (' + signal + '):', new Date())
     if (e) {

@@ -1,6 +1,7 @@
 const Activity = require('../activity/importerActivity')
 const bulker = require('../lib/bulker')
 const utils = require('../test/utils')
+const ctx = require('../lib/ctx')
 
 async function run (name, ts) {
   const importers = [
@@ -15,8 +16,15 @@ async function run (name, ts) {
     }
     return new Activity(importer)
   })
+
+  const mdw = ctx.express()
   const res = await bulker.bulk(activities, 1, activity => {
-    return activity.refresh()
+    return new Promise((resolve, reject) => {
+      mdw(null, null, function () {
+        ctx.set('sid', activity.imp.from)
+        return activity.refresh().then(resolve).catch(reject)
+      })
+    })
   })
   return res
 }
