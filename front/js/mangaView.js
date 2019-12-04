@@ -5,14 +5,18 @@ const tpl = `
   <table class="pure-table" :lastRead="lastRead">
       <thead>
           <th>Chapter</th>
+          <th>from</th>
           <th>when</th>
           <th title="mark as read"><span class="truckkun">⛟</span></th>
       </thead>
-      <tbody @mouseleave="rollback" @mouseover="paintSelection" @click="select">
-          <tr v-for="chapter in chapters" v-bind:key="chapter.num" :class="{read:chapter.num <= lastTracked}">
-              <td><a :href="chapter.url">c{{chapter.num}}</a></td>
-              <td><time :updatedAt="chapter.at">{{humanDate(chapter.at)}}</time></td>
-              <td :data-num="chapter.num"></td>
+      <tbody @mouseover="paintSelection" @click="select">
+          <tr v-for="metaChapter in chapters" v-bind:key="metaChapter.num" :class="{read:metaChapter.num <= lastTracked}">
+              <td>c{{metaChapter.num}}</td>
+              <td>
+                <a v-for="from in metaChapter.froms" v-bind:key="metaChapter.num" :href="from.url" class="from" :class="from.klass"></a>
+              </td>
+              <td><time :updatedAt="metaChapter.at">{{humanDate(metaChapter.at)}}</time></td>
+              <td @mouseleave="rollback" :data-num="metaChapter.num"></td>
           </tr>
       </tbody>
   </table>
@@ -37,13 +41,13 @@ const MangaChapters = {
         return
       }
       const td = e.target
-      if (td.parentNode.children[2] !== td) {
+      const children = td.parentNode.children
+      if (children[children.length - 1] !== td) {
         return
       }
       return fn(td)
     },
     rollback (e) {
-      if (e.target.nodeName === 'TD') { return }
       this.lastTracked = this.oldTracked
     },
     paintSelection (e) {
@@ -102,7 +106,17 @@ const MangaView = Vue.component('mt-mangaView', {
     const url = routes.mangaDetail.replace('{{nameId}}', this.$route.params.nameId)
     dfds.push(axios.get(url).then(({ data }) => {
       this.mangaId = data.id
-      this.chapters = data.chapters
+      const numToMetaChapter = {}
+      data.chapters.sort((a, b) => a.from.localeCompare(b.from)).forEach(({ from, chapters }) => {
+        chapters.forEach(chap => {
+          numToMetaChapter[chap.num] = numToMetaChapter[chap.num] || { num: chap.num, froms: [], at: 1e15 }
+          const metaChapter = numToMetaChapter[chap.num]
+          metaChapter.at = Math.min(metaChapter.at, chap.at)
+          metaChapter.froms.push(chap)
+          chap.klass = `from-${from}`
+        })
+      })
+      this.chapters = Object.values(numToMetaChapter).sort((a, b) => b.num - a.num)
     }))
     return Promise.all(dfds).then(_ => {
       this.ready = true

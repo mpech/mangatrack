@@ -1,10 +1,11 @@
 const Base = require('./base')
 const config = require('../config')
+const errorHandler = require('../lib/errorHandler')
 
 class Importer extends Base {
   constructor () {
     super()
-    this.allUrl = 'http://fanfox.net/releases/'
+    this.allUrl = 'https://fanfox.net/releases/'
     this.from = 'fanfox'
   }
 }
@@ -28,7 +29,7 @@ Importer.prototype.allUpdates = async function () {
     const title = $x.find('.manga-list-4-item-title a').attr('title')
     const last = $x.find('.manga-list-4-item-subtitle span').text()
     const a = $x.find('.manga-list-4-item-part a')
-    const url = a.attr('href')
+    const url = this.ensureAbsoluteUrl(a.attr('href'))
     const num = parseFloat(url.match(/c[0-9.]+/)[0].substring(1))
 
     let thumbUrl = $x.find('img').attr('src')
@@ -72,16 +73,20 @@ Importer.prototype.fetchMangaDetail = async function (chap) {
   config.logger.dbg('fetching', url)
 
   const $ = await this.domFetch(url)
-  return $('.detail-main-list > li').map((i, x) => {
+  const arr = $('.detail-main-list > li').map((i, x) => {
     const $x = $(x)
     const a = $x.find('a')
     let name = $x.find('.title3').text()
     name = name.substring(name.indexOf('-') + 1).trim()
-    const url = a.attr('href')
+    const url = this.ensureAbsoluteUrl(a.attr('href').trim())
     const num = parseFloat(url.match(/c[0-9.]+/)[0].substring(1))
     let at = $x.find('.detail-main-list-main .title2').text()
     at = this.parseDateDetail(at)
     return { name, url, num, at }
   }).toArray()
+  if (arr.length === 0 && $('.detail-block-content').length) {
+    return errorHandler.importerRequiresInteraction(url)
+  }
+  return arr
 }
 module.exports = Importer

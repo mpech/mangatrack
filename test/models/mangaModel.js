@@ -4,6 +4,7 @@ const MangaModel = require('../../models/mangaModel')
 const ChapterModel = require('../../models/chapterModel')
 const Mocker = require('../../lib/mocker')
 const ctx = require('../../lib/ctx')
+const errorHandler = require('../../lib/errorHandler')
 
 utils.bindDb()
 describe('models/mangaModel', function () {
@@ -88,6 +89,19 @@ describe('models/mangaModel', function () {
       await MangaModel.upsertManga({ nameId: 'test', name: 'test', chapters: [{ num: 1, url: 'a', at: 5 }] })
     } catch (e) {
       assert(e.errors.from.message.includes('Path `from` is required'))
+      called = true
+    }
+    const got = await MangaModel.findOne()
+    assert(!got, 'post cond: no manga touched on invalid from')
+    assert(called)
+  }))
+
+  it('upsert: reject if no chapters', Mocker.mockIt(async function (mokr) {
+    let called = false
+    try {
+      await MangaModel.upsertManga({ nameId: 'test', name: 'test', chapters: [] }, 'fanfox')
+    } catch (e) {
+      assert.strictEqual(e.id, errorHandler.noEmptyManga.id)
       called = true
     }
     const got = await MangaModel.findOne()

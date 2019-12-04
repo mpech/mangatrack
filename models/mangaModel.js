@@ -66,7 +66,7 @@ schema.statics.upsertManga = async function (manga, from) {
   }
 
   if (!manga.chapters.length) {
-    throw errorHandler.noEmptyMangas(manga.nameId)
+    throw errorHandler.noEmptyManga(manga.nameId)
   }
 
   const lastChap = {

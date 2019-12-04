@@ -56,7 +56,7 @@ describe('importers/mangakakalot', function () {
     assert.strictEqual(o.num, 18)
   }))
 
-  it('fetchMangaDetail', Mocker.mockIt(async mokr => {
+  it('fetchMangaDetail half chapter', Mocker.mockIt(async mokr => {
     const importer = new Importer()
     let called = false
     mokr.mock(Importer.prototype, 'domFetch', async _ => {
@@ -69,7 +69,6 @@ describe('importers/mangakakalot', function () {
         }
       })
     })
-    mokr.mock(Importer.prototype, 'parseDate', _ => 5)
     const res = await importer.fetchMangaDetail({ url: 'https://mangakakalot.com/manga/to_you_the_immortal/chapter_110' })
     assert(called)
     assert.strictEqual(res.length, 117)

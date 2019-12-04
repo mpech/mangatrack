@@ -102,6 +102,26 @@ time{
     display:block;
     padding:0.2em;
 }
+a.from{
+  width:15px;
+  height:15px;
+  display:inline-block;
+  margin-left:8px;
+  margin-right:8px;
+  background-size: cover;
+}
+a.from:first-child{
+  margin-left:0px;
+}
+a.from:last-child{
+  margin-right:0px;
+}
+.from-mangakakalot{
+  background-image: url('/img/mangakakalot.ico');
+}
+.from-fanfox{
+  background-image: url('/img/fanfox.ico');
+}
 .mt-follow a:hover{
     color:pink;
     text-decoration:none;
