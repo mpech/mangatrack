@@ -2,11 +2,13 @@ import Vue from '../vendors/vue.esm.browser.min.js'
 import { Follow } from './follow.js'
 
 const tpl = `
-    <div class="pure-u-1-6 pure-u-lg-1-6">
+    <div class="pure-u-1-2 pure-u-lg-1-6">
         <div class="card">
+            <router-link :to="url+'/'+card.nameId">
             <figure>
                 <img :src="card.thumbUrl"/>
             </figure>
+            </router-link>
             <div>
                 <h4 :title="card.name"><span><router-link :to="url+'/'+card.nameId">{{card.name}}</router-link></span></h4>
                 <div class="chapter">
