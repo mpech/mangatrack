@@ -28,6 +28,7 @@ schema.statics.canonicalize = function (s) {
     .replace(/\s+/g, '_')
     .replace(/[^a-zA-Z0-9-_]/g, '')
     .substring(0, config.nameId_maxLength)
+    .toLowerCase()
 }
 
 schema.statics.findChapter = async function ({ nameId, _id, num }, from) {
