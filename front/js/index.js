@@ -55,6 +55,10 @@ const store = new Vuex.Store({
       state.mangas = state.mangas.concat(items)
       state.moreMangas = links
     },
+    filterMangas (state, { items, links }) {
+      state.mangas = items
+      state.moreMangas = apiRoutes.mangas
+    },
     fetchMyMangas (state, data) {
       if (data === state.myMangas) {
         return
@@ -100,6 +104,22 @@ const store = new Vuex.Store({
         context.commit('fetchMangas', data)
       }
     },
+    async filterMangas (context, { q }) {
+      if (!q) {
+        // whenever you filter mangas, and you apply an empty filter
+        // reinitializes the standard pagination
+        context.state.mangas = []
+        context.state.moreMangas = { next: apiRoutes.mangas }
+        return this.dispatch('fetchMangas')
+      }
+      const payload = {
+        anonAllowed: true,
+        params: { q }
+      }
+      const { data } = await this.axios.get(apiRoutes.mangas, payload)
+      context.commit('filterMangas', data)
+      return data
+    },
     async fetchMyMangas (context) {
       const { data } = await this.axios.get(apiRoutes.myMangaSuite, _ => {
         return ({ data: context.state.myMangas })
@@ -140,6 +160,16 @@ const store = new Vuex.Store({
         await this.axios.patch(apiRoutes.myMangaSuite, { items })
       }
       this.dispatch('fetchMyMangas')
+    },
+    async searchMangas (context, { q } = {}) {
+      const payload = {
+        params: {
+          q,
+          sort: 'search=1'
+        },
+        anonAllowed: true
+      }
+      return this.axios.get(apiRoutes.mangas, payload).then(({ data }) => data)
     }
   },
   getters: {

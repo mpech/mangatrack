@@ -1,37 +1,22 @@
 import Vue from '../vendors/vue.esm.browser.min.js'
 import { Card } from './card.js'
 
-(function mtPagination (Vue) {
-  const tpl = `
+const MtPagination = {
+  template: `
 <div class="mt-pagination">
-    <a class="pure-button" href="#">Moar</a>
+    <a @click="more" class="pure-button" href="#">Moar</a>
 </div>
-`
-  return Vue.component('mt-pagination', {
-    template: tpl,
-    mounted () {
-      this.$el.querySelector('a').onclick = e => {
-        this.$store.dispatch('fetchMangas')
-        e.preventDefault()
-      }
+`,
+  methods: {
+    more (e) {
+      e.preventDefault()
+      return this.$store.dispatch('fetchMangas')
     }
-  })
-})(Vue);
-
-(function mtFilters (Vue) {
-  const tpl = `
-<div>
-    filters
-</div>
-`
-  return Vue.component('mt-filters', {
-    template: tpl
-  })
-})(Vue)
+  }
+}
 
 const tpl = `
 <div>
-    <!--<mt-filters></mt-filters>-->
     <div class="pure-g">
         <mt_card
           v-for="manga in followMangas"
@@ -46,7 +31,8 @@ const tpl = `
 const Grid = Vue.component('mt-grid', {
   props: ['mangas', 'myMangas'],
   components: {
-    'mt-card': Card
+    'mt-card': Card,
+    'mt-pagination': MtPagination
   },
   computed: {
     followMangas () {
