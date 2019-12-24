@@ -1,7 +1,7 @@
 <template>
   <div>
     <mt-autocomplete></mt-autocomplete>
-    <mt-grid :mangas="mangas" :myMangas="myMangas" :more="more" class="mt-grid"></mt-grid>
+    <mt-grid :mangas="mangas" :myMangas="myMangas" :more="more"></mt-grid>
   </div>
 </template>
 

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="mt-grid">
     <div class="pure-g">
       <mt-card
         v-for="manga in followMangas"
@@ -8,7 +8,7 @@
         url="/manga">
       </mt-card>
     </div>
-    <mt-pagination></mt-pagination>
+    <mt-pagination v-if="hasMore" @more="fetchMangas"></mt-pagination>
   </div>
 </template>
 <script>
@@ -29,6 +29,14 @@ const Grid = {
         Vue.set(m, 'num', this.myMangas[m.id])
         return m
       })
+    },
+    hasMore () {
+      return !!this.$store.state.moreMangas.next
+    }
+  },
+  methods: {
+    fetchMangas () {
+      return this.$store.dispatch('fetchMangas')
     }
   }
 }

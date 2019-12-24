@@ -9,7 +9,7 @@ const MtPagination = {
   methods: {
     more (e) {
       e.preventDefault()
-      return this.$store.dispatch('fetchMangas')
+      return this.$emit('more')
     }
   }
 }

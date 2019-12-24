@@ -1,5 +1,84 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Storyshots Card default 1`] = `
+<div
+  class="pure-u-1-2 pure-u-lg-1-6"
+>
+  <div
+    class="card"
+  >
+    <a
+      class=""
+      href="#/xx/nid"
+    >
+      <figure>
+        <img
+          src="https://upload.wikimedia.org/wikipedia/en/7/7d/Lenna_%28test_image%29.png"
+        />
+      </figure>
+    </a>
+     
+    <div>
+      <h4
+        title="some name"
+      >
+        <span>
+          <a
+            class=""
+            href="#/xx/nid"
+          >
+            some name
+          </a>
+        </span>
+      </h4>
+       
+      <div
+        class="chapter"
+      >
+        <span>
+          <a
+            href="lastchapurl"
+          >
+            c
+            <span>
+              2
+            </span>
+            ↗
+          </a>
+        </span>
+         
+        <time
+          updatedat="1577206158382"
+        >
+          4 hours ago
+        </time>
+      </div>
+    </div>
+     
+    <hr />
+     
+    <div
+      style="position: relative;"
+    >
+      <!---->
+       
+      <span>
+        <span
+          class="mt-follow"
+          title="Track some name"
+        >
+          <a
+            href="#"
+          >
+            ♥
+          </a>
+        </span>
+      </span>
+    </div>
+  </div>
+</div>
+`;
+
 exports[`Storyshots Follow default 1`] = `
 <span
   title="Test"
@@ -32,4 +111,360 @@ exports[`Storyshots Follow followed 1`] = `
     </a>
   </span>
 </span>
+`;
+
+exports[`Storyshots Grid default 1`] = `
+<div
+  class="mt-grid"
+>
+  <div
+    class="pure-g"
+  >
+    <div
+      class="pure-u-1-2 pure-u-lg-1-6"
+    >
+      <div
+        class="card"
+      >
+        <a
+          class=""
+          href="#/manga/nid"
+        >
+          <figure>
+            <img
+              src="https://upload.wikimedia.org/wikipedia/en/7/7d/Lenna_%28test_image%29.png"
+            />
+          </figure>
+        </a>
+         
+        <div>
+          <h4
+            title="some name"
+          >
+            <span>
+              <a
+                class=""
+                href="#/manga/nid"
+              >
+                some name
+              </a>
+            </span>
+          </h4>
+           
+          <div
+            class="chapter"
+          >
+            <span>
+              <a
+                href="lastchapurl"
+              >
+                c
+                <span>
+                  2
+                </span>
+                ↗
+              </a>
+            </span>
+             
+            <time
+              updatedat="1577206158382"
+            >
+              4 hours ago
+            </time>
+          </div>
+        </div>
+         
+        <hr />
+         
+        <div
+          style="position: relative;"
+        >
+          <span
+            class="card-stats"
+          >
+            1/2
+          </span>
+           
+          <span>
+            <span
+              class="followed mt-follow"
+              title="Untrack some name"
+            >
+              <a
+                href="#"
+              >
+                ♥
+              </a>
+            </span>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div
+      class="pure-u-1-2 pure-u-lg-1-6"
+    >
+      <div
+        class="card"
+      >
+        <a
+          class=""
+          href="#/manga/nid"
+        >
+          <figure>
+            <img
+              src="https://upload.wikimedia.org/wikipedia/en/7/7d/Lenna_%28test_image%29.png"
+            />
+          </figure>
+        </a>
+         
+        <div>
+          <h4
+            title="other"
+          >
+            <span>
+              <a
+                class=""
+                href="#/manga/nid"
+              >
+                other
+              </a>
+            </span>
+          </h4>
+           
+          <div
+            class="chapter"
+          >
+            <span>
+              <a
+                href="lastchapurl"
+              >
+                c
+                <span>
+                  2
+                </span>
+                ↗
+              </a>
+            </span>
+             
+            <time
+              updatedat="1577206158382"
+            >
+              4 hours ago
+            </time>
+          </div>
+        </div>
+         
+        <hr />
+         
+        <div
+          style="position: relative;"
+        >
+          <!---->
+           
+          <span>
+            <span
+              class="mt-follow"
+              title="Track other"
+            >
+              <a
+                href="#"
+              >
+                ♥
+              </a>
+            </span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+   
+  <div
+    class="mt-pagination"
+  >
+    <a
+      class="pure-button"
+      href="#"
+    >
+      Moar
+    </a>
+  </div>
+</div>
+`;
+
+exports[`Storyshots Grid no pagination 1`] = `
+<div
+  class="mt-grid"
+>
+  <div
+    class="pure-g"
+  >
+    <div
+      class="pure-u-1-2 pure-u-lg-1-6"
+    >
+      <div
+        class="card"
+      >
+        <a
+          class=""
+          href="#/manga/nid"
+        >
+          <figure>
+            <img
+              src="https://upload.wikimedia.org/wikipedia/en/7/7d/Lenna_%28test_image%29.png"
+            />
+          </figure>
+        </a>
+         
+        <div>
+          <h4
+            title="some name"
+          >
+            <span>
+              <a
+                class=""
+                href="#/manga/nid"
+              >
+                some name
+              </a>
+            </span>
+          </h4>
+           
+          <div
+            class="chapter"
+          >
+            <span>
+              <a
+                href="lastchapurl"
+              >
+                c
+                <span>
+                  2
+                </span>
+                ↗
+              </a>
+            </span>
+             
+            <time
+              updatedat="1577206158382"
+            >
+              4 hours ago
+            </time>
+          </div>
+        </div>
+         
+        <hr />
+         
+        <div
+          style="position: relative;"
+        >
+          <!---->
+           
+          <span>
+            <span
+              class="mt-follow"
+              title="Track some name"
+            >
+              <a
+                href="#"
+              >
+                ♥
+              </a>
+            </span>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div
+      class="pure-u-1-2 pure-u-lg-1-6"
+    >
+      <div
+        class="card"
+      >
+        <a
+          class=""
+          href="#/manga/nid"
+        >
+          <figure>
+            <img
+              src="https://upload.wikimedia.org/wikipedia/en/7/7d/Lenna_%28test_image%29.png"
+            />
+          </figure>
+        </a>
+         
+        <div>
+          <h4
+            title="other"
+          >
+            <span>
+              <a
+                class=""
+                href="#/manga/nid"
+              >
+                other
+              </a>
+            </span>
+          </h4>
+           
+          <div
+            class="chapter"
+          >
+            <span>
+              <a
+                href="lastchapurl"
+              >
+                c
+                <span>
+                  2
+                </span>
+                ↗
+              </a>
+            </span>
+             
+            <time
+              updatedat="1577206158382"
+            >
+              4 hours ago
+            </time>
+          </div>
+        </div>
+         
+        <hr />
+         
+        <div
+          style="position: relative;"
+        >
+          <!---->
+           
+          <span>
+            <span
+              class="mt-follow"
+              title="Track other"
+            >
+              <a
+                href="#"
+              >
+                ♥
+              </a>
+            </span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+   
+  <!---->
+</div>
+`;
+
+exports[`Storyshots Pagination default 1`] = `
+<div
+  class="mt-pagination"
+>
+  <a
+    class="pure-button"
+    href="#"
+  >
+    Moar
+  </a>
+</div>
 `;

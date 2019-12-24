@@ -5,8 +5,7 @@
 </template>
 
 <script>
-import Vue from 'vue'
-export default Vue.component('mt_follow', {
+export default  {
   props: ['followed', 'name'],
   computed: {
     title () {
@@ -22,7 +21,7 @@ export default Vue.component('mt_follow', {
       return this.$emit(!this.followed ? 'follow' : 'unfollow')
     }
   }
-})
+}
 </script>
 
 <style scoped>
