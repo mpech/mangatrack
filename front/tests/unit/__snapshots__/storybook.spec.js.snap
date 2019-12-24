@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Storyshots Follow default 1`] = `
+<span
+  title="Test"
+>
+  <span
+    class="mt-follow"
+    title="Track def"
+  >
+    <a
+      href="#"
+    >
+      ♥
+    </a>
+  </span>
+</span>
+`;
+
+exports[`Storyshots Follow followed 1`] = `
+<span
+  title="Test"
+>
+  <span
+    class="followed mt-follow"
+    title="Untrack def"
+  >
+    <a
+      href="#"
+    >
+      ♥
+    </a>
+  </span>
+</span>
+`;

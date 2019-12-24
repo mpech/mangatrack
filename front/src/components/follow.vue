@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import Vue from 'vue/dist/vue.esm.browser.min.js'
+import Vue from 'vue'
 export default Vue.component('mt_follow', {
   props: ['followed', 'name'],
   computed: {
