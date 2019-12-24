@@ -1,7 +1,2 @@
-*.patch
-node_modules
-config/privateConfig.json
 *.tar.gz
-roadmap.md
 dep
-patches/lastPatchRun.txt
