@@ -15,7 +15,6 @@ export const store = new Vuex.Store({
     }
   }
 })
-export const methods = {}
 
 export const cardData = {
   card: {
@@ -44,7 +43,6 @@ storiesOf('Card', module)
           default: cardData.url
         }
       },
-      template: '<Card :card="card" :url="url"/>',
-      methods
+      template: '<Card :card="card" :url="url"/>'
     }
   })

@@ -50,7 +50,7 @@ exports[`Storyshots Card default 1`] = `
         <time
           updatedat="1577206158382"
         >
-          4 hours ago
+          2 days ago
         </time>
       </div>
     </div>
@@ -169,7 +169,7 @@ exports[`Storyshots Grid default 1`] = `
             <time
               updatedat="1577206158382"
             >
-              4 hours ago
+              2 days ago
             </time>
           </div>
         </div>
@@ -249,7 +249,7 @@ exports[`Storyshots Grid default 1`] = `
             <time
               updatedat="1577206158382"
             >
-              4 hours ago
+              2 days ago
             </time>
           </div>
         </div>
@@ -347,7 +347,7 @@ exports[`Storyshots Grid no pagination 1`] = `
             <time
               updatedat="1577206158382"
             >
-              4 hours ago
+              2 days ago
             </time>
           </div>
         </div>
@@ -423,7 +423,7 @@ exports[`Storyshots Grid no pagination 1`] = `
             <time
               updatedat="1577206158382"
             >
-              4 hours ago
+              2 days ago
             </time>
           </div>
         </div>

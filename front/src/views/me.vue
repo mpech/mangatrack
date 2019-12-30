@@ -14,7 +14,15 @@ const Me = {
       return this.$store.state.myMangas
     },
     myPopulatedMangas () {
-      return this.$store.state.myPopulatedMangas
+      this.$store.state.myPopulatedMangas.forEach(x => {
+        x.hasNew = this.myMangas[x.id] < (x.lastChap && x.lastChap.num)
+      })
+      return this.$store.state.myPopulatedMangas.sort((a, b) => {
+        if (a.hasNew !== b.hasNew) {
+          return b.hasNew - a.hasNew
+        }
+        return a.name.localeCompare(b.name)
+      })
     }
   },
   components: {
