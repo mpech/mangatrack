@@ -88,11 +88,11 @@ describe('e2e/me/mangas', function () {
     const token = 'abc'
 
     const ignored = '0'.repeat(24)
-    const overridenEvenIfInferior = '7'.repeat(24)
+    const notOverridenIfInferior = '7'.repeat(24)
     const overriden = '5'.repeat(24)
     const mangas = {
       [ignored]: 1,
-      [overridenEvenIfInferior]: 7,
+      [notOverridenIfInferior]: 7,
       [overriden]: 5
     }
     const [, at] = await Promise.all([
@@ -100,8 +100,8 @@ describe('e2e/me/mangas', function () {
       AtModel.create({ token, userId }),
       MangaModel.create({ _id: ignored, name: 'ignored', chapters: [{ num: mangas[ignored], url: 'xx' }] }),
       MangaModel.upsertManga({
-        _id: overridenEvenIfInferior,
-        name: 'overridenEvenIfInferior',
+        _id: notOverridenIfInferior,
+        name: 'notOverridenIfInferior',
         chapters: [
           { num: 5, url: 'x' },
           { num: 7, url: 'x' }
@@ -121,14 +121,14 @@ describe('e2e/me/mangas', function () {
       .set({ Authorization: `Bearer ${at.token}` })
       .send({
         items: [
-          { mangaId: overridenEvenIfInferior, num: 5 },
+          { mangaId: notOverridenIfInferior, num: 5 },
           { mangaId: overriden, num: 7 }
         ]
       })
       .expect(200)
 
     const u = await UserModel.findOne({ _id: userId })
-    assert.strictEqual(u.mangas.get(overridenEvenIfInferior), 5)
+    assert.strictEqual(u.mangas.get(notOverridenIfInferior), 7)
     assert.strictEqual(u.mangas.get(overriden), 7)
   }))
 

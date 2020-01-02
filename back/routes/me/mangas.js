@@ -110,7 +110,7 @@ function load (app) {
       }
     }
 
-    return req.user.saveMangas(items).then(mangas => ({}))
+    return req.user.updateMangas(items).then(mangas => ({}))
   }))
 
   app.get('/me/mangas', app.oauth.authenticate(), helper.userOnReq, prom(async (req, res) => {

@@ -25,9 +25,11 @@ schema.methods.removeManga = async function ({ mangaId, num }) {
   return {}
 }
 
-schema.methods.saveMangas = async function (mangas) {
+schema.methods.updateMangas = async function (mangas) {
   mangas.forEach(({ mangaId, num }) => {
-    this.mangas.set(mangaId.toString(), num)
+    if (!this.mangas.has(mangaId) || this.mangas.get(mangaId) < num ) {
+      this.mangas.set(mangaId.toString(), num)
+    }
   })
   await this.save()
   return mangas
