@@ -14,21 +14,17 @@ class OnOffAxios {
     if (typeof (args[args.length - 1]) === 'object') {
       const last = args[args.length - 1]
       if (last.headers) {
-        Object.keys(headers).forEach(k => {
-          if (!last.headers[k]) {
-            last.headers[k] = headers.headers[k]
-          }
-        })
+        last.headers = Object.assign(headers, last.headers)
       } else {
-        args[args.length - 1].headers = headers.headers
+        args[args.length - 1].headers = headers
       }
     } else {
-      args.push(headers)
+      args.push({ headers })
     }
   }
 
-  _forward (verb, args) {
-    args = [...args]
+  _forward (verb, iArgs, opts = { retry: false }) {
+    const args = [...iArgs]
     let fallback = true
     if (typeof (args[args.length - 1]) === 'function') {
       fallback = args.pop()
@@ -37,14 +33,12 @@ class OnOffAxios {
     if (this.$store.getters.accessToken || args[args.length - 1].anonAllowed) {
       if (this.$store.getters.accessToken) {
         const headers = {
-          headers: {
-            Authorization: `Bearer ${this.$store.getters.accessToken}`
-          }
+          Authorization: `Bearer ${this.$store.getters.accessToken}`
         }
         if (['post', 'put', 'patch'].includes(verb)) {
           if (args.length === 2) {
             // push args not to merge conf to data
-            args.push(headers)
+            args.push({ headers })
           } else {
             this._mergeOrPush(args, headers)
           }
@@ -52,8 +46,15 @@ class OnOffAxios {
           this._mergeOrPush(args, headers)
         }
       }
-
-      return axios[verb].apply(axios, args).catch(e => {
+      return axios[verb].apply(axios, args).catch(({ response }) => {
+        const e = response.data
+        // last condition not necessary IF refreshToken action does not called _forward
+        // let as is in case
+        if (e.error && e.error === 'invalid_token' && !opts.retry && !iArgs[0].includes('/oauth')) {
+          return this.$store.dispatch('refreshToken').then(_ => {
+            return this._forward(verb, iArgs, { retry: true })
+          })
+        }
         console.log('failed', verb, args, fallback, e)
         throw new Error(e)
       })
@@ -115,6 +116,14 @@ class OnOffAxios {
 
   patch () {
     return this._forward('patch', arguments)
+  }
+
+  post () {
+    return this._forward('post', arguments)
+  }
+
+  raw (verb, ...args) {
+    return axios[verb](...args)
   }
 }
 export default OnOffAxios

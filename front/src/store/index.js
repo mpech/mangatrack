@@ -124,15 +124,39 @@ const store = new Vuex.Store({
       await this.axios.delete(apiRoutes.myMangas.replace('{{mangaId}}', id), _ => {})
       context.commit('untrackManga', { id })
     },
-    async sync (context) {
+    // bidrectionnal by default, down|up flow to be disabled by caller
+    async sync (context, { down = true, up = true } = {}) {
       const items = Object.keys(context.state.myMangas).reduce((acc, id) => {
         acc.push({ mangaId: id, num: context.state.myMangas[id] })
         return acc
       }, [])
-      if (items.length) {
-        await this.axios.patch(apiRoutes.myMangaSuite, { items })
+      if (up) {
+        if (items.length) {
+          await this.axios.patch(apiRoutes.myMangaSuite, { items })
+        }
       }
-      this.dispatch('fetchMyMangas')
+      if (up || down) {
+        this.dispatch('fetchMyMangas')
+      }
+    },
+    async refreshToken (context) {
+      const params = new URLSearchParams()
+      params.append('grant_type', 'refresh_token')
+      params.append('client_id', 'mangatrack')
+      params.append('refresh_token', context.state.refreshToken)
+      const conf = {
+        headers: {
+          'content-type': 'application/x-www-form-urlencoded'
+        }
+      }
+      try {
+        const { data } = await this.axios.raw('post', apiRoutes.oauth, params, conf)
+        // commit assumed to never fail
+        context.commit('authenticate', { accessToken: data.access_token, refreshToken: data.refresh_token })
+      } catch (e) {
+        // if even refreshing token fails, consider yourself as logged out
+        context.commit('logout')
+      }
     },
     async searchMangas (context, { q } = {}) {
       const payload = {

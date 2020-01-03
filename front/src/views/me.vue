@@ -28,7 +28,13 @@ const Me = {
   components: {
     'mt-grid': Grid
   },
-  mounted () {
+  async mounted () {
+    if (this.$store.getters.accessToken) {
+      // usecase: be on mobile and browser
+      // mobile idle. browser updates
+      // on mobile, when refreshing page, still logged but want to get browser updates
+      await this.$store.dispatch('sync', { up: false })
+    }
     // we don't directly populate on myMangas because life duration is not the same
     // myMangas can be fetched once, while myPopulated should always be fetched
     if (!this.myPopulatedMangas.length) {
