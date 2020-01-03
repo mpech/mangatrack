@@ -39,9 +39,6 @@
     },
     "standard": {
         "globals": [
-            "axios",
-            "moment",
-            "VuexPersistence",
             "it",
             "expect",
             "jest"
