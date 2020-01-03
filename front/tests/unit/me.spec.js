@@ -2,7 +2,7 @@ import Vuex from 'vuex'
 import { shallowMount, createLocalVue } from '@vue/test-utils'
 import Me from '../../src/views/me'
 
-it('sorts mangas by unread first, then asc', () => {
+it('separates my mangas by unread and up to date', () => {
   const localVue = createLocalVue()
   localVue.use(Vuex)
 
@@ -30,6 +30,8 @@ it('sorts mangas by unread first, then asc', () => {
     }
   })
   const wrapper = shallowMount(Me, { store, localVue })
-  expect(wrapper.vm.myPopulatedMangas.length).toBe(4)
-  expect(wrapper.vm.myPopulatedMangas.map(x => x.id).join('')).toBe('bcad')
+  expect(wrapper.vm.newMangas.length).toBe(2)
+  expect(wrapper.vm.newMangas.map(x => x.id).join('')).toBe('bc')
+  expect(wrapper.vm.upToDateMangas.length).toBe(2)
+  expect(wrapper.vm.upToDateMangas.map(x => x.id).join('')).toBe('ad')
 })

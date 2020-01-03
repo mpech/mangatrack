@@ -48,7 +48,7 @@ storiesOf('Grid', module)
       template: '<Grid :mangas="mangas" :myMangas="myMangas" />'
     }
   })
-  .add('no pagination', () => {
+  .add('no pagination (no more)', () => {
     return {
       store: noPaginationStore,
       props: {
@@ -61,5 +61,20 @@ storiesOf('Grid', module)
       },
       components: { Grid },
       template: '<Grid :mangas="mangas" :myMangas="myMangas" />'
+    }
+  })
+  .add('no pagination (deactivated)', () => {
+    return {
+      store: noPaginationStore,
+      props: {
+        mangas: {
+          default: _ => mangas.slice(0)
+        },
+        myMangas: {
+          default: _ => ({ ...myMangas })
+        }
+      },
+      components: { Grid },
+      template: '<Grid :mangas="mangas" :myMangas="myMangas" :paginate="false"/>'
     }
   })

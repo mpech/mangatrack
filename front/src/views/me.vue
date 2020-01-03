@@ -1,7 +1,10 @@
 <template>
   <div>
     <h1>Tracked mangas</h1>
-    <mt-grid :mangas="myPopulatedMangas" :myMangas="myMangas" class="mt-grid"></mt-grid>
+    <h2>Updates</h2>
+    <mt-grid :mangas="newMangas" :myMangas="myMangas" :paginate="false"></mt-grid>
+    <h2>Up to date</h2>
+    <mt-grid :mangas="upToDateMangas" :myMangas="myMangas" :paginate="false"></mt-grid>
   </div>
 </template>
 
@@ -13,15 +16,20 @@ const Me = {
     myMangas () {
       return this.$store.state.myMangas
     },
+    newMangas () {
+      return this.myPopulatedMangas
+        .filter(x => x.hasNew)
+        .sort((a, b) => a.name.localeCompare(b.name))
+    },
+    upToDateMangas () {
+      return this.myPopulatedMangas
+        .filter(x => !x.hasNew)
+        .sort((a, b) => a.name.localeCompare(b.name))
+    },
     myPopulatedMangas () {
-      this.$store.state.myPopulatedMangas.forEach(x => {
+      return this.$store.state.myPopulatedMangas.map(x => {
         x.hasNew = this.myMangas[x.id] < (x.lastChap && x.lastChap.num)
-      })
-      return this.$store.state.myPopulatedMangas.sort((a, b) => {
-        if (a.hasNew !== b.hasNew) {
-          return b.hasNew - a.hasNew
-        }
-        return a.name.localeCompare(b.name)
+        return x
       })
     }
   },

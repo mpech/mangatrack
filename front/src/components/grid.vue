@@ -8,7 +8,7 @@
         url="/manga">
       </mt-card>
     </div>
-    <mt-pagination v-if="hasMore" @more="fetchMangas"></mt-pagination>
+    <mt-pagination v-if="paginate && hasMore" @more="fetchMangas"></mt-pagination>
   </div>
 </template>
 <script>
@@ -17,7 +17,14 @@ import Card from './card'
 import MtPagination from './pagination'
 
 const Grid = {
-  props: ['mangas', 'myMangas'],
+  props: {
+    mangas: Array,
+    myMangas: Object,
+    paginate: {
+      type: Boolean,
+      default: true
+    }
+  },
   components: {
     'mt-card': Card,
     'mt-pagination': MtPagination
