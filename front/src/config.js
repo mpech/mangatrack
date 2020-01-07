@@ -5,9 +5,11 @@ if (window.location.host.includes('.com')) {
 const routes = {
   mangas: `${api}/mangas`,
   mangaDetail: `${api}/mangas/{{nameId}}`,
+  me: `${api}/me`,
   myMangas: `${api}/me/mangas/{{mangaId}}`,
   myMangaSuite: `${api}/me/mangas`,
-  oauth: `${api}/oauth/token`
+  oauth: `${api}/oauth/token`,
+  batches: `${api}/admin/batches`
 }
 const oauth = {
   google_clientId: '936593177518-0spv3m56a0a9nslh6lq669glos9c55na.apps.googleusercontent.com',

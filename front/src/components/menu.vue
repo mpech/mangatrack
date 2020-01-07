@@ -18,20 +18,32 @@
       title="Mainly sync your tracked stuff"
     >Login</router-link>
 
-
     <router-link to="/login" 
       class="pure-menu-heading pure-menu-link logout"
       :class="{hide:!logged}"
     >Logout</router-link>
+
+    <router-link to="/admin" 
+      class="pure-menu-heading pure-menu-link admin"
+      :class="{hide:!admin}"
+    >Admin</router-link>
   </div>
 
 </template>
+<style scoped>
+.admin.hide {
+  display:none;
+}
+</style>
 <script>
 
 const Menu = {
   computed: {
     logged () {
       return !!this.$store.getters.accessToken
+    },
+    admin () {
+      return !!this.$store.getters.isAdmin
     }
   },
   mounted () {

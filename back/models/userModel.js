@@ -1,13 +1,14 @@
-var mongoose = require('mongoose')
-var Schema = mongoose.Schema
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
 const mongooseUtil = require('../lib/mongooseUtil')
 
-var schema = new Schema({
+const schema = new Schema({
   displayName: { type: String, required: true },
   facebookId: { type: String, index: true },
   googleId: { type: String, index: true },
   createdAt: { type: Number, default: Date.now },
-  mangas: { type: Schema.Types.Map, of: Number, default: _ => new Map() }
+  mangas: { type: Schema.Types.Map, of: Number, default: _ => new Map() },
+  admin: { type: Boolean }
 })
 
 schema.methods.saveManga = async function ({ mangaId, num }) {

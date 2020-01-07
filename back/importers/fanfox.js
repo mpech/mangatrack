@@ -6,7 +6,14 @@ class Importer extends Base {
   constructor () {
     super()
     this.allUrl = 'https://fanfox.net/releases/'
+    this.detailUrl = 'http://fanfox.net/manga/onepunch_man/vTBD/c122/1.html'
     this.from = 'fanfox'
+  }
+
+  static accepts (link) {
+    return [
+      new RegExp('^https://fanfox.net/manga/[^/]+/?$', 'i')
+    ].some(x => x.test(link))
   }
 }
 
@@ -51,28 +58,34 @@ Importer.prototype.allUpdates = async function () {
   }, {})
 }
 
+Importer.prototype.linkFromChap = function (chap) {
+  const uri = chap.url.split('/')
+  const idx = uri.indexOf('manga')
+  return uri.slice(0, idx + 2).join('/') + '/'
+}
+
 /**
  * url maps to a chapter view. e.g
  * http://fanfox.net/manga/onepunch_man/vTBD/c122/1.html
  *
  * return all the chaps for given manga
- * [
+ * {
+ *   chapters:[
  *     {
  *         name:'xx',
- *         num: xx
- *         url: 'xx'
- *         at: dateStr
+ *         num:xx
+ *         url
  *     }
- * ]
+ *   ],
+ *   manga: {
+ *     name,
+ *     thumbUrl
+ *  }
  * @return {[type]} [description]
  */
-Importer.prototype.fetchMangaDetail = async function (chap) {
-  const uri = chap.url.split('/')
-  const idx = uri.indexOf('manga')
-  const url = uri.slice(0, idx + 2).join('/') + '/'
-  config.logger.dbg('fetching', url)
-
-  const $ = await this.domFetch(url)
+Importer.prototype.fetchMangaDetail = async function (link, chap = null) {
+  config.logger.dbg('fetching', link)
+  const $ = await this.domFetch(link)
   const arr = $('.detail-main-list > li').map((i, x) => {
     const $x = $(x)
     const a = $x.find('a')
@@ -85,8 +98,24 @@ Importer.prototype.fetchMangaDetail = async function (chap) {
     return { name, url, num, at }
   }).toArray()
   if (arr.length === 0 && $('.detail-block-content').length) {
-    return errorHandler.importerRequiresInteraction(url)
+    return errorHandler.importerRequiresInteraction(link)
   }
-  return arr
+
+  if (!chap) {
+    chap = {
+      name: $('.detail-info-right-title-font').text(),
+      thumbUrl: $('.detail-info-cover-img').attr('src')
+    }
+  }
+
+  if (!chap.description) {
+    const html = $('.detail-info-right-content').html()
+    if (html) {
+      chap.description = html.replace(/<a.*<\/a>/, '').trim()
+    }
+  }
+
+  return { chapters: arr, manga: chap }
 }
+
 module.exports = Importer

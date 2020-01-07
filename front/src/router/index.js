@@ -4,6 +4,7 @@ import Home from '../views/home'
 import MangaView from '../views/mangaView'
 import SignIn from '../views/signIn'
 import Me from '../views/me'
+import Admin from '../views/admin'
 import NotFoundComponent from '../views/notFound'
 
 Vue.use(VueRouter)
@@ -13,6 +14,7 @@ const routes = [
   { path: '/manga/:nameId', component: MangaView },
   { path: '/me', component: Me },
   { path: '/login', component: SignIn },
+  { path: '/admin', component: Admin },
   { path: '*', component: NotFoundComponent }
 ]
 

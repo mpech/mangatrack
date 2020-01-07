@@ -8,8 +8,8 @@ Vue.use(Vuex)
 
 const vuexLocal = new VuexPersistence({
   storage: window.localStorage,
-  reducer: ({ accessToken, refreshToken, myMangas }) => {
-    return { accessToken, refreshToken, myMangas }
+  reducer: ({ accessToken, refreshToken, myMangas, me }) => {
+    return { accessToken, refreshToken, myMangas, me }
   }
 })
 
@@ -20,7 +20,8 @@ const store = new Vuex.Store({
     myPopulatedMangas: [],
     moreMangas: { next: apiRoutes.mangas },
     accessToken: null,
-    refreshToken: null
+    refreshToken: null,
+    me: { anon: true }
   },
   plugins: [vuexLocal.plugin],
   mutations: {
@@ -59,6 +60,10 @@ const store = new Vuex.Store({
     logout (state) {
       state.accessToken = null
       state.refreshToken = null
+      state.me = { anon: true }
+    },
+    setMe (state, me) {
+      state.me = me
     }
   },
   actions: {
@@ -139,6 +144,12 @@ const store = new Vuex.Store({
         this.dispatch('fetchMyMangas')
       }
     },
+    async authenticate (context, { accessToken, refreshToken }) {
+      context.commit('authenticate', { accessToken, refreshToken })
+      const { data } = await this.axios.get(apiRoutes.me)
+      context.commit('setMe', data)
+      return data
+    },
     async refreshToken (context) {
       const params = new URLSearchParams()
       params.append('grant_type', 'refresh_token')
@@ -171,11 +182,33 @@ const store = new Vuex.Store({
     async fetchMangaDetail (context, { nameId }) {
       const url = apiRoutes.mangaDetail.replace('{{nameId}}', nameId)
       return this.axios.get(url, { anonAllowed: true })
+    },
+    async getBatches (context, { offset = 0, limit = 20 } = { offset, limit }) {
+      return this.axios.get(apiRoutes.batches, { offset, limit }).then(({ data }) => data)
+    },
+    async getAllBatchesById(context, ids) {
+      const payload = {
+        params: {
+          id: ids,
+          limit: 50
+        }
+      }
+      const { data } = await this.axios.getAll(apiRoutes.batches, payload)
+      return data
+    },
+    async importLink (context, { link }) {
+      const { data } = await this.axios.post(apiRoutes.batches, { link }, _ => {
+        throw new Error('no fallback available')
+      })
+      return data
     }
   },
   getters: {
     accessToken (state) {
       return state.accessToken
+    },
+    isAdmin (state) {
+      return state.me && state.me.admin
     }
   }
 })

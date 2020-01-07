@@ -7,6 +7,13 @@ class Importer extends Base {
     this.allUrl = 'https://mangakakalot.com'
     this.from = 'mangakakalot'
   }
+
+  static accepts (link) {
+    return [
+      new RegExp('^https://mangakakalot.com/manga/[^/]+/?$', 'i'),
+      new RegExp('^https://manganelo.com/manga/[^/]+/?$', 'i')
+    ].some(x => x.test(link))
+  }
 }
 
 /**
@@ -44,28 +51,34 @@ Importer.prototype.allUpdates = async function () {
   }, {})
 }
 
+Importer.prototype.linkFromChap = function (chap) {
+  const uri = chap.url.split('/')
+  uri.pop()// chapter
+  return uri.join('/').replace('chapter', 'manga')
+}
 /**
  * url maps to a chapter view. e.g
  * https://mangakakalot.com/chapter/to_you_the_immortal/chapter_110
  *
  * return all the chaps for given manga
- * [
+ * {
+ *   chapters:[
  *     {
  *         name:'xx',
  *         num:xx
  *         url
  *     }
- * ]
+ *   ],
+ *   manga: {
+ *     name,
+ *     thumbUrl
+ *  }
  * @return {[type]} [description]
  */
-Importer.prototype.fetchMangaDetail = async function (chap) {
-  const uri = chap.url.split('/')
-  uri.pop()// chapter
-  const url = uri.join('/').replace('chapter', 'manga')
-  config.logger.dbg('fetching', url)
-
-  const $ = await this.domFetch(url)
-  return $('.chapter-list .row').map((i, x) => {
+Importer.prototype.fetchMangaDetail = async function (link, chap = null) {
+  config.logger.dbg('fetching', link)
+  const $ = await this.domFetch(link)
+  const chapters = $('.chapter-list .row').map((i, x) => {
     const a = $(x).find('a')
     const name = a.attr('title')
     const url = this.ensureAbsoluteUrl(a.attr('href'))
@@ -74,6 +87,21 @@ Importer.prototype.fetchMangaDetail = async function (chap) {
     at = this.parseDateDetail(at)
     return { name, url, num, at }
   }).toArray()
+
+  if (!chap) {
+    chap = {
+      name: $('.manga-info-text h1').text(),
+      thumbUrl: $('.manga-info-pic img').attr('src')
+    }
+  }
+
+  if (!chap.description) {
+    const html = $('#noidungm').html()
+    if (html) {
+      chap.description = html.replace(/<h2.*<\/h2>/, '').trim()
+    }
+  }
+  return { chapters, manga: chap }
 }
 
 module.exports = Importer

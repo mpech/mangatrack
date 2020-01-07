@@ -1,23 +1,16 @@
 const validate = require('express-validation')
 const mongoose = require('mongoose')
 const Joi = require('joi')
-const UserModel = require('../../models/userModel')
 const MangaModel = require('../../models/mangaModel')
 const ChapterModel = require('../../models/chapterModel')
 const prom = require('../../lib/prom')
 const rules = require('../../lib/rules')
 const errorHandler = require('../../lib/errorHandler')
+const helper = require('../../lib/helper')
 const Formatter = require('../../formatters/me/mangaFormatter')
 
 function load (app) {
   module.exports.formatter = new Formatter()
-  const helper = {
-    userOnReq: function (req, res, next) {
-      return UserModel.findOneForSure({ _id: res.locals.oauth.token.user.id }).then(user => {
-        req.user = user
-      }).then(_ => next(null)).catch(next)
-    }
-  }
 
   app.put('/me/mangas/:mangaId', app.oauth.authenticate(), validate({
     params: {

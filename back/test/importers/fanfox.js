@@ -46,7 +46,6 @@ describe('importers/fanfox', function () {
     const importer = new Importer()
     let called = false
     mokr.mock(Importer.prototype, 'domFetch', async url => {
-      assert.strictEqual(url, 'https://fanfox.net/manga/onepunch_man/')
       called = true
       const s = await pread(path.resolve(__dirname, '../../samples/fanfox/detail.html'))
       return cheerio.load(s.toString(), {
@@ -56,17 +55,18 @@ describe('importers/fanfox', function () {
         }
       })
     })
-    const res = await importer.fetchMangaDetail({ url: 'https://fanfox.net/manga/onepunch_man/vTBD/c122/1.html' })
+    const { chapters, manga } = await importer.fetchMangaDetail('https://fanfox.net/manga/wan_gu_shen_wang/', { ok: true })
     assert(called)
-    assert.strictEqual(res.length, 197)
-    const dic = res.reduce((acc, x) => {
+    assert(manga.ok)
+    assert.strictEqual(chapters.length, 197)
+    const dic = chapters.reduce((acc, x) => {
       acc[Math.floor(x.num)] = 1
       return acc
     }, {})
     for (let i = 1; i <= 122; ++i) {
       assert(dic[i], ' has ' + i)
     }
-    const c = res[11]
+    const c = chapters[11]
     assert.strictEqual(c.name, 'Bonus: Owned Items')
     assert.strictEqual(c.num, 111.5)
     const date = new Date(c.at)
@@ -81,7 +81,6 @@ describe('importers/fanfox', function () {
     const importer = new Importer()
     let called = false
     mokr.mock(Importer.prototype, 'domFetch', async url => {
-      assert.strictEqual(url, 'https://fanfox.net/manga/wan_gu_shen_wang/')
       called = true
       const s = await pread(path.resolve(__dirname, '../../samples/fanfox/wan_gu_shen_wang.html'))
       return cheerio.load(s.toString(), {
@@ -98,7 +97,7 @@ describe('importers/fanfox', function () {
       }
       return 5
     })
-    const [, c] = await importer.fetchMangaDetail({ url: 'https://fanfox.net/manga/wan_gu_shen_wang/c026/1.html' })
+    const { chapters: [, c] } = await importer.fetchMangaDetail('https://fanfox.net/manga/wan_gu_shen_wang/')
     assert.strictEqual(c.at, 5)
     assert(called)
   }))
@@ -107,7 +106,6 @@ describe('importers/fanfox', function () {
     const importer = new Importer()
     let called = false
     mokr.mock(Importer.prototype, 'domFetch', async url => {
-      assert.strictEqual(url, 'https://fanfox.net/manga/tadokoro_san_tatsubon/')
       called = true
       const s = await pread(path.resolve(__dirname, '../../samples/fanfox/tadokoro_san_tatsubon.html'))
       return cheerio.load(s.toString(), {
@@ -119,12 +117,46 @@ describe('importers/fanfox', function () {
     })
     let thrown = false
     try {
-      await importer.fetchMangaDetail({ url: 'https://fanfox.net/manga/tadokoro_san_tatsubon/c026/1.html' })
+      await importer.fetchMangaDetail()
     } catch (e) {
       assert.strictEqual(e.id, errorHandler.importerRequiresInteraction.id)
       thrown = true
     }
     assert(called)
     assert(thrown)
+  }))
+
+  it('get linkFromChap', function () {
+    const imp = new Importer()
+    const link = imp.linkFromChap({ url: 'https://fanfox.net/manga/onepunch_man/vTBD/c122/1.html' })
+    assert.strictEqual(link, 'https://fanfox.net/manga/onepunch_man/')
+  })
+
+  it('fills manga', Mocker.mockIt(async mokr => {
+    const importer = new Importer()
+    let called = false
+    mokr.mock(Importer.prototype, 'domFetch', async _ => {
+      called = true
+      const s = await pread(path.resolve(__dirname, '../../samples/fanfox/wan_gu_shen_wang.html'))
+      return cheerio.load(s.toString(), {
+        xml: {
+          normalizeWhitespace: true,
+          decodeEntities: false
+        }
+      })
+    })
+    const { manga } = await importer.fetchMangaDetail()
+    assert(called)
+    assert(manga)
+    assert.strictEqual(manga.name, 'Wan Gu Shen Wang')
+    assert.strictEqual(manga.thumbUrl, 'https://fmcdn.fanfox.net/store/manga/32000/cover.jpg?token=8db4bd8e56fd7952d8bcbabac9a6ac30317dc4c3&ttl=1575532800&v=1575441701')
+    assert(manga.description.startsWith('The past life died beca'))
+    assert(manga.description.endsWith('t...'))
+  }))
+
+  it('accepts links', Mocker.mockIt(async mokr => {
+    assert(Importer.accepts('https://fanfox.net/manga/onepunch_man/'))
+    assert(Importer.accepts('https://fanfox.net/manga/onepunch_man'))
+    assert(!Importer.accepts('https://fanfox.net/manga/onepunch_man/f'))
   }))
 })

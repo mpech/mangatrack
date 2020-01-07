@@ -27,8 +27,8 @@ const SignIn = {
       const accessToken = this.$route.query.access_token
       const refreshToken = this.$route.query.refresh_token
       // I have been authenticated
-      this.$store.commit('authenticate', { accessToken, refreshToken })
-      this.$store.dispatch('sync', { accessToken, refreshToken })
+      this.$store.dispatch('authenticate', { accessToken, refreshToken })
+      this.$store.dispatch('sync')
       return this.$router.push('/')
     }
   },

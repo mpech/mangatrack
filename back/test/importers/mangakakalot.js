@@ -69,17 +69,18 @@ describe('importers/mangakakalot', function () {
         }
       })
     })
-    const res = await importer.fetchMangaDetail({ url: 'https://mangakakalot.com/manga/to_you_the_immortal/chapter_110' })
+    const { chapters, manga } = await importer.fetchMangaDetail(null, { keptChapt: true })
     assert(called)
-    assert.strictEqual(res.length, 117)
-    const dic = res.reduce((acc, x) => {
+    assert(manga.keptChapt)
+    assert.strictEqual(chapters.length, 117)
+    const dic = chapters.reduce((acc, x) => {
       acc[x.num] = 1
       return acc
     }, {})
     for (let i = 1; i <= 113; ++i) {
       assert(dic[i], ' has ' + i)
     }
-    const c = res[1]
+    const c = chapters[1]
     assert.strictEqual(c.name, 'To You, The Immortal Chapter 112.5: Then, Towards the Sunrise (2)')
     assert.strictEqual(c.num, 112.5)
     const date = new Date(c.at)
@@ -98,7 +99,41 @@ describe('importers/mangakakalot', function () {
       called = true
       return Promise.resolve(cheerio.load(''))
     })
-    await importer.fetchMangaDetail({ url: 'https://mangakakalot.com/chapter/to_you_the_immortal/chapter_110' })
+    await importer.fetchMangaDetail('https://mangakakalot.com/manga/to_you_the_immortal')
     assert(called)
+  }))
+
+  it('get linkFromChap', function () {
+    const imp = new Importer()
+    const link = imp.linkFromChap({ url: 'https://mangakakalot.com/chapter/to_you_the_immortal/chapter_110' })
+    assert.strictEqual(link, 'https://mangakakalot.com/manga/to_you_the_immortal')
+  })
+
+  it('fills manga', Mocker.mockIt(async mokr => {
+    const importer = new Importer()
+    let called = false
+    mokr.mock(Importer.prototype, 'domFetch', async _ => {
+      called = true
+      const s = await pread(path.resolve(__dirname, '../../samples/mangakakalot/detail.html'))
+      return cheerio.load(s.toString(), {
+        xml: {
+          normalizeWhitespace: true,
+          decodeEntities: false
+        }
+      })
+    })
+    const { manga } = await importer.fetchMangaDetail()
+    assert(called)
+    assert(manga)
+    assert.strictEqual(manga.name, 'To You, The Immortal')
+    assert.strictEqual(manga.thumbUrl, 'https://avt.mkklcdnv3.com/avatar_225/17829-to_you_the_immortal.jpg')
+    assert(manga.description.startsWith('An immortal being was sent'))
+  }))
+
+  it('accepts links', Mocker.mockIt(async mokr => {
+    assert(Importer.accepts('https://mangakakalot.com/manga/isekai_tensei_ni_kansha_o'))
+    assert(Importer.accepts('https://mangakakalot.com/manga/isekai_tensei_ni_kansha_o/'))
+    assert(!Importer.accepts('https://mangakakalot.com/manga/isekai_tensei_ni_kansha_o/f/'))
+    assert(Importer.accepts('https://manganelo.com/manga/isekai_tensei_ni_kansha_o'))
   }))
 })

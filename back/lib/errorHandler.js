@@ -44,5 +44,7 @@ module.exports = {
   unknownChapters: errFunc(3, 400, 'unknown chapters(#0)'),
   internalInvalidParams: errFunc(4, 500, 'expects: #0 got #1'),
   noEmptyManga: errFunc(5, 500, 'expect at least one chapter for #0'),
-  importerRequiresInteraction: errFunc(6, 500, 'requires browser interaction for #0')
+  importerRequiresInteraction: errFunc(6, 500, 'requires browser interaction for #0'),
+  noImporterFound: errFunc(7, 500, 'no importer found for #0'),
+  invalidGrants: errFunc(8, 401, 'invalid grants')
 }

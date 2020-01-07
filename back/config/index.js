@@ -40,6 +40,8 @@ exports.oauth2_server = {
 exports.manga_detailDebounce = 3000
 exports.nameId_maxLength = 70
 
+exports.batch_duration = 3600 * 1000 * 24 // keep 1 day
+
 require('fs').existsSync(path.resolve(__dirname, 'privateConfig.json')) &&
     Object.assign(exports, require(path.resolve(__dirname, 'privateConfig.json')))
 const Logger = require('../lib/logger')

@@ -1,5 +1,177 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Storyshots Batch at, link, status 1`] = `
+<table
+  class="pure-table"
+>
+  <tr>
+    <td>
+      2 days ago
+    </td>
+    <td>
+      https://mangakakalot.com/manga/versatile_mage
+    </td>
+    <td>
+      OK
+    </td>
+  </tr>
+</table>
+`;
+
+exports[`Storyshots Batch link, status, at 1`] = `
+<table
+  class="pure-table"
+>
+  <tr>
+    <td>
+      https://mangakakalot.com/manga/versatile_mage
+    </td>
+    <td>
+      OK
+    </td>
+    <td>
+      2 days ago
+    </td>
+  </tr>
+</table>
+`;
+
+exports[`Storyshots BatchList default 1`] = `
+<table
+  class="pure-table batchList"
+>
+  <thead>
+    <tr>
+      <th>
+        status
+      </th>
+       
+      <th>
+        link
+      </th>
+       
+      <th>
+        at
+      </th>
+    </tr>
+  </thead>
+   
+  <tbody />
+   
+  <tfoot>
+    <tr>
+      <td
+        colspan="3"
+      >
+        <ul
+          class="pagination"
+          data-v-82963a40=""
+        >
+          <!---->
+           
+          <li
+            class="disabled"
+            data-v-82963a40=""
+          >
+            <a
+              data-v-82963a40=""
+              tabindex="-1"
+            >
+              Prev
+            </a>
+          </li>
+            
+          <li
+            class="disabled"
+            data-v-82963a40=""
+          >
+            <a
+              data-v-82963a40=""
+              tabindex="-1"
+            >
+              Next
+            </a>
+          </li>
+           
+          <!---->
+        </ul>
+      </td>
+    </tr>
+  </tfoot>
+</table>
+`;
+
+exports[`Storyshots BatchList two per page 1`] = `
+<table
+  class="pure-table batchList"
+>
+  <thead>
+    <tr>
+      <th>
+        status
+      </th>
+       
+      <th>
+        link
+      </th>
+       
+      <th>
+        at
+      </th>
+    </tr>
+  </thead>
+   
+  <tbody />
+   
+  <tfoot>
+    <tr>
+      <td
+        colspan="3"
+      >
+        <ul
+          class="pagination"
+          data-v-82963a40=""
+        >
+          <!---->
+           
+          <li
+            class="disabled"
+            data-v-82963a40=""
+          >
+            <a
+              data-v-82963a40=""
+              tabindex="-1"
+            >
+              Prev
+            </a>
+          </li>
+            
+          <li
+            class="disabled"
+            data-v-82963a40=""
+          >
+            <a
+              data-v-82963a40=""
+              tabindex="-1"
+            >
+              Next
+            </a>
+          </li>
+           
+          <!---->
+        </ul>
+      </td>
+    </tr>
+  </tfoot>
+</table>
+`;
+
+exports[`Storyshots BatchPoller should not notify (pending) 1`] = `<div />`;
+
+exports[`Storyshots BatchPoller should not notify shortDelayed 1`] = `<div />`;
+
+exports[`Storyshots BatchPoller should notify OK 1`] = `<div />`;
+
 exports[`Storyshots Card default 1`] = `
 <div
   class="pure-u-1-2 pure-u-lg-1-6"
@@ -622,6 +794,164 @@ exports[`Storyshots Grid no pagination (no more) 1`] = `
   </div>
    
   <!---->
+</div>
+`;
+
+exports[`Storyshots LinkImporter default 1`] = `
+<form
+  action="#incase"
+  class="pure-form linkImporter"
+>
+  <fieldset>
+    <legend>
+      Import from a link
+    </legend>
+     
+    <div>
+      <table
+        class="mq-table pure-table-bordered pure-table"
+      >
+        <caption>
+          Examples
+        </caption>
+         
+        <thead>
+          <th>
+            from
+          </th>
+           
+          <th>
+            url
+          </th>
+        </thead>
+         
+        <tbody>
+          <tr>
+            <td>
+              mangakakalot
+            </td>
+            <td>
+              https://mangakakalot.com/manga/versatile_mage
+            </td>
+          </tr>
+           
+          <tr>
+            <td>
+              fanfox
+            </td>
+            <td>
+              https://fanfox.net/manga/versatile_mage/
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+     
+    <div
+      class="fields"
+    >
+      <input
+        class="pure-input-1-2"
+        pattern="^https://(mangakakalot.com|fanfox.net)/manga/[^/]+/?"
+        placeholder="https://mangakakalot.com/manga/versatile_mage"
+        required="required"
+        type="text"
+      />
+       
+      <button
+        class="pure-button pure-button-primary pure-input"
+        type="submit"
+      >
+        Import
+      </button>
+    </div>
+  </fieldset>
+</form>
+`;
+
+exports[`Storyshots Menu logged admin 1`] = `
+<div
+  class="pure-menu pure-menu-horizontal"
+>
+  <a
+    class="pure-menu-heading pure-menu-link"
+    href="/"
+  >
+    MangaTrack
+  </a>
+   
+  <a
+    class="pure-menu-heading pure-menu-link"
+    href="/me"
+    title="my space"
+  >
+    Me
+  </a>
+   
+  <a
+    class="pure-menu-heading pure-menu-link login hide"
+    href="#/login"
+    title="Mainly sync your tracked stuff"
+  >
+    Login
+  </a>
+   
+  <a
+    class="pure-menu-heading pure-menu-link logout"
+    href="#/login"
+  >
+    Logout
+  </a>
+   
+  <a
+    class="pure-menu-heading pure-menu-link admin"
+    href="#/admin"
+  >
+    Admin
+  </a>
+</div>
+`;
+
+exports[`Storyshots Menu no logged no admin 1`] = `
+<div
+  class="pure-menu pure-menu-horizontal"
+>
+  <a
+    class="pure-menu-heading pure-menu-link"
+    href="/"
+  >
+    MangaTrack
+  </a>
+   
+  <a
+    class="pure-menu-heading pure-menu-link"
+    href="/me"
+    title="my space"
+  >
+    Me
+  </a>
+   
+  <a
+    class="pure-menu-heading pure-menu-link login"
+    href="#/login"
+    title="Mainly sync your tracked stuff"
+  >
+    Login
+  </a>
+   
+  <a
+    class="pure-menu-heading pure-menu-link logout hide"
+    href="#/login"
+  >
+    Logout
+  </a>
+   
+  <a
+    class="pure-menu-heading pure-menu-link admin hide"
+    href="#/admin"
+  >
+    Admin
+  </a>
 </div>
 `;
 
