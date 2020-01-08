@@ -131,9 +131,15 @@ describe('importers/mangakakalot', function () {
   }))
 
   it('accepts links', Mocker.mockIt(async mokr => {
-    assert(Importer.accepts('https://mangakakalot.com/manga/isekai_tensei_ni_kansha_o'))
-    assert(Importer.accepts('https://mangakakalot.com/manga/isekai_tensei_ni_kansha_o/'))
-    assert(!Importer.accepts('https://mangakakalot.com/manga/isekai_tensei_ni_kansha_o/f/'))
-    assert(Importer.accepts('https://manganelo.com/manga/isekai_tensei_ni_kansha_o'))
+    const imp = new Importer()
+    assert(imp.isLinkValid('https://mangakakalot.com/manga/isekai_tensei_ni_kansha_o'))
+    assert(imp.isLinkValid('https://mangakakalot.com/manga/isekai_tensei_ni_kansha_o/'))
+    assert(!imp.isLinkValid('https://mangakakalot.com/manga/isekai_tensei_ni_kansha_o/f/'))
+    assert(!imp.isLinkValid('https://manganelo.com/manga/isekai_tensei_ni_kansha_o'))
+  }))
+
+  it('accepts chap url', Mocker.mockIt(async mokr => {
+    const imp = new Importer()
+    assert(imp.accepts('https://mangakakalot.com/chapter/to_you_the_immortal/chapter_110'))
   }))
 })

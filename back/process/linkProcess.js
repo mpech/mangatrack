@@ -1,19 +1,24 @@
-const Activity = require('../activity/importerActivity')
-const bulker = require('../lib/bulker')
+const LinkActivity = require('../activity/linkActivity')
 const utils = require('../test/utils')
-const ctx = require('../lib/ctx')
 const importer = require('../importers')
 const errorHandler = require('../lib/errorHandler')
 const BatchModel = require('../models/batchModel')
-const APH = require('../lib/asyncPromiseHandler')
 
 function run (link, ts) {
-  const Imp = importer.all().find(Imp => Imp.accepts(link))
-  if (!Imp) {
+  let selectedImporter = null
+  importer.all().some(Imp => {
+    const imp = Reflect.construct(Imp, [])
+    if (imp.accepts(link) && imp.isLinkValid(link)) {
+      selectedImporter = imp
+      return true
+    }
+  })
+
+  if (!selectedImporter) {
     return errorHandler.noImporterFound(link)
   }
 
-  const activity = new Activity(Reflect.construct(Imp, []))
+  const activity = new LinkActivity(selectedImporter)
   return activity.importLink(link)
 }
 
@@ -25,15 +30,16 @@ if (!module.parent) {
     ).options('i', {
       alias: 'input',
       type: 'string',
-      describe: 'https://(mangakakalot.com|fanfox.net)/manga/somename'
+      describe: 'https://(mangakakalot.com|manganelo.com|fanfox.net)/manga/somename'
     })
   const argv = optimist.argv
   if (argv.help) {
     optimist.showHelp()
     process.exit(0)
   }
-  utils.runImport(_ => {
-    return new Promise(async (resolve, reject) => {
+  utils.runImport(async _ => {
+    await BatchModel.deleteMany({ link: argv.input })
+    return new Promise((resolve, reject) => {
       const ev = run(argv.input, Date.now())
       ev.on('batchended', async _ => {
         try {

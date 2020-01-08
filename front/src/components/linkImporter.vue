@@ -21,7 +21,7 @@
           class="pure-input-1-2"
           type="text"
           placeholder="https://mangakakalot.com/manga/versatile_mage"
-          pattern="^https://(mangakakalot.com|fanfox.net)/manga/[^/]+/?"
+          pattern="^https://(mangakakalot.com|manganelo.com|fanfox.net)/manga/[^/]+/?"
           required
         />
         <button type="submit" class="pure-button pure-button-primary pure-input">Import</button>

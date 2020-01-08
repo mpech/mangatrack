@@ -4,6 +4,7 @@ Track one's fav mangas from
 
 - mangakakalot
 - fanfox
+- manganelo
 
 [live](https://mangatrack.nodekoko.com)
 

@@ -67,4 +67,15 @@ Base.prototype.ensureAbsoluteUrl = function (url) {
   return url
 }
 
+Base.prototype.accepts = function (link) {
+  const url = new URL(this.allUrl)
+  return link.startsWith(url.origin)
+}
+
+Base.prototype.isLinkValid = function (link) {
+  const url = new URL(this.allUrl)
+  const r = new RegExp('^' + url.origin + '/manga/[^/]+/?$', 'i')
+  return r.test(link)
+}
+
 module.exports = Base

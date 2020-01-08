@@ -3,7 +3,7 @@ const Schema = mongoose.Schema
 
 var schema = new Schema({
   mangaId: { type: mongoose.Types.ObjectId, required: true, index: true },
-  from: { type: String, required: true, enum: ['mangakakalot', 'fanfox'] },
+  from: { type: String, required: true, enum: ['mangakakalot', 'manganelo', 'fanfox'] },
   // Ideas of such format is
   // 1 - to allow factorization of link for a given <mangaId, from>
   // Observation is that for a given manga, url prefix seems to always be the

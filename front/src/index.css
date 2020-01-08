@@ -122,6 +122,9 @@ a.from:last-child{
 .from-fanfox{
   background-image: url('./assets/fanfox.png');
 }
+.from-manganelo{
+  background-image: url('./assets/manganelo.png');
+}
 a.google{
     display:block;
     height:46px;

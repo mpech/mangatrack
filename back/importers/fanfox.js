@@ -6,14 +6,7 @@ class Importer extends Base {
   constructor () {
     super()
     this.allUrl = 'https://fanfox.net/releases/'
-    this.detailUrl = 'http://fanfox.net/manga/onepunch_man/vTBD/c122/1.html'
     this.from = 'fanfox'
-  }
-
-  static accepts (link) {
-    return [
-      new RegExp('^https://fanfox.net/manga/[^/]+/?$', 'i')
-    ].some(x => x.test(link))
   }
 }
 
@@ -84,7 +77,6 @@ Importer.prototype.linkFromChap = function (chap) {
  * @return {[type]} [description]
  */
 Importer.prototype.fetchMangaDetail = async function (link, chap = null) {
-  config.logger.dbg('fetching', link)
   const $ = await this.domFetch(link)
   const arr = $('.detail-main-list > li').map((i, x) => {
     const $x = $(x)

@@ -1,4 +1,3 @@
-const bulker = require('../lib/bulker')
 const errorHandler = require('../lib/errorHandler')
 const config = require('../config')
 const MangaModel = require('../models/mangaModel')
@@ -7,46 +6,22 @@ const safeJsonStringify = require('safe-json-stringify')
 const APH = require('../lib/asyncPromiseHandler')
 const EventEmitter = require('events')
 
-class ImporterActivity {
+class LinkActivity {
   constructor (importer) {
     this.imp = importer
   }
 }
 
-ImporterActivity.prototype.refresh = async function () {
-  const dic = await this.imp.allUpdates()
-  const chapters = await this.buildMissingChapters(dic)
-  return this.upsertChapters(chapters)
+LinkActivity.prototype.accepts = function (url) {
+  return this.imp.accepts(url)
 }
 
-ImporterActivity.prototype.buildMissingChapters = async function (dic) {
-  const chapters = []
-  const arr = Object.values(dic)
-  await bulker.bulk(arr, 20, chap => {
-    chap.nameId = MangaModel.canonicalize(chap.name)
-    return MangaModel.findChapter(chap, this.imp.from).then(yes => {
-      if (yes) {
-        config.logger.dbg('found', chap.name, chap.num)
-        return true
-      }
-      config.logger.dbg('didnot find', chap)
-      return chapters.push(chap)
-    })
-  })
-  return chapters
+LinkActivity.prototype.importChap = function (chap) {
+  const link = this.imp.linkFromChap(chap)
+  return this.importLink(link, chap)
 }
 
-ImporterActivity.prototype.upsertChapters = async function (chapters) {
-  config.logger.inf(`will upsert ${chapters.length} chapters`)
-  return bulker.debounce(chapters, config.manga_detailDebounce, chap => {
-    const link = this.imp.linkFromChap(chap)
-    return new Promise((resolve, reject) => {
-      return this.importLink(link, chap).on('batchended', resolve)
-    })
-  })
-}
-
-ImporterActivity.prototype.importLink = function (link, chap = null) {
+LinkActivity.prototype.importLink = function (link, chap = null) {
   const ev = new EventEmitter()
   let batch
   APH.tail = [
@@ -55,11 +30,11 @@ ImporterActivity.prototype.importLink = function (link, chap = null) {
     async _ => {
       let err = null
       try {
-        APH.tail = await this.imp.fetchMangaDetail(link, chap).then(({ chapters, manga }) => {
-          return MangaModel.upsertManga({ chapters, ...manga }, this.imp.from).catch(e => {
-            err = this._shortError(e)
-            config.logger.inf('failed to save', chapters[0], '...', err)
-          })
+        config.logger.dbg('fetching', link)
+        const { chapters, manga } = await this.imp.fetchMangaDetail(link, chap)
+        await MangaModel.upsertManga({ chapters, ...manga }, this.imp.from).catch(e => {
+          err = this._shortError(e)
+          config.logger.inf('failed to save', chapters[0], '...', err)
         })
       } catch (e) {
         err = this._shortError(e)
@@ -87,7 +62,7 @@ ImporterActivity.prototype.importLink = function (link, chap = null) {
   return ev
 }
 
-ImporterActivity.prototype._shortError = function (e) {
+LinkActivity.prototype._shortError = function (e) {
   // only log one chapter error
   if (e.name === 'ValidationError') {
     e.errors = Object.keys(e.errors).reduce((acc, errName) => {
@@ -103,4 +78,5 @@ ImporterActivity.prototype._shortError = function (e) {
 
   return e
 }
-module.exports = ImporterActivity
+
+module.exports = LinkActivity

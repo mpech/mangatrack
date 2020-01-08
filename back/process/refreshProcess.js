@@ -1,21 +1,25 @@
-const Activity = require('../activity/importerActivity')
+const LinkActivity = require('../activity/linkActivity')
+const RefreshActivity = require('../activity/refreshActivity')
 const bulker = require('../lib/bulker')
 const utils = require('../test/utils')
 const ctx = require('../lib/ctx')
+const importers = require('../importers')
+const errorHandler = require('../lib/errorHandler')
 
 async function run (name, ts) {
-  const importers = [
-    require('../importers/mangakakalot'),
-    require('../importers/fanfox')
-  ]
-
-  const activities = importers.flatMap(x => {
+  const fromToLinkActivity = {}
+  const activities = importers.all().flatMap(x => {
     const importer = Reflect.construct(x, [])
+    fromToLinkActivity[importer.from] = new LinkActivity(importer)
     if (name && importer.from !== name) {
       return []
     }
-    return new Activity(importer)
+    return new RefreshActivity(importer, fromToLinkActivity)
   })
+
+  if (activities.length === 0) {
+    return errorHandler.noImporterFound(name)
+  }
 
   const mdw = ctx.express()
   const res = await bulker.bulk(activities, 1, activity => {

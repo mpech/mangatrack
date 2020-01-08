@@ -4,8 +4,8 @@ var config = require('../config')
 class Importer extends Base {
   constructor () {
     super()
-    this.allUrl = 'https://mangakakalot.com'
-    this.from = 'mangakakalot'
+    this.allUrl = 'https://manganelo.com'
+    this.from = 'manganelo'
   }
 }
 
@@ -21,13 +21,13 @@ class Importer extends Base {
  */
 Importer.prototype.allUpdates = async function () {
   const $ = await this.domFetch(this.allUrl)
-  const arr = $('.itemupdate').map((i, x) => {
+  const arr = $('.content-homepage-item').map((i, x) => {
     const $x = $(x)
-    const title = $x.find('h3 a').text()
-    const li = $x.find('li:nth-child(2)').eq(0)
-    const url = this.ensureAbsoluteUrl(li.find('a').attr('href'))
-    const last = li.find('i').text()
-    const num = parseFloat(li.find('a').attr('href').match(/_([^_]+)$/)[1])
+    const title = $x.find('.item-title').text().trim()
+    const lastEl = $x.find('.item-chapter').eq(0)
+    const url = this.ensureAbsoluteUrl(lastEl.find('a').attr('href'))
+    const last = lastEl.find('i').text()
+    const num = parseFloat(lastEl.find('a').attr('href').match(/_([^_]+)$/)[1])
     const thumbUrl = $x.find('img').attr('src')
     return { title, last, url, num, thumbUrl }
   }).toArray()
@@ -51,7 +51,7 @@ Importer.prototype.linkFromChap = function (chap) {
 }
 /**
  * url maps to a chapter view. e.g
- * https://mangakakalot.com/chapter/to_you_the_immortal/chapter_110
+ * https://manganelo.com/chapter/to_you_the_immortal/chapter_110
  *
  * return all the chaps for given manga
  * {
@@ -70,7 +70,7 @@ Importer.prototype.linkFromChap = function (chap) {
  */
 Importer.prototype.fetchMangaDetail = async function (link, chap = null) {
   const $ = await this.domFetch(link)
-  const chapters = $('.chapter-list .row').map((i, x) => {
+  const chapters = $('.row-content-chapter li').map((i, x) => {
     const a = $(x).find('a')
     const name = a.attr('title')
     const url = this.ensureAbsoluteUrl(a.attr('href'))
@@ -82,15 +82,15 @@ Importer.prototype.fetchMangaDetail = async function (link, chap = null) {
 
   if (!chap) {
     chap = {
-      name: $('.manga-info-text h1').text(),
-      thumbUrl: $('.manga-info-pic img').attr('src')
+      name: $('.story-info-right h1').text(),
+      thumbUrl: $('.story-info-left img').attr('src')
     }
   }
 
   if (!chap.description) {
-    const html = $('#noidungm').html()
+    const html = $('#panel-story-info-description').html()
     if (html) {
-      chap.description = html.replace(/<h2.*<\/h2>/, '').trim()
+      chap.description = html.replace(/<h3.*<\/h3>/, '').trim()
     }
   }
   return { chapters, manga: chap }

@@ -155,8 +155,14 @@ describe('importers/fanfox', function () {
   }))
 
   it('accepts links', Mocker.mockIt(async mokr => {
-    assert(Importer.accepts('https://fanfox.net/manga/onepunch_man/'))
-    assert(Importer.accepts('https://fanfox.net/manga/onepunch_man'))
-    assert(!Importer.accepts('https://fanfox.net/manga/onepunch_man/f'))
+    const imp = new Importer()
+    assert(imp.isLinkValid('https://fanfox.net/manga/onepunch_man/'))
+    assert(imp.isLinkValid('https://fanfox.net/manga/onepunch_man'))
+    assert(!imp.isLinkValid('https://fanfox.net/manga/onepunch_man/f'))
+  }))
+
+  it('accepts chap url', Mocker.mockIt(async mokr => {
+    const imp = new Importer()
+    assert(imp.accepts('https://fanfox.net/manga/onepunch_man/vTBD/c122/1.html'))
   }))
 })
