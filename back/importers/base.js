@@ -8,7 +8,8 @@ Base.prototype.domFetch = async function (url) {
   const $ = cheerio.load(body, {
     xml: {
       normalizeWhitespace: true
-    }
+    },
+    decodeEntities: false
   })
   return $
 }

@@ -1,9 +1,53 @@
 <template>
   <div class="mangaView">
+    <h1>{{ manga.name }}</h1>
+    <div class="pure-g">
+      <div class="pure-u-1-5">
+        <figure>
+          <img :src="manga.thumbUrl"/>
+        </figure>
+      </div>
+      <div class="pure-u-4-5">
+        <div v-if="manga.description.content" class="description">
+          <h3>Description</h3>
+          <blockquote>
+            {{ description }}
+            <footer>
+              <cite>{{ manga.description.from }}</cite>
+            </footer>
+          </blockquote>
+        </div>
+      </div>
+    </div>
     <mt-chapters v-if="ready" :chapters="chapters" :lastRead="lastRead" @trackchapter="trackchapter"></mt-chapters>
   </div>
 </template>
-
+<style scoped>
+.mangaView figure{
+    padding:0;
+    margin:0;
+    width:100%;
+    height:15em;
+}
+.mangaView figure img{
+    height:100%;
+    width:100%;
+    object-fit: cover;
+}
+.mangaView .pure-g > div:nth-child(2) > * {
+  padding-left: 1em;
+  padding-right: 1em;
+}
+.mangaView .description-from {
+  text-align:right;
+}
+.mangaView h3 {
+  margin-top: 0;
+}
+.mangaView .pure-g {
+  margin-bottom: 2em;
+}
+</style>
 <script>
 import { routes } from '../config.js'
 import MangaChapters from '../components/mangaChapters'
@@ -13,13 +57,23 @@ export default {
     return {
       chapters: [],
       mangaId: '',
-      ready: false
+      ready: false,
+      manga: { description: {} }
     }
   },
   computed: {
     lastRead () {
       const m = this.$store.state.myMangas[this.mangaId]
       return typeof m !== 'undefined' ? m : -1
+    },
+    description () {
+      if (!this.manga || !this.manga.description || !this.manga.description.content) {
+        return ''
+      }
+      // decode htmlentities but let vue escape any html stuff
+      const txt = document.createElement('textarea')
+      txt.innerHTML = this.manga.description.content
+      return txt.value
     }
   },
   components: {
@@ -36,10 +90,10 @@ export default {
     dfds.push(this.$store.dispatch('fetchMyMangas'))
     // fetch available chapters
     const nameId = this.$route.params.nameId
-    dfds.push(this.$store.dispatch('fetchMangaDetail', { nameId }).then(({ data }) => {
-      this.mangaId = data.id
+    dfds.push(this.$store.dispatch('fetchMangaDetail', { nameId }).then(({ data: { chapters, ...manga } }) => {
+      this.manga = manga
       const numToMetaChapter = {}
-      data.chapters.sort((a, b) => a.from.localeCompare(b.from)).forEach(({ from, chapters }) => {
+      chapters.sort((a, b) => a.from.localeCompare(b.from)).forEach(({ from, chapters }) => {
         chapters.forEach(chap => {
           numToMetaChapter[chap.num] = numToMetaChapter[chap.num] || { num: chap.num, froms: [], at: 1e15 }
           const metaChapter = numToMetaChapter[chap.num]

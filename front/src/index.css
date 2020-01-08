@@ -195,3 +195,23 @@ a.google:active{
   margin-right:2em;
   margin-top:4em;
 }
+blockquote:before {
+  display: block;
+  height: 0;
+  content: "“";
+  margin-left: -.95em;
+  font: italic 400%/1 Cochin,Georgia,"Times New Roman", serif;
+  color: #999;
+}
+blockquote {
+  padding: .75em .5em .75em 1em;
+  background: #dddddd;
+  border-left: 0.5em solid #DDD;
+}
+blockquote, footer {
+  font-size: 1em;
+  line-height: 1.5;
+}
+blockquote footer:before {
+  content: "— ";
+}

@@ -143,13 +143,21 @@ describe('e2e/mangas', function () {
   it('list one manga', Mocker.mockIt(async function (mokr) {
     await Promise.all([
       MangaModel.create({ name: 'abc' }),
-      MangaModel.upsertManga({ name: 'def', chapters: [{ num: 0, url: 'a', at: 3 }, { num: 1, url: 'b', at: 4 }] }, 'mangakakalot')
+      MangaModel.upsertManga({
+        name: 'def',
+        chapters: [{ num: 0, url: 'a', at: 3 }, { num: 1, url: 'b', at: 4 }],
+        description: 'c',
+        thumbUrl: 'thumb'
+      }, 'mangakakalot')
     ])
 
     const { body } = await utils.requester
       .get('/mangas/def')
       .expect(200)
 
+    assert.strictEqual(body.thumbUrl, 'thumb')
+    assert.strictEqual(body.description.content, 'c')
+    assert.strictEqual(body.description.from, 'mangakakalot')
     const items = body.chapters
     assert.strictEqual(items.length, 1)
     assert.strictEqual(body.name, 'def')

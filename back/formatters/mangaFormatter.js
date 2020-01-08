@@ -28,6 +28,10 @@ Formatter.prototype.formatFull = async function (x) {
     name: x.name,
     nameId: x.nameId,
     thumbUrl: x.thumbUrl,
+    description: {
+      content: x.description_content,
+      from: x.description_from
+    },
     lastChap: {
       num: x.lastChap_num,
       url: x.lastChap_url,

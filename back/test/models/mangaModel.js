@@ -108,4 +108,51 @@ describe('models/mangaModel', function () {
     assert(!got, 'post cond: no manga touched on invalid from')
     assert(called)
   }))
+
+  it('fills description on creation', Mocker.mockIt(async function (mokr) {
+    await MangaModel.upsertManga({
+      name: 'test',
+      chapters: [{ num: 2, url: 'b', at: 10 }],
+      description: 'ok'
+    }, 'mangakakalot')
+    const x = await MangaModel.findOne({ name: 'test' })
+    assert.strictEqual(x.description_content, 'ok')
+    assert.strictEqual(x.description_from, 'mangakakalot')
+  }))
+
+  it('fills description if not existing', Mocker.mockIt(async function (mokr) {
+    await MangaModel.create({ name: 'test'})
+    await MangaModel.upsertManga({
+      name: 'test',
+      chapters: [{ num: 2, url: 'b', at: 10 }],
+      description: 'ok'
+    }, 'mangakakalot')
+    const x = await MangaModel.findOne({ name: 'test' })
+    assert.strictEqual(x.description_content, 'ok')
+    assert.strictEqual(x.description_from, 'mangakakalot')
+  }))
+
+  it('does not touch if description exists', Mocker.mockIt(async function (mokr) {
+    await MangaModel.create({ name: 'test', description_content: 'untouched'})
+    await MangaModel.upsertManga({
+      name: 'test',
+      chapters: [{ num: 2, url: 'b', at: 10 }],
+      description: 'ok'
+    }, 'mangakakalot')
+    const x = await MangaModel.findOne({ name: 'test' })
+    assert.strictEqual(x.description_content, 'untouched')
+  }))
+
+  it('upserts description even if no chap update', Mocker.mockIt(async function (mokr) {
+    await MangaModel.create({ name: 'test', description_content: 'untouched', lastChap_num: 10})
+    await MangaModel.upsertManga({
+      name: 'test',
+      chapters: [{ num: 8, url: 'b', at: 10 }],
+      description: 'ok'
+    }, 'mangakakalot')
+    const x = await MangaModel.findOne({ name: 'test' })
+    assert.strictEqual(x.description_content, 'untouched')
+    assert.strictEqual(x.lastChap_num, 10)
+  }))
+
 })

@@ -88,9 +88,11 @@ Importer.prototype.fetchMangaDetail = async function (link, chap = null) {
   }
 
   if (!chap.description) {
-    const html = $('#panel-story-info-description').html()
-    if (html) {
-      chap.description = html.replace(/<h3.*<\/h3>/, '').trim()
+    let txt = $('#panel-story-info-description').text()
+    const h3 = $('#panel-story-info-description h3').text()
+    if (txt) {
+      txt = txt.replace(new RegExp('^\\s' + h3 + '\\s*'), '')
+      chap.description = txt.trim()
     }
   }
   return { chapters, manga: chap }

@@ -10,7 +10,12 @@
           <tr v-for="metaChapter in chapters" v-bind:key="metaChapter.num" :class="{read:metaChapter.num <= lastTracked}">
               <td>c{{metaChapter.num}}</td>
               <td>
-                <a v-for="from in metaChapter.froms" v-bind:key="metaChapter.num" :href="from.url" class="from" :class="from.klass"></a>
+                <a
+                  v-for="from in metaChapter.froms"
+                  v-bind:key="from.klass+'_'+metaChapter.num"
+                  :href="from.url"
+                  class="from"
+                  :class="from.klass"></a>
               </td>
               <td><time :updatedAt="metaChapter.at">{{humanDate(metaChapter.at)}}</time></td>
               <td @mouseleave="rollback" :data-num="metaChapter.num"></td>
