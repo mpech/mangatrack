@@ -1,34 +1,40 @@
 <template>
-  <table class="pure-table batchList">
-    <thead>
-      <tr>
-        <th>status</th>
-        <th>link</th>
-        <th>at</th>
-      </tr>
-    </thead>
-    <tbody>
-      <mt-batch 
-        v-for="batch in batches"
-        :key="batch.id"
-        :batch="batch"
-        :fieldOrder="['status', 'link', 'at']"
-      />
-    </tbody>
-    <tfoot>
-      <tr>
-        <td colspan="3">
-          <paginate
-            :page-count="pageCount"
-            :click-handler="loadPage"
-            prev-text="Prev"
-            next-text="Next"
-            container-class="pagination"
-          ></paginate>
-        </td>
-      </tr>
-    </tfoot>
-  </table>
+  <div class="batchList">
+    <div v-if="this.newBatches.length">
+      New items ({{this.newBatches.length}}) <button @click="loadPage(1)">Reload</button>
+    </div>
+    <table class="pure-table">
+      <thead>
+        <tr>
+          <th>status</th>
+          <th>link</th>
+          <th>at</th>
+        </tr>
+      </thead>
+      <tbody>
+        <mt-batch 
+          v-for="batch in liveBatches"
+          :key="batch.id+'_'+batch.version"
+          :batch="batch"
+          :live="batch.live"
+          :fieldOrder="['status', 'link', 'at']"
+        />
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="3">
+            <paginate
+              :page-count="pageCount"
+              :click-handler="loadPage"
+              prev-text="Prev"
+              next-text="Next"
+              container-class="pagination"
+            ></paginate>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
 </template>
 <style>
 .pagination {
@@ -60,13 +66,13 @@
   background: inherit;
   text-decoration:none;
 }
-.batchList {
+.batchList table {
   width: 100%;
 }
-.batchList th:nth-child(1) {/* th for empty table*/
+.batchList table th:nth-child(1) {/* th for empty table*/
   width:10%;
 }
-.batchList th:nth-child(2){
+.batchList table th:nth-child(2){
   width:50%;
 }
 </style>
@@ -79,13 +85,40 @@ const BatchList = {
     limit: {
       type: Number,
       default: _ => 20
+    },
+    additionalBatches: {
+      type: Array,
+      default: _ => []
+    }
+  },
+  watch: {
+    additionalBatches (val) {
+      this.batchEvs = this.buildEvs(val)
+    }
+  },
+  computed: {
+    newBatches () {
+      // The new batches are more recent that the very first batch we've ever drawn
+      return Object.values(this.batchEvs).filter(b => b.at > this.firstBatchAt)
+    },
+    liveBatches () {
+      // only additional batches with a version more recent than drawn batch should be taken into account
+      return this.batches.map(b => {
+        const batchEv = this.batchEvs[b.id]
+        if (batchEv && batchEv.version >= b.version) {
+          return batchEv
+        }
+        return b
+      })
     }
   },
   data () {
     return {
       page: 1,
       pageCount: 0,
-      batches: []
+      batches: [],
+      batchEvs: this.buildEvs(this.additionalBatches),
+      firstBatchAt: 0
     }
   },
   components: {
@@ -96,6 +129,13 @@ const BatchList = {
     return this.reload()
   },
   methods: {
+    buildEvs (val) {
+      return val.reduce((acc, b) => {
+        b.live = true
+        acc[b.id] = b
+        return acc
+      }, {})
+    },
     async loadPage (page) {
       this.page = page
       const limit = this.limit
@@ -105,6 +145,9 @@ const BatchList = {
       })
       this.batches = items
       this.pageCount = Math.ceil(count / this.limit)
+      if (page === 1 && this.batches.length) {
+        this.firstBatchAt = this.batches[0].at
+      }
     },
     async reload () {
       return this.loadPage(this.page)

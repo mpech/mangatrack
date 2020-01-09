@@ -12,6 +12,11 @@
       title="my space"
     >Me</a>
 
+    <router-link to="/admin" 
+      class="pure-menu-heading pure-menu-link admin"
+      :class="{hide:!admin}"
+    >Admin</router-link>
+
     <router-link to="/login" 
       class="pure-menu-heading pure-menu-link login" 
       :class="{hide:logged}"
@@ -22,17 +27,15 @@
       class="pure-menu-heading pure-menu-link logout"
       :class="{hide:!logged}"
     >Logout</router-link>
-
-    <router-link to="/admin" 
-      class="pure-menu-heading pure-menu-link admin"
-      :class="{hide:!admin}"
-    >Admin</router-link>
   </div>
 
 </template>
 <style scoped>
+.admin {
+  color: #ff8080;
+}
 .admin.hide {
-  display:none;
+  display: none;
 }
 </style>
 <script>

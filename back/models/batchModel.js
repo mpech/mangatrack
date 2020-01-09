@@ -12,7 +12,10 @@ const schema = new Schema({
 })
 
 mongooseUtil.setStatic('findOneForSure', schema)
-
+schema.pre('save', function (next) {
+  this.increment()
+  return next()
+})
+schema.index({ at: 1 })
 schema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 })
-
 module.exports = mongoose.model('Batch', schema, 'batches')

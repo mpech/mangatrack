@@ -28,6 +28,26 @@ describe('e2e/admin/batch', function () {
 
     assert.strictEqual(items.length, 1)
     assert.strictEqual(items[0].link, 'a')
+    assert.strictEqual(items[0].version, 0)
+  }))
+
+  it('get batches page 2', Mocker.mockIt(async function (mokr) {
+    const userId = '0'.repeat(24)
+    const token = 'abc'
+    await Promise.all([
+      UserModel.create({ _id: userId, googleId: 'g', displayName: 'moran', admin: true }),
+      AtModel.create({ token, userId }),
+      BatchModel.create({ link: 'a', status: 'OK', at: 1 }),
+      BatchModel.create({ link: 'b', at: 0 })
+    ])
+
+    const { body: { items } } = await utils.requester
+      .get('/admin/batches?limit=1&offset=1')
+      .set({ Authorization: 'Bearer ' + token })
+      .expect(200)
+
+    assert.strictEqual(items.length, 1)
+    assert.strictEqual(items[0].link, 'b')
   }))
 
   it('does not get batches if unauth', Mocker.mockIt(async function (mokr) {

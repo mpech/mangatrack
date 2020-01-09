@@ -10,7 +10,7 @@ it('repoll upon batch add', async () => {
       Vue.prototype.$notify = x => {}
     }
   })
-  const wrapper = await new Promise((resolve, reject) => {
+  await new Promise((resolve, reject) => {
     const store = new Vuex.Store({
       actions: {
         async getAllBatchesById (context, ids) {
@@ -34,7 +34,7 @@ it('ignores processed batchIds', async () => {
       Vue.prototype.$notify = x => {}
     }
   })
-  const wrapper = await new Promise((resolve, reject) => {
+  await new Promise((resolve, reject) => {
     const store = new Vuex.Store({
       actions: {
         async getAllBatchesById (context, ids) {
@@ -45,7 +45,7 @@ it('ignores processed batchIds', async () => {
       }
     })
     const wrapper = mount(BatchPoller, { store, localVue })
-    wrapper.setData({ doneIds: { '123': true } })
+    wrapper.setData({ doneIds: { 123: true } })
     wrapper.setProps({ ids: ['123', '456'] })
   })
 })
@@ -62,11 +62,13 @@ it('marks batchIds as done', async () => {
     const store = new Vuex.Store({
       actions: {
         async getAllBatchesById (context, ids) {
-          return { items: [
-            { id: '1', status: 'OK' },
-            { id: '2', status: 'PENDING'},
-            { id: '3', status: 'KO'}
-          ] }
+          return {
+            items: [
+              { id: '1', status: 'OK' },
+              { id: '2', status: 'PENDING' },
+              { id: '3', status: 'KO' }
+            ]
+          }
         }
       }
     })

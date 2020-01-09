@@ -51,7 +51,8 @@ LinkActivity.prototype.importLink = function (link, chap = null) {
       } else {
         state = { status: 'OK' }
       }
-      await BatchModel.updateOne({ _id: batch.id }, { $set: state })
+      batch.set(state)
+      await batch.save()
       return Object.assign(batch, state)
     },
     _ => ev.emit('batchended', batch)

@@ -48,7 +48,7 @@ storiesOf('BatchPoller', module)
         ids: {
           default: _ => ['1']
         },
-        'pollingDelay': {
+        pollingDelay: {
           default: _ => 1000
         }
       },

@@ -121,7 +121,7 @@ describe('models/mangaModel', function () {
   }))
 
   it('fills description if not existing', Mocker.mockIt(async function (mokr) {
-    await MangaModel.create({ name: 'test'})
+    await MangaModel.create({ name: 'test' })
     await MangaModel.upsertManga({
       name: 'test',
       chapters: [{ num: 2, url: 'b', at: 10 }],
@@ -133,7 +133,7 @@ describe('models/mangaModel', function () {
   }))
 
   it('does not touch if description exists', Mocker.mockIt(async function (mokr) {
-    await MangaModel.create({ name: 'test', description_content: 'untouched'})
+    await MangaModel.create({ name: 'test', description_content: 'untouched' })
     await MangaModel.upsertManga({
       name: 'test',
       chapters: [{ num: 2, url: 'b', at: 10 }],
@@ -144,7 +144,7 @@ describe('models/mangaModel', function () {
   }))
 
   it('upserts description even if no chap update', Mocker.mockIt(async function (mokr) {
-    await MangaModel.create({ name: 'test', description_content: 'untouched', lastChap_num: 10})
+    await MangaModel.create({ name: 'test', description_content: 'untouched', lastChap_num: 10 })
     await MangaModel.upsertManga({
       name: 'test',
       chapters: [{ num: 8, url: 'b', at: 10 }],
@@ -154,5 +154,4 @@ describe('models/mangaModel', function () {
     assert.strictEqual(x.description_content, 'untouched')
     assert.strictEqual(x.lastChap_num, 10)
   }))
-
 })

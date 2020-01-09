@@ -3,7 +3,7 @@
     <h1>Admin pannel</h1>
     <mt-link-importer @importLink="addBatch"/>
     <mt-batch-poller :ids="batchIds" @change="batchDone"/>
-    <mt-batch-list :limit="10" :key="reloadId"/>
+    <mt-batch-list :limit="10" :additional-batches="Object.values(batches)"/>
   </div>
   <div v-else>
     You may have been unlogged. Relog yourself
@@ -22,13 +22,12 @@ import BatchPoller from '../components/batchPoller'
 const Admin = {
   data () {
     return {
-      batches: [],
-      reloadId: 0
+      batches: {}
     }
   },
   computed: {
     batchIds () {
-      return this.batches.map(b => b.id)
+      return Object.keys(this.batches)
     }
   },
   components: {
@@ -39,11 +38,10 @@ const Admin = {
   methods: {
     async addBatch (link) {
       const batch = await this.$store.dispatch('importLink', { link })
-      this.batches.push(batch)
-      this.reloadId++
+      this.$set(this.batches, batch.id, batch)
     },
-    async batchDone () {
-      this.reloadId++
+    batchDone (batch) {
+      this.$set(this.batches, batch.id, batch)
     }
   }
 }

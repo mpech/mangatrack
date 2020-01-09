@@ -183,10 +183,10 @@ const store = new Vuex.Store({
       const url = apiRoutes.mangaDetail.replace('{{nameId}}', nameId)
       return this.axios.get(url, { anonAllowed: true })
     },
-    async getBatches (context, { offset = 0, limit = 20 } = { offset, limit }) {
-      return this.axios.get(apiRoutes.batches, { offset, limit }).then(({ data }) => data)
+    async getBatches (context, { offset = 0, limit = 20 } = {}) {
+      return this.axios.get(apiRoutes.batches, { params: { offset, limit } }).then(({ data }) => data)
     },
-    async getAllBatchesById(context, ids) {
+    async getAllBatchesById (context, ids) {
       const payload = {
         params: {
           id: ids,

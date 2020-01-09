@@ -1,14 +1,20 @@
 <template>
-  <tr>
+  <tr :class="{ live }">
     <td v-for="v in fields">{{v}}</td> 
   </tr>
 </template>
+<style scoped>
+.live {
+  background: #ddd;
+}
+</style>
 <script>
 import moment from 'moment'
 
 const Batch = {
   props: {
     batch: Object,
+    live: Boolean,
     fieldOrder: {
       validator (v) {
         const keys = new Set(['link', 'at', 'status'])

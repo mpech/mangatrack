@@ -4,7 +4,9 @@ exports[`Storyshots Batch at, link, status 1`] = `
 <table
   class="pure-table"
 >
-  <tr>
+  <tr
+    class=""
+  >
     <td>
       2 days ago
     </td>
@@ -22,7 +24,9 @@ exports[`Storyshots Batch link, status, at 1`] = `
 <table
   class="pure-table"
 >
-  <tr>
+  <tr
+    class=""
+  >
     <td>
       https://mangakakalot.com/manga/versatile_mage
     </td>
@@ -36,134 +40,320 @@ exports[`Storyshots Batch link, status, at 1`] = `
 </table>
 `;
 
-exports[`Storyshots BatchList default 1`] = `
+exports[`Storyshots Batch live batch 1`] = `
 <table
-  class="pure-table batchList"
+  class="pure-table"
 >
-  <thead>
-    <tr>
-      <th>
-        status
-      </th>
-       
-      <th>
-        link
-      </th>
-       
-      <th>
-        at
-      </th>
-    </tr>
-  </thead>
-   
-  <tbody />
-   
-  <tfoot>
-    <tr>
-      <td
-        colspan="3"
-      >
-        <ul
-          class="pagination"
-          data-v-82963a40=""
-        >
-          <!---->
-           
-          <li
-            class="disabled"
-            data-v-82963a40=""
-          >
-            <a
-              data-v-82963a40=""
-              tabindex="-1"
-            >
-              Prev
-            </a>
-          </li>
-            
-          <li
-            class="disabled"
-            data-v-82963a40=""
-          >
-            <a
-              data-v-82963a40=""
-              tabindex="-1"
-            >
-              Next
-            </a>
-          </li>
-           
-          <!---->
-        </ul>
-      </td>
-    </tr>
-  </tfoot>
+  <tr
+    class="live"
+  >
+    <td>
+      https://mangakakalot.com/manga/versatile_mage
+    </td>
+    <td>
+      OK
+    </td>
+    <td>
+      2 days ago
+    </td>
+  </tr>
 </table>
 `;
 
-exports[`Storyshots BatchList two per page 1`] = `
-<table
-  class="pure-table batchList"
+exports[`Storyshots BatchList additional batch if more recent than page 1 1`] = `
+<div
+  class="batchList"
 >
-  <thead>
-    <tr>
-      <th>
-        status
-      </th>
-       
-      <th>
-        link
-      </th>
-       
-      <th>
-        at
-      </th>
-    </tr>
-  </thead>
+  <div>
+    
+    New items (1) 
+    <button>
+      Reload
+    </button>
+  </div>
    
-  <tbody />
-   
-  <tfoot>
-    <tr>
-      <td
-        colspan="3"
-      >
-        <ul
-          class="pagination"
-          data-v-82963a40=""
+  <table
+    class="pure-table"
+  >
+    <thead>
+      <tr>
+        <th>
+          status
+        </th>
+         
+        <th>
+          link
+        </th>
+         
+        <th>
+          at
+        </th>
+      </tr>
+    </thead>
+     
+    <tbody />
+     
+    <tfoot>
+      <tr>
+        <td
+          colspan="3"
         >
-          <!---->
-           
-          <li
-            class="disabled"
+          <ul
+            class="pagination"
             data-v-82963a40=""
           >
-            <a
+            <!---->
+             
+            <li
+              class="disabled"
               data-v-82963a40=""
-              tabindex="-1"
             >
-              Prev
-            </a>
-          </li>
-            
-          <li
-            class="disabled"
+              <a
+                data-v-82963a40=""
+                tabindex="-1"
+              >
+                Prev
+              </a>
+            </li>
+              
+            <li
+              class="disabled"
+              data-v-82963a40=""
+            >
+              <a
+                data-v-82963a40=""
+                tabindex="-1"
+              >
+                Next
+              </a>
+            </li>
+             
+            <!---->
+          </ul>
+        </td>
+      </tr>
+    </tfoot>
+  </table>
+</div>
+`;
+
+exports[`Storyshots BatchList default 1`] = `
+<div
+  class="batchList"
+>
+  <!---->
+   
+  <table
+    class="pure-table"
+  >
+    <thead>
+      <tr>
+        <th>
+          status
+        </th>
+         
+        <th>
+          link
+        </th>
+         
+        <th>
+          at
+        </th>
+      </tr>
+    </thead>
+     
+    <tbody />
+     
+    <tfoot>
+      <tr>
+        <td
+          colspan="3"
+        >
+          <ul
+            class="pagination"
             data-v-82963a40=""
           >
-            <a
+            <!---->
+             
+            <li
+              class="disabled"
               data-v-82963a40=""
-              tabindex="-1"
             >
-              Next
-            </a>
-          </li>
-           
-          <!---->
-        </ul>
-      </td>
-    </tr>
-  </tfoot>
-</table>
+              <a
+                data-v-82963a40=""
+                tabindex="-1"
+              >
+                Prev
+              </a>
+            </li>
+              
+            <li
+              class="disabled"
+              data-v-82963a40=""
+            >
+              <a
+                data-v-82963a40=""
+                tabindex="-1"
+              >
+                Next
+              </a>
+            </li>
+             
+            <!---->
+          </ul>
+        </td>
+      </tr>
+    </tfoot>
+  </table>
+</div>
+`;
+
+exports[`Storyshots BatchList no additional batch if additional batch are in the past 1`] = `
+<div
+  class="batchList"
+>
+  <div>
+    
+    New items (2) 
+    <button>
+      Reload
+    </button>
+  </div>
+   
+  <table
+    class="pure-table"
+  >
+    <thead>
+      <tr>
+        <th>
+          status
+        </th>
+         
+        <th>
+          link
+        </th>
+         
+        <th>
+          at
+        </th>
+      </tr>
+    </thead>
+     
+    <tbody />
+     
+    <tfoot>
+      <tr>
+        <td
+          colspan="3"
+        >
+          <ul
+            class="pagination"
+            data-v-82963a40=""
+          >
+            <!---->
+             
+            <li
+              class="disabled"
+              data-v-82963a40=""
+            >
+              <a
+                data-v-82963a40=""
+                tabindex="-1"
+              >
+                Prev
+              </a>
+            </li>
+              
+            <li
+              class="disabled"
+              data-v-82963a40=""
+            >
+              <a
+                data-v-82963a40=""
+                tabindex="-1"
+              >
+                Next
+              </a>
+            </li>
+             
+            <!---->
+          </ul>
+        </td>
+      </tr>
+    </tfoot>
+  </table>
+</div>
+`;
+
+exports[`Storyshots BatchList two per page 1`] = `
+<div
+  class="batchList"
+>
+  <!---->
+   
+  <table
+    class="pure-table"
+  >
+    <thead>
+      <tr>
+        <th>
+          status
+        </th>
+         
+        <th>
+          link
+        </th>
+         
+        <th>
+          at
+        </th>
+      </tr>
+    </thead>
+     
+    <tbody />
+     
+    <tfoot>
+      <tr>
+        <td
+          colspan="3"
+        >
+          <ul
+            class="pagination"
+            data-v-82963a40=""
+          >
+            <!---->
+             
+            <li
+              class="disabled"
+              data-v-82963a40=""
+            >
+              <a
+                data-v-82963a40=""
+                tabindex="-1"
+              >
+                Prev
+              </a>
+            </li>
+              
+            <li
+              class="disabled"
+              data-v-82963a40=""
+            >
+              <a
+                data-v-82963a40=""
+                tabindex="-1"
+              >
+                Next
+              </a>
+            </li>
+             
+            <!---->
+          </ul>
+        </td>
+      </tr>
+    </tfoot>
+  </table>
+</div>
 `;
 
 exports[`Storyshots BatchPoller should not notify (pending) 1`] = `<div />`;
@@ -979,6 +1169,13 @@ exports[`Storyshots Menu logged admin 1`] = `
   </a>
    
   <a
+    class="pure-menu-heading pure-menu-link admin"
+    href="#/admin"
+  >
+    Admin
+  </a>
+   
+  <a
     class="pure-menu-heading pure-menu-link login hide"
     href="#/login"
     title="Mainly sync your tracked stuff"
@@ -991,13 +1188,6 @@ exports[`Storyshots Menu logged admin 1`] = `
     href="#/login"
   >
     Logout
-  </a>
-   
-  <a
-    class="pure-menu-heading pure-menu-link admin"
-    href="#/admin"
-  >
-    Admin
   </a>
 </div>
 `;
@@ -1022,6 +1212,13 @@ exports[`Storyshots Menu no logged no admin 1`] = `
   </a>
    
   <a
+    class="pure-menu-heading pure-menu-link admin hide"
+    href="#/admin"
+  >
+    Admin
+  </a>
+   
+  <a
     class="pure-menu-heading pure-menu-link login"
     href="#/login"
     title="Mainly sync your tracked stuff"
@@ -1034,13 +1231,6 @@ exports[`Storyshots Menu no logged no admin 1`] = `
     href="#/login"
   >
     Logout
-  </a>
-   
-  <a
-    class="pure-menu-heading pure-menu-link admin hide"
-    href="#/admin"
-  >
-    Admin
   </a>
 </div>
 `;

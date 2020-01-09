@@ -1,5 +1,4 @@
 import { storiesOf } from '@storybook/vue'
-import { action } from '@storybook/addon-actions'
 import Batch from './batch'
 
 export const batch = {
@@ -17,13 +16,13 @@ storiesOf('Batch', module)
           default: _ => batch
         },
         fieldOrder: {
-          default: _ => ['at', 'link', 'status'] 
+          default: _ => ['at', 'link', 'status']
         }
       },
       components: {
         'mt-batch': Batch
       },
-      template: '<table class="pure-table"><mt-batch :batch="this.batch" :fieldOrder="fieldOrder"/></table>',
+      template: '<table class="pure-table"><mt-batch :batch="this.batch" :fieldOrder="fieldOrder"/></table>'
     }
   })
   .add('link, status, at', () => {
@@ -33,12 +32,28 @@ storiesOf('Batch', module)
           default: _ => batch
         },
         fieldOrder: {
-          default: _ => ['link', 'status', 'at'] 
+          default: _ => ['link', 'status', 'at']
         }
       },
       components: {
         'mt-batch': Batch
       },
-      template: '<table class="pure-table"><mt-batch :batch="this.batch" :fieldOrder="fieldOrder"/></table>',
+      template: '<table class="pure-table"><mt-batch :batch="this.batch" :fieldOrder="fieldOrder"/></table>'
+    }
+  })
+  .add('live batch', () => {
+    return {
+      props: {
+        batch: {
+          default: _ => batch
+        },
+        fieldOrder: {
+          default: _ => ['link', 'status', 'at']
+        }
+      },
+      components: {
+        'mt-batch': Batch
+      },
+      template: '<table class="pure-table"><mt-batch :batch="this.batch" :live="true" :fieldOrder="fieldOrder"/></table>'
     }
   })

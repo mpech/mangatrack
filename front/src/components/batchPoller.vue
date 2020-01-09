@@ -77,10 +77,13 @@ const BatchPoller = {
      */
     async refresh () {
       const { items: batches } = await this.$store.dispatch('getAllBatchesById', this.batchIds)
-      const statuses = batches.map(b => this.handleBatch(b))
-      if (statuses.some(x => x !== 'PENDING')) {
-        this.$emit('change')
-      }
+      const statuses = batches.map(b => {
+        const status = this.handleBatch(b)
+        if (status !== 'PENDING') {
+          this.$emit('change', b)
+        }
+        return status
+      })
       return statuses.every(s => s !== 'PENDING')
     },
     stopPolling () {

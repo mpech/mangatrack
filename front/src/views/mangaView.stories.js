@@ -7,7 +7,6 @@ import MangaView from './mangaView'
 
 Vue.use(Vuex)
 
-
 storiesOf('MangaView', module)
   .addDecorator(StoryRouter())
   .add('default', () => {
@@ -44,7 +43,7 @@ storiesOf('MangaView', module)
       components: {
         'mt-mangaView': MangaView
       },
-      template: '<mt-mangaView/>',
+      template: '<mt-mangaView/>'
     }
   })
   .add('without description', () => {
@@ -76,7 +75,7 @@ storiesOf('MangaView', module)
       components: {
         'mt-mangaView': MangaView
       },
-      template: '<mt-mangaView/>',
+      template: '<mt-mangaView/>'
     }
   })
   .add('html escaped but htmlentities decoded', () => {
@@ -108,6 +107,6 @@ storiesOf('MangaView', module)
       components: {
         'mt-mangaView': MangaView
       },
-      template: '<mt-mangaView/>',
+      template: '<mt-mangaView/>'
     }
   })

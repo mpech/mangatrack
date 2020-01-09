@@ -46,6 +46,7 @@ describe('activity/refreshActivity', function () {
     assert.strictEqual(chapters.map(x => x.at).join(','), '4,2,0')
     const batch = await BatchModel.findOne({ link: 'xx' })
     assert.strictEqual(batch.status, 'OK')
+    assert.strictEqual(batch.__v, 1)
   }))
 
   it('can fail the batch with reason', Mocker.mockIt(async mokr => {
