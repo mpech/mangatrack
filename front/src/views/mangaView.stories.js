@@ -78,6 +78,45 @@ storiesOf('MangaView', module)
       template: '<mt-mangaView/>'
     }
   })
+  .add('show viewed chapters', () => {
+    const store = new Vuex.Store({
+      state: {
+        myMangas: {
+          ['0'.repeat(24)]: 1
+        }
+      },
+      actions: {
+        async fetchMangaDetail (context, { offset, limit }) {
+          return {
+            data: {
+              id: '0'.repeat(24),
+              name: 'Cultivation Chat Group',
+              thumbUrl: 'https://upload.wikimedia.org/wikipedia/en/7/7d/Lenna_%28test_image%29.png',
+              description: {},
+              chapters: [
+                {
+                  from: 'manganelo',
+                  chapters: [
+                    { num: 2, url: 'xx', at: 1578509397314 },
+                    { num: 1, url: 'xx', at: 1578509397314 },
+                    { num: 0.5, url: 'xx', at: 1578509397314 }
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        fetchMyMangas: action('fetchMyMangas')
+      }
+    })
+    return {
+      store: store,
+      components: {
+        'mt-mangaView': MangaView
+      },
+      template: '<mt-mangaView/>'
+    }
+  })
   .add('html escaped but htmlentities decoded', () => {
     const store = new Vuex.Store({
       state: {

@@ -63,7 +63,7 @@ export default {
   },
   computed: {
     lastRead () {
-      const m = this.$store.state.myMangas[this.mangaId]
+      const m = this.$store.state.myMangas[this.manga.id]
       return typeof m !== 'undefined' ? m : -1
     },
     description () {
@@ -81,7 +81,7 @@ export default {
   },
   methods: {
     trackchapter (num) {
-      this.$store.dispatch('trackManga', { id: this.mangaId, num })
+      this.$store.dispatch('trackManga', { id: this.manga.id, num })
     }
   },
   mounted () {

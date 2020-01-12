@@ -1119,6 +1119,36 @@ exports[`Storyshots MangaView html escaped but htmlentities decoded 1`] = `
 </div>
 `;
 
+exports[`Storyshots MangaView show viewed chapters 1`] = `
+<div
+  class="mangaView"
+>
+  <h1>
+    
+  </h1>
+   
+  <div
+    class="pure-g"
+  >
+    <div
+      class="pure-u-1-5"
+    >
+      <figure>
+        <img />
+      </figure>
+    </div>
+     
+    <div
+      class="pure-u-4-5"
+    >
+      <!---->
+    </div>
+  </div>
+   
+  <!---->
+</div>
+`;
+
 exports[`Storyshots MangaView without description 1`] = `
 <div
   class="mangaView"
