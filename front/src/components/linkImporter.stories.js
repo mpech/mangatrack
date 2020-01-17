@@ -10,7 +10,9 @@ storiesOf('LinkImporter', module)
       },
       template: '<mt-linkImporter @importLink="importLink"/>',
       methods: {
-        importLink: action('ev-importLink')
+        importLink: function (body) {
+          action('ev-importLink')(body)
+        }
       }
     }
   })

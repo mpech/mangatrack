@@ -1042,11 +1042,38 @@ exports[`Storyshots LinkImporter default 1`] = `
     >
       <input
         class="pure-input-1-2"
+        name="link"
         pattern="^https://(mangakakalot.com|manganelo.com|fanfox.net)/manga/[^/]+/?"
         placeholder="https://mangakakalot.com/manga/versatile_mage"
         required="required"
         type="text"
       />
+       
+      <label
+        class="pure-checkbox"
+        for="thumb"
+      >
+        <input
+          id="thumb"
+          name="thumb"
+          type="checkbox"
+        />
+         Refresh thumb
+      
+      </label>
+       
+      <label
+        class="pure-checkbox"
+        for="description"
+      >
+        <input
+          id="description"
+          name="description"
+          type="checkbox"
+        />
+         Refresh description
+      
+      </label>
        
       <button
         class="pure-button pure-button-primary pure-input"

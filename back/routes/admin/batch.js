@@ -39,11 +39,15 @@ function load (app) {
 
   app.post('/admin/batches', app.oauth.authenticate(), helper.userOnReq, helper.ensureAdmin, validate({
     body: {
-      link: Joi.string().required()
+      link: Joi.string().required(),
+      refreshThumb: Joi.boolean(),
+      refreshDescription: Joi.boolean()
     }
   }), prom(async function (req, res) {
+    const refreshThumb = req.body.refreshThumb
+    const refreshDescription = req.body.refreshDescription
     const batch = await new Promise((resolve, reject) => {
-      const ev = linkProcess.run(req.body.link)
+      const ev = linkProcess.run(req.body.link, Date.now(), { refreshThumb, refreshDescription })
       ev.on('batchstarted', resolve)
     })
     return module.exports.formatter.format(batch)

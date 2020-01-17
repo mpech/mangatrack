@@ -154,4 +154,18 @@ describe('models/mangaModel', function () {
     assert.strictEqual(x.description_content, 'untouched')
     assert.strictEqual(x.lastChap_num, 10)
   }))
+
+  it('overrides description and url', Mocker.mockIt(async function (mokr) {
+    await MangaModel.create({ name: 'test', thumbUrl: 'b', description_content: 'a' })
+    await MangaModel.upsertManga({
+      name: 'test',
+      chapters: [{ num: 2, url: 'b', at: 10 }],
+      description: 'ok',
+      thumbUrl: 'a'
+    }, 'mangakakalot', { refreshThumbUrl: true, refreshDescription: true })
+    const x = await MangaModel.findOne({ name: 'test' })
+    assert.strictEqual(x.description_content, 'ok')
+    assert.strictEqual(x.description_from, 'mangakakalot')
+    assert.strictEqual(x.thumbUrl, 'b')
+  }))
 })

@@ -196,8 +196,8 @@ const store = new Vuex.Store({
       const { data } = await this.axios.getAll(apiRoutes.batches, payload)
       return data
     },
-    async importLink (context, { link }) {
-      const { data } = await this.axios.post(apiRoutes.batches, { link }, _ => {
+    async importLink (context, { link, refreshThumb, refreshDescription }) {
+      const { data } = await this.axios.post(apiRoutes.batches, { link, refreshThumb, refreshDescription }, _ => {
         throw new Error('no fallback available')
       })
       return data

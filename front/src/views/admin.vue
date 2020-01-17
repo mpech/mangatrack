@@ -36,8 +36,8 @@ const Admin = {
     'mt-batch-list': BatchList
   },
   methods: {
-    async addBatch (link) {
-      const batch = await this.$store.dispatch('importLink', { link })
+    async addBatch ({ link, refreshDescription, refreshThumb }) {
+      const batch = await this.$store.dispatch('importLink', { link, refreshDescription, refreshThumb })
       this.$set(this.batches, batch.id, batch)
     },
     batchDone (batch) {

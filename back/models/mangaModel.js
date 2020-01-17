@@ -59,7 +59,7 @@ schema.statics.findChapter = async function ({ nameId, _id, num }, from) {
  * Assumes chapter is sorted by num desc
  * @return {[type]}       [description]
  */
-schema.statics.upsertManga = async function (manga, from) {
+schema.statics.upsertManga = async function (manga, from, options = { refreshThumb: false, refreshDescription: false }) {
   {
     // run the validator over 'from' field
     const b = new ChapterModel({ from, mangaId: '0'.repeat(24) })
@@ -78,27 +78,31 @@ schema.statics.upsertManga = async function (manga, from) {
     lastChap_url: manga.chapters[0].url,
     lastChap_at: manga.chapters[0].at
   }
-  let description
-  if (manga.description) {
-    description = {
-      description_content: manga.description,
-      description_from: from
-    }
+  const facultativeProps = {
+    description_content: manga.description,
+    description_from: from,
+    thumbUrl: manga.thumbUrl
   }
 
   manga.nameId = manga.nameId || this.canonicalize(manga.name)
   let el = await this.findOne({ nameId: manga.nameId })
   if (!el) {
     config.logger.dbg('creating ', manga.nameId)
-    el = await this.create({ ...manga, ...lastChap, ...description })
+    el = await this.create({ ...manga, ...lastChap, ...facultativeProps })
   } else {
-    if (el.description_content) {
-      description = {}
+    // set the NEW property if it exists and (we are allowed to do so (refresh option) or it does not exist yet)
+    // by default it is set, so do the negation
+    if (!(facultativeProps.thumbUrl && (!el.thumbUrl || options.refreshThumb))) {
+      delete facultativeProps.thumbUrl
+    }
+    if (!(facultativeProps.description_content && (!el.description_content || options.refreshDescription))) {
+      delete facultativeProps.description_content
+      delete facultativeProps.description_from
     }
     if (lastChap.lastChap_num <= el.lastChap_num) {
       lastChap = {}
     }
-    const set = { ...lastChap, ...description }
+    const set = { ...lastChap, ...facultativeProps }
     if (Object.keys(set).length) {
       await this.updateOne(
         { nameId: manga.nameId },

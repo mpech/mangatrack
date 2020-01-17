@@ -21,7 +21,7 @@ LinkActivity.prototype.importChap = function (chap) {
   return this.importLink(link, chap)
 }
 
-LinkActivity.prototype.importLink = function (link, chap = null) {
+LinkActivity.prototype.importLink = function (link, chap = null, options = {}) {
   const ev = new EventEmitter()
   let batch
   APH.tail = [
@@ -32,7 +32,7 @@ LinkActivity.prototype.importLink = function (link, chap = null) {
       try {
         config.logger.dbg('fetching', link)
         const { chapters, manga } = await this.imp.fetchMangaDetail(link, chap)
-        await MangaModel.upsertManga({ chapters, ...manga }, this.imp.from).catch(e => {
+        await MangaModel.upsertManga({ chapters, ...manga }, this.imp.from, options).catch(e => {
           err = this._shortError(e)
           config.logger.inf('failed to save', chapters[0], '...', err)
         })
