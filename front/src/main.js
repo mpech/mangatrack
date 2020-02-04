@@ -7,7 +7,7 @@ import Notifications from 'vue-notification'
 Vue.config.productionTip = false
 Vue.use(Notifications)
 /* eslint-disable no-new */
-new Vue({
+window.vm = new Vue({
   router,
   store,
   render: h => h(App)

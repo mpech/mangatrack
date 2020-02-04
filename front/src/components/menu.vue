@@ -51,7 +51,7 @@ const Menu = {
   },
   mounted () {
     this.$el.querySelector('.logout').onclick = e => {
-      this.$store.commit('logout')
+      this.$store.dispatch('logout')
     }
   }
 }

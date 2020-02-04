@@ -1,6 +1,8 @@
-let api = 'http://localhost:4020'
+let api
 if (window.location.host.includes('.com')) {
   api = 'https://mangatrackapi.nodekoko.com'
+} else {
+  api = `http://${window.location.host.replace(/:.*$/g, '')}:4020`
 }
 const routes = {
   mangas: `${api}/mangas`,

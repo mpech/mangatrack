@@ -3,6 +3,7 @@ import axios from 'axios'
 class OnOffAxios {
   constructor (store) {
     this.$store = store
+    this.axios = axios
   }
 
   /**
@@ -46,7 +47,7 @@ class OnOffAxios {
           this._mergeOrPush(args, headers)
         }
       }
-      return axios[verb].apply(axios, args).catch(({ response }) => {
+      return this.axios[verb].apply(this.axios, args).catch(({ response }) => {
         const e = response.data
         // last condition not necessary IF refreshToken action does not called _forward
         // let as is in case
@@ -123,7 +124,7 @@ class OnOffAxios {
   }
 
   raw (verb, ...args) {
-    return axios[verb](...args)
+    return this.axios[verb](...args)
   }
 }
 export default OnOffAxios
