@@ -36,16 +36,20 @@ time{
     font-size:1em;
     text-align:right;
 }
-.truckkun{
-    color:white;
-}
 .hide, .logout.hide, .login.hide{
     display:none;
 }
 
 #pageDisplay{
-    padding:2em;
+    padding: 1em;
 }
+
+@media only screen and (min-width: 1024px) {
+  #pageDisplay{
+      padding: 2em;
+  }
+}
+
 .mt-grid{
     text-align:center;
 }
@@ -87,46 +91,6 @@ time{
   position:absolute;
   right:0px;
   font-size:0.8em;
-}
-.mangaView .isekaied{
-    background:#CCCCCC;
-}
-.mangaView .read{
-    background:#CCCCCC;
-}
-.mangaView td:last-child:hover{
-    cursor:pointer;
-    background:#CCCCCC;
-}
-.mangaView .truckkun{
-    background: #1976d2;
-    border-radius: 50%;
-    color:white;
-    display:block;
-    padding:0.2em;
-}
-a.from{
-  width:15px;
-  height:15px;
-  display:inline-block;
-  margin-left:8px;
-  margin-right:8px;
-  background-size: cover;
-}
-a.from:first-child{
-  margin-left:0px;
-}
-a.from:last-child{
-  margin-right:0px;
-}
-.from-mangakakalot{
-  background-image: url('./assets/mangakakalot.png');
-}
-.from-fanfox{
-  background-image: url('./assets/fanfox.png');
-}
-.from-manganelo{
-  background-image: url('./assets/manganelo.png');
 }
 a.google{
     display:block;
