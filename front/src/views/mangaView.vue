@@ -2,12 +2,12 @@
   <div class="mangaView">
     <h1>{{ manga.name }}</h1>
     <div class="pure-g">
-      <div class="pure-u-1-5">
+      <div class="pure-u-5-5 pure-u-lg-1-5">
         <figure>
           <img :src="manga.thumbUrl"/>
         </figure>
       </div>
-      <div class="pure-u-4-5">
+      <div class="pure-u-5-5 pure-u-lg-4-5">
         <div v-if="manga.description.content" class="description">
           <h3>Description</h3>
           <blockquote>
@@ -34,9 +34,9 @@
     width:100%;
     object-fit: cover;
 }
-.mangaView .pure-g > div:nth-child(2) > * {
-  padding-left: 1em;
-  padding-right: 1em;
+.mangaView .pure-g > div {
+  box-sizing: border-box;
+  padding: 1em;
 }
 .mangaView .description-from {
   text-align:right;
@@ -44,7 +44,7 @@
 .mangaView h3 {
   margin-top: 0;
 }
-.mangaView .pure-g {
+.mangaView .pure-g > div {
   margin-bottom: 2em;
 }
 </style>

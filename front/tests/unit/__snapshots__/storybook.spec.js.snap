@@ -1098,7 +1098,7 @@ exports[`Storyshots MangaView default 1`] = `
     class="pure-g"
   >
     <div
-      class="pure-u-1-5"
+      class="pure-u-5-5 pure-u-lg-1-5"
     >
       <figure>
         <img />
@@ -1106,7 +1106,7 @@ exports[`Storyshots MangaView default 1`] = `
     </div>
      
     <div
-      class="pure-u-4-5"
+      class="pure-u-5-5 pure-u-lg-4-5"
     >
       <!---->
     </div>
@@ -1128,7 +1128,7 @@ exports[`Storyshots MangaView html escaped but htmlentities decoded 1`] = `
     class="pure-g"
   >
     <div
-      class="pure-u-1-5"
+      class="pure-u-5-5 pure-u-lg-1-5"
     >
       <figure>
         <img />
@@ -1136,7 +1136,7 @@ exports[`Storyshots MangaView html escaped but htmlentities decoded 1`] = `
     </div>
      
     <div
-      class="pure-u-4-5"
+      class="pure-u-5-5 pure-u-lg-4-5"
     >
       <!---->
     </div>
@@ -1158,7 +1158,7 @@ exports[`Storyshots MangaView show viewed chapters 1`] = `
     class="pure-g"
   >
     <div
-      class="pure-u-1-5"
+      class="pure-u-5-5 pure-u-lg-1-5"
     >
       <figure>
         <img />
@@ -1166,7 +1166,7 @@ exports[`Storyshots MangaView show viewed chapters 1`] = `
     </div>
      
     <div
-      class="pure-u-4-5"
+      class="pure-u-5-5 pure-u-lg-4-5"
     >
       <!---->
     </div>
@@ -1188,7 +1188,7 @@ exports[`Storyshots MangaView without description 1`] = `
     class="pure-g"
   >
     <div
-      class="pure-u-1-5"
+      class="pure-u-5-5 pure-u-lg-1-5"
     >
       <figure>
         <img />
@@ -1196,7 +1196,7 @@ exports[`Storyshots MangaView without description 1`] = `
     </div>
      
     <div
-      class="pure-u-4-5"
+      class="pure-u-5-5 pure-u-lg-4-5"
     >
       <!---->
     </div>

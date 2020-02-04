@@ -198,23 +198,27 @@ a.google:active{
   margin-right:2em;
   margin-top:4em;
 }
-blockquote:before {
-  display: block;
-  height: 0;
-  content: "“";
-  margin-left: -.95em;
-  font: italic 400%/1 Cochin,Georgia,"Times New Roman", serif;
-  color: #999;
-}
+
 blockquote {
   padding: .75em .5em .75em 1em;
   background: #dddddd;
-  border-left: 0.5em solid #DDD;
-}
-blockquote, footer {
-  font-size: 1em;
   line-height: 1.5;
+  border-radius:1em 1em;
+}
+blockquote:before {
+  height: 0;
+  content: "“";
+  font: italic 300%/1 Cochin,Georgia,"Times New Roman", serif;
+  color: #999;
 }
 blockquote footer:before {
   content: "— ";
+}
+@media only screen and (max-width: 1024px) {
+  blockquote {
+    margin-block-start: 0;
+    margin-block-end: 0;
+    margin-inline-start: 0;
+    margin-inline-end: 0;
+  }
 }
