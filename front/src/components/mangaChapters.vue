@@ -1,10 +1,11 @@
 <template>
   <div class="mangaChapters">
-    <a :href="'#chap'+lastRead">
+    <!-- todo use router-link and mess with scrollTo -->
+    <a :href="'#chap'+anchor" v-if="chapters.length">
       <font-awesome-icon :icon="['fas', 'long-arrow-alt-down']"/>
-      Scroll to last read (c{{lastRead}})
+      Scroll to last read (c{{anchor}})
     </a>
-    <table class="pure-table" :lastRead="lastRead">
+    <table class="pure-table" :lastRead="lastRead" v-if="chapters.length">
       <thead>
         <th>Chapter</th>
         <th>from</th>
@@ -14,23 +15,26 @@
             <font-awesome-icon :icon="['fas', 'truck']"/>
           </div>
         </th>
-    </thead>
-    <tbody @mouseover="paintSelection" @click="select">
-      <tr :id="'chap'+metaChapter.num" v-for="metaChapter in chapters" v-bind:key="metaChapter.num" :class="{read:metaChapter.num <= lastTracked}">
-        <td>c{{metaChapter.num}}</td>
-        <td>
-          <a
-            v-for="from in metaChapter.froms"
-            v-bind:key="from.klass+'_'+metaChapter.num"
-            :href="from.url"
-            class="from"
-            :class="from.klass"></a>
-        </td>
-        <td><time :updatedAt="metaChapter.at">{{humanDate(metaChapter.at)}}</time></td>
-        <td title="mark as read up to there" @mouseleave="rollback" :data-num="metaChapter.num"></td>
-      </tr>
+      </thead>
+      <tbody @mouseover="paintSelection" @click="select">
+        <tr :id="'chap'+metaChapter.num" v-for="metaChapter in chapters" v-bind:key="metaChapter.num" :class="{read:metaChapter.num <= lastTracked}">
+          <td>c{{metaChapter.num}}</td>
+          <td>
+            <a
+              v-for="from in metaChapter.froms"
+              v-bind:key="from.klass+'_'+metaChapter.num"
+              :href="from.url"
+              class="from"
+              :class="from.klass"></a>
+          </td>
+          <td><time :updatedAt="metaChapter.at">{{humanDate(metaChapter.at)}}</time></td>
+          <td title="mark as read up to there" @mouseleave="rollback" :data-num="metaChapter.num"></td>
+        </tr>
       </tbody>
-    </table>
+     </table>
+     <div v-else>
+      There are no chapters at the moment.
+     </div>
   </div>
 </template>
 <style scoped>
@@ -103,6 +107,13 @@ const MangaChapters = {
     return {
       oldTracked: this.lastRead,
       lastTracked: this.lastRead
+    }
+  },
+  computed: {
+    anchor () {
+      if (this.lastRead !== -1 && typeof this.lastRead !== 'undefined') return this.lastRead
+      if (this.chapters.length) return this.chapters.slice(-1)[0].num
+      return false
     }
   },
   components: {

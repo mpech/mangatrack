@@ -1086,6 +1086,256 @@ exports[`Storyshots LinkImporter default 1`] = `
 </form>
 `;
 
+exports[`Storyshots MangaChapters no scroll if no chaps, no table display either 1`] = `
+<div
+  class="mangaChapters"
+>
+  <!---->
+   
+  <div>
+    
+    There are no chapters at the moment.
+   
+  </div>
+</div>
+`;
+
+exports[`Storyshots MangaChapters scroll to chap0 if no lastRead 1`] = `
+<div
+  class="mangaChapters"
+>
+  <a
+    href="#chap0"
+  >
+    <svg
+      aria-hidden="true"
+      class="svg-inline--fa fa-long-arrow-alt-down fa-w-8"
+      data-icon="long-arrow-alt-down"
+      data-prefix="fas"
+      focusable="false"
+      role="img"
+      viewBox="0 0 256 512"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        class=""
+        d="M168 345.941V44c0-6.627-5.373-12-12-12h-56c-6.627 0-12 5.373-12 12v301.941H41.941c-21.382 0-32.09 25.851-16.971 40.971l86.059 86.059c9.373 9.373 24.569 9.373 33.941 0l86.059-86.059c15.119-15.119 4.411-40.971-16.971-40.971H168z"
+        fill="currentColor"
+      />
+    </svg>
+    
+    Scroll to last read (c0)
+  
+  </a>
+   
+  <table
+    class="pure-table"
+    lastread="-1"
+  >
+    <thead>
+      <th>
+        Chapter
+      </th>
+       
+      <th>
+        from
+      </th>
+       
+      <th>
+        when
+      </th>
+       
+      <th
+        class="truckKun"
+        title="mark as read"
+      >
+        <div>
+          <svg
+            aria-hidden="true"
+            class="svg-inline--fa fa-truck fa-w-20"
+            data-icon="truck"
+            data-prefix="fas"
+            focusable="false"
+            role="img"
+            viewBox="0 0 640 512"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              class=""
+              d="M624 352h-16V243.9c0-12.7-5.1-24.9-14.1-33.9L494 110.1c-9-9-21.2-14.1-33.9-14.1H416V48c0-26.5-21.5-48-48-48H48C21.5 0 0 21.5 0 48v320c0 26.5 21.5 48 48 48h16c0 53 43 96 96 96s96-43 96-96h128c0 53 43 96 96 96s96-43 96-96h48c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16zM160 464c-26.5 0-48-21.5-48-48s21.5-48 48-48 48 21.5 48 48-21.5 48-48 48zm320 0c-26.5 0-48-21.5-48-48s21.5-48 48-48 48 21.5 48 48-21.5 48-48 48zm80-208H416V144h44.1l99.9 99.9V256z"
+              fill="currentColor"
+            />
+          </svg>
+        </div>
+      </th>
+    </thead>
+     
+    <tbody>
+      <tr
+        class=""
+        id="chap2"
+      >
+        <td>
+          c2
+        </td>
+         
+        <td />
+         
+        <td>
+          <time>
+            3 days ago
+          </time>
+        </td>
+         
+        <td
+          data-num="2"
+          title="mark as read up to there"
+        />
+      </tr>
+      <tr
+        class=""
+        id="chap0"
+      >
+        <td>
+          c0
+        </td>
+         
+        <td />
+         
+        <td>
+          <time>
+            3 days ago
+          </time>
+        </td>
+         
+        <td
+          data-num="0"
+          title="mark as read up to there"
+        />
+      </tr>
+    </tbody>
+  </table>
+</div>
+`;
+
+exports[`Storyshots MangaChapters scroll to lastRead 1`] = `
+<div
+  class="mangaChapters"
+>
+  <a
+    href="#chap2"
+  >
+    <svg
+      aria-hidden="true"
+      class="svg-inline--fa fa-long-arrow-alt-down fa-w-8"
+      data-icon="long-arrow-alt-down"
+      data-prefix="fas"
+      focusable="false"
+      role="img"
+      viewBox="0 0 256 512"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        class=""
+        d="M168 345.941V44c0-6.627-5.373-12-12-12h-56c-6.627 0-12 5.373-12 12v301.941H41.941c-21.382 0-32.09 25.851-16.971 40.971l86.059 86.059c9.373 9.373 24.569 9.373 33.941 0l86.059-86.059c15.119-15.119 4.411-40.971-16.971-40.971H168z"
+        fill="currentColor"
+      />
+    </svg>
+    
+    Scroll to last read (c2)
+  
+  </a>
+   
+  <table
+    class="pure-table"
+    lastread="2"
+  >
+    <thead>
+      <th>
+        Chapter
+      </th>
+       
+      <th>
+        from
+      </th>
+       
+      <th>
+        when
+      </th>
+       
+      <th
+        class="truckKun"
+        title="mark as read"
+      >
+        <div>
+          <svg
+            aria-hidden="true"
+            class="svg-inline--fa fa-truck fa-w-20"
+            data-icon="truck"
+            data-prefix="fas"
+            focusable="false"
+            role="img"
+            viewBox="0 0 640 512"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              class=""
+              d="M624 352h-16V243.9c0-12.7-5.1-24.9-14.1-33.9L494 110.1c-9-9-21.2-14.1-33.9-14.1H416V48c0-26.5-21.5-48-48-48H48C21.5 0 0 21.5 0 48v320c0 26.5 21.5 48 48 48h16c0 53 43 96 96 96s96-43 96-96h128c0 53 43 96 96 96s96-43 96-96h48c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16zM160 464c-26.5 0-48-21.5-48-48s21.5-48 48-48 48 21.5 48 48-21.5 48-48 48zm320 0c-26.5 0-48-21.5-48-48s21.5-48 48-48 48 21.5 48 48-21.5 48-48 48zm80-208H416V144h44.1l99.9 99.9V256z"
+              fill="currentColor"
+            />
+          </svg>
+        </div>
+      </th>
+    </thead>
+     
+    <tbody>
+      <tr
+        class="read"
+        id="chap2"
+      >
+        <td>
+          c2
+        </td>
+         
+        <td />
+         
+        <td>
+          <time>
+            3 days ago
+          </time>
+        </td>
+         
+        <td
+          data-num="2"
+          title="mark as read up to there"
+        />
+      </tr>
+      <tr
+        class="read"
+        id="chap0"
+      >
+        <td>
+          c0
+        </td>
+         
+        <td />
+         
+        <td>
+          <time>
+            3 days ago
+          </time>
+        </td>
+         
+        <td
+          data-num="0"
+          title="mark as read up to there"
+        />
+      </tr>
+    </tbody>
+  </table>
+</div>
+`;
+
 exports[`Storyshots MangaView default 1`] = `
 <div
   class="mangaView"
