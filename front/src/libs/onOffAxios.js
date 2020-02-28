@@ -51,7 +51,11 @@ class OnOffAxios {
         const e = response.data
         // last condition not necessary IF refreshToken action does not called _forward
         // let as is in case
-        if (e.error && e.error === 'invalid_token' && !opts.retry && !iArgs[0].includes('/oauth')) {
+        if (e.error
+            && (e.error === 'invalid_token'
+              || e.error === 'server_error' && e.error_description === 'Unauthorized'
+            )
+            && !opts.retry && !iArgs[0].includes('/oauth')) {
           return this.$store.dispatch('refreshToken').then(_ => {
             return this._forward(verb, iArgs, { retry: true })
           })
