@@ -7,7 +7,7 @@ utils.bindDb()
 describe('models/batchModel', function () {
   beforeEach(utils.clearColls([BatchModel]))
 
-  it.only('increments batch version', Mocker.mockIt(async function (mokr) {
+  it('increments batch version', Mocker.mockIt(async function (mokr) {
     const b = await BatchModel.create({ link: 'xx' })
     assert.strictEqual(b.__v, 0)
     b.set('link', 'yy')

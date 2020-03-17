@@ -1,5 +1,6 @@
 const Base = require('./base')
-var config = require('../config')
+const config = require('../config')
+const safeRegExp = require('../lib/safeRegExp')
 
 class Importer extends Base {
   constructor () {
@@ -91,7 +92,7 @@ Importer.prototype.fetchMangaDetail = async function (link, chap = null) {
     let txt = $('#panel-story-info-description').text()
     const h3 = $('#panel-story-info-description h3').text()
     if (txt) {
-      txt = txt.replace(new RegExp('^\\s' + h3 + '\\s*'), '')
+      txt = txt.replace(new RegExp('^\\s' + safeRegExp.escape(h3) + '\\s*'), '')
       chap.description = txt.trim()
     }
   }

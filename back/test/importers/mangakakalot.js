@@ -91,6 +91,21 @@ describe('importers/mangakakalot', function () {
     assert.strictEqual(c.url, 'https://mangakakalot.com/chapter/to_you_the_immortal/chapter_112.5')
   }))
 
+  it('fetchMangaDetail special chars in title', Mocker.mockIt(async mokr => {
+    const importer = new Importer()
+    mokr.mock(Importer.prototype, 'domFetch', async _ => {
+      const s = await pread(path.resolve(__dirname, '../../samples/mangakakalot/ticplus.html'))
+      return cheerio.load(s.toString(), {
+        xml: {
+          normalizeWhitespace: true,
+          decodeEntities: false
+        }
+      })
+    })
+    const { manga: { description } } = await importer.fetchMangaDetail(null, { keptChapt: true })
+    assert(description.startsWith('Gag driven, short episodes'))
+  }))
+
   it('fetchMangaDetail', Mocker.mockIt(async mokr => {
     const importer = new Importer()
     let called = false
