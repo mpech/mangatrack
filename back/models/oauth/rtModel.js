@@ -1,8 +1,8 @@
-var mongoose = require('mongoose')
-var Schema = mongoose.Schema
-var config = require('../../config')
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
+const config = require('../../config')
 
-var ModelSchema = new Schema({
+const ModelSchema = new Schema({
   token: { type: String, required: true },
   userId: { type: Schema.Types.ObjectId, required: true },
   expiresAt: { type: Date, default: _ => new Date(Date.now() + config.oauth_refreshToken_duration) }

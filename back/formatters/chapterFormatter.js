@@ -1,4 +1,4 @@
-var Base = require('./baseFormatter')
+const Base = require('./baseFormatter')
 class Formatter extends Base {}
 
 Formatter.prototype.format = function (x) {

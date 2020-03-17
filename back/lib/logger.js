@@ -1,11 +1,11 @@
 /*
 just convenient to log stuff in a rotated fashion
  */
-var util = require('util')
-var winston = require('winston')
+const util = require('util')
+const winston = require('winston')
 require('winston-daily-rotate-file')
-var path = require('path')
-var ctx = require('./ctx')
+const path = require('path')
+const ctx = require('./ctx')
 
 const myFormat = winston.format.printf(({ sLevel, message, label, ts, sid, tid, uid }) => {
   return `[${sLevel}]${ts}|sid:${sid}|tid:${tid}|uid:${uid}>${message}`

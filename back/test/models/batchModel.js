@@ -1,7 +1,7 @@
-var assert = require('assert')
-var utils = require('../utils/')
-var BatchModel = require('../../models/batchModel')
-var Mocker = require('../../lib/mocker')
+const assert = require('assert')
+const utils = require('../utils/')
+const BatchModel = require('../../models/batchModel')
+const Mocker = require('../../lib/mocker')
 
 utils.bindDb()
 describe('models/batchModel', function () {

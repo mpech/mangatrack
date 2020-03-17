@@ -1,4 +1,4 @@
-var bulker = {}
+const bulker = {}
 bulker.bulk = function (arr, n, fn, opts = {}) {
   opts.onBulkEnd = opts.onBulkEnd || (_ => Promise.resolve())
 

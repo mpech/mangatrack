@@ -24,8 +24,8 @@ AsyncPromiseHandler.prototype.clear = function () {
  * @return {[type]} [description]
  */
 AsyncPromiseHandler.prototype.all = function () {
-  var dequeue = _ => {
-    var n = this.stack.length
+  const dequeue = _ => {
+    const n = this.stack.length
     return Promise.all(this.stack).then(x => {
       if (this.stack.length !== n) {
         return dequeue()
@@ -47,7 +47,7 @@ AsyncPromiseHandler.prototype.getStacks = function () {
   })
 }
 
-var ap = new AsyncPromiseHandler()
+const ap = new AsyncPromiseHandler()
 module.exports = ap
 
 Object.defineProperty(ap, 'tail', {
@@ -68,7 +68,7 @@ Object.defineProperty(ap, 'tail', {
       })
     }
 
-    var o = {
+    const o = {
       state: ap.DANGLING,
       location: (new Error())
         .stack.split('\n')
@@ -76,7 +76,7 @@ Object.defineProperty(ap, 'tail', {
         .slice(0, 4)
     }
 
-    var q = p.then((x) => {
+    const q = p.then((x) => {
       o.state = 'ok'
       return x
     }).catch((e) => {

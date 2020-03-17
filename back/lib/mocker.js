@@ -6,26 +6,26 @@ Mocker.prototype.mock = function (obj, pptyName, alt) {
   if (!this.mocks.has(obj)) {
     this.mocks.set(obj, {})
   }
-  var v = this.mocks.get(obj)
+  const v = this.mocks.get(obj)
   v[pptyName] = obj[pptyName]
   this.mocks.set(obj, v)
   obj[pptyName] = alt
 }
 Mocker.prototype.unmockAll = function () {
-  for (var [obj, ppties] of this.mocks) {
+  for (const [obj, ppties] of this.mocks) {
     Object.keys(ppties).forEach(ppty => {
       obj[ppty] = ppties[ppty]
     })
   }
 }
 Mocker.mockIt = function (fn) {
-  var mocker = new Mocker()
-  var ok = (done) => {
+  const mocker = new Mocker()
+  const ok = (done) => {
     mocker.unmockAll()
     mocker.unpreAll()
     done()
   }
-  var ko = (done, e) => {
+  const ko = (done, e) => {
     mocker.unmockAll()
     mocker.unpreAll()
     done(e)
@@ -33,7 +33,7 @@ Mocker.mockIt = function (fn) {
   return function (done) {
     if (fn.length <= 1) {
       try {
-        var p = fn.call(this, mocker)
+        const p = fn.call(this, mocker)
         if (!p || !p.then) {
           return ok(done)
         }

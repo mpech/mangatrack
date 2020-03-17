@@ -1,5 +1,5 @@
-var ctx = require('../lib/ctx')
-var querystring = require('querystring')
+const ctx = require('../lib/ctx')
+const querystring = require('querystring')
 
 class Formatter {}
 Formatter.prototype.link = function ({ offset }) {

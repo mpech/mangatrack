@@ -1,4 +1,4 @@
-var Base = require('../mangaFormatter')
+const Base = require('../mangaFormatter')
 class Formatter extends Base {
   async format ({ num, mangaId }) {
     return { num, mangaId }

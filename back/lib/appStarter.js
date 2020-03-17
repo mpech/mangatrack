@@ -1,6 +1,6 @@
-var mongoose = require('mongoose')
-var fs = require('fs')
-var Singleton = require('./singleton')
+const mongoose = require('mongoose')
+const fs = require('fs')
+const Singleton = require('./singleton')
 
 const appSingle = Singleton(function open (app, config) {
   const dfds = []
@@ -22,7 +22,7 @@ const appSingle = Singleton(function open (app, config) {
   } else {
     dfd = mongoose.connect(config.dbUrl).then(conn => {
       conn.connection.on('error', function (err) {
-        var now = new Date()
+        const now = new Date()
         config.logger.err('connection error ' + now.toISOString())
         config.logger.err(err)
         return console.error('connection error:', err)
@@ -30,7 +30,7 @@ const appSingle = Singleton(function open (app, config) {
 
       conn.connection.on('close', function (err) {
         if (config.phase !== 'usr') {
-          var now = new Date()
+          const now = new Date()
           config.logger.err('connection closed ' + now.toISOString())
           config.logger.err(err)
           return console.error('connection closed:', err)

@@ -1,7 +1,7 @@
-var assert = require('assert')
-var Mocker = require('../../lib/mocker')
-var Formatter = require('../../formatters/mangaFormatter')
-var ctx = require('../../lib/ctx')
+const assert = require('assert')
+const Mocker = require('../../lib/mocker')
+const Formatter = require('../../formatters/mangaFormatter')
+const ctx = require('../../lib/ctx')
 
 describe('formatters/mangaFormatter', function () {
   it('make next link', Mocker.mockIt(async function (mokr) {

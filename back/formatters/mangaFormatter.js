@@ -1,5 +1,5 @@
-var Base = require('./baseFormatter')
-var ChapterFormatter = require('./chapterFormatter')
+const Base = require('./baseFormatter')
+const ChapterFormatter = require('./chapterFormatter')
 class Formatter extends Base {
   constructor () {
     super()

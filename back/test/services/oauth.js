@@ -1,8 +1,8 @@
-var assert = require('assert')
-var utils = require('../utils/')
-var oauth = require('../../services/oauth')
-var AtModel = require('../../models/oauth/atModel')
-var RtModel = require('../../models/oauth/rtModel')
+const assert = require('assert')
+const utils = require('../utils/')
+const oauth = require('../../services/oauth')
+const AtModel = require('../../models/oauth/atModel')
+const RtModel = require('../../models/oauth/rtModel')
 
 utils.bindDb()
 describe('services/oauth', function () {

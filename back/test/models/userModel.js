@@ -1,7 +1,7 @@
-var assert = require('assert')
-var utils = require('../utils/')
-var UserModel = require('../../models/userModel')
-var Mocker = require('../../lib/mocker')
+const assert = require('assert')
+const utils = require('../utils/')
+const UserModel = require('../../models/userModel')
+const Mocker = require('../../lib/mocker')
 
 utils.bindDb()
 describe('models/userModel', function () {

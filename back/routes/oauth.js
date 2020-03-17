@@ -1,10 +1,10 @@
-var config = require('../config')
-var UserModel = require('../models/userModel')
-var OauthService = require('../services/oauth')
-var GoogleStrategy = require('passport-google-oauth20').Strategy
-var FacebookStrategy = require('passport-facebook').Strategy
-var passport = require('passport')
-var prom = require('../lib/prom')
+const config = require('../config')
+const UserModel = require('../models/userModel')
+const OauthService = require('../services/oauth')
+const GoogleStrategy = require('passport-google-oauth20').Strategy
+const FacebookStrategy = require('passport-facebook').Strategy
+const passport = require('passport')
+const prom = require('../lib/prom')
 
 passport.use(new GoogleStrategy({
   clientID: config.oauth2_google_clientId,

@@ -13,7 +13,7 @@ function escapeBody (body) {
       body = {}
     }
   }
-  var bodyLog = Object.keys(body).reduce(function (acc, x) {
+  const bodyLog = Object.keys(body).reduce(function (acc, x) {
     acc[x] = body[x]
     return acc
   }, {}) || {};
@@ -31,8 +31,8 @@ function escapeQuery (url) {
 
 module.exports = {
   express: function (config) {
-    var onStart = function (req, res, next) {
-      var osHeader = 'os_unknown'
+    const onStart = function (req, res, next) {
+      let osHeader = 'os_unknown'
       if (req.headers && req.headers.os) {
         osHeader = req.headers.os.substring(0, 20).replace(/ /g, '_')// #issue/4012
       }
@@ -44,7 +44,7 @@ module.exports = {
     }
 
     // we could use domain to identifiate user, but a too much coupling
-    var onAuthUser = function (req, res) {
+    const onAuthUser = function (req, res) {
       config.logger.inf('REQAUTH', req.method, req._urlLog, JSON.stringify(req._bodyLog), getip(req))
     }
 
@@ -53,7 +53,7 @@ module.exports = {
       onStart(req, res, next)
       res._monkeyPatchSend = res.send
       res.send = function () {
-        var elapsed = Date.now() - req.startedTime
+        const elapsed = Date.now() - req.startedTime
         if (config.maxRequestTime && elapsed > config.maxRequestTime) {
           config.logger.sta('BIGREQ', elapsed, 'ms', req.method, req._urlLog, JSON.stringify(req._bodyLog), getip(req))
         }

@@ -1,7 +1,7 @@
-var assert = require('assert')
-var utils = require('../utils/')
-var Mocker = require('../../lib/mocker')
-var Importer = require('../../importers/base')
+const assert = require('assert')
+const utils = require('../utils/')
+const Mocker = require('../../lib/mocker')
+const Importer = require('../../importers/base')
 utils.bindDb()
 describe('importers/base', function () {
   it('parseDate min ago', Mocker.mockIt(mokr => {

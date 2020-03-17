@@ -1,10 +1,10 @@
-var mongoose = require('mongoose')
-var config = require('../../config')
 var exports = module.exports
-var appStarter = require('../../lib/appStarter')
-var app = require('../../app')
-var Singleton = require('../../lib/singleton')
-var requester = require('supertest')
+const mongoose = require('mongoose')
+const config = require('../../config')
+const appStarter = require('../../lib/appStarter')
+const app = require('../../app')
+const Singleton = require('../../lib/singleton')
+const requester = require('supertest')
 
 function dbConnect () {
   if (mongoose.connection && mongoose.connection.constructor.STATES.connected === mongoose.connection._readyState) {
@@ -34,8 +34,8 @@ function appStarterClose (appStarter) {
   return appStarter.close()
 }
 
-var dbSingle = Singleton(dbConnect, dbClose, 'db')
-var appSingle = Singleton(appStarterConnect, appStarterClose, 'appStarter')
+const dbSingle = Singleton(dbConnect, dbClose, 'db')
+const appSingle = Singleton(appStarterConnect, appStarterClose, 'appStarter')
 
 exports.bindDb = function () {
   before(function () { return dbSingle.open() })
@@ -50,7 +50,7 @@ exports.bindApp = function () {
 exports.clearColls = function (arr) {
   return function () {
     return Promise.resolve().then(_ => {
-      var dfds = arr.map(Model => Model.deleteMany({}))
+      const dfds = arr.map(Model => Model.deleteMany({}))
       return Promise.all(dfds)
     })
   }

@@ -1,6 +1,6 @@
-var assert = require('assert')
-var bulker = require('../../lib/bulker')
-var Mocker = require('../../lib/mocker')
+const assert = require('assert')
+const bulker = require('../../lib/bulker')
+const Mocker = require('../../lib/mocker')
 
 describe('lib/bulker', function () {
   it('bulk', Mocker.mockIt(mokr => {

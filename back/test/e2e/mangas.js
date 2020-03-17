@@ -1,8 +1,8 @@
-var config = require('../../config')
-var utils = require('../utils')
-var assert = require('assert')
-var Mocker = require('../../lib/mocker')
-var MangaModel = require('../../models/mangaModel')
+const config = require('../../config')
+const utils = require('../utils')
+const assert = require('assert')
+const Mocker = require('../../lib/mocker')
+const MangaModel = require('../../models/mangaModel')
 
 utils.bindApp()
 describe('e2e/mangas', function () {

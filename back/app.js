@@ -1,16 +1,16 @@
-var express = require('express')
-var bodyParser = require('body-parser')
-var OAuthServer = require('express-oauth-server')
-var cors = require('cors')
+const express = require('express')
+const bodyParser = require('body-parser')
+const OAuthServer = require('express-oauth-server')
+const cors = require('cors')
 
-var config = require('./config')
-var appStarter = require('./lib/appStarter')
-var ctx = require('./lib/ctx')
-var reqLogger = require('./lib/reqlogger')
-var errorHandler = require('./lib/errorHandler')
-var OauthService = require('./services/oauth')
+const config = require('./config')
+const appStarter = require('./lib/appStarter')
+const ctx = require('./lib/ctx')
+const reqLogger = require('./lib/reqlogger')
+const errorHandler = require('./lib/errorHandler')
+const OauthService = require('./services/oauth')
 
-var app = express()
+const app = express()
 app.enable('trust proxy')
 app.use(bodyParser.json({ limit: '1mb' }))
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -30,7 +30,7 @@ app.use(errorHandler.express())
 if (!module.parent) {
   appStarter.open(app, config)
   config.logger.inf('started', new Date())
-  var onDeath = function (signal, e) {
+  const onDeath = function (signal, e) {
     console.log('crashed (' + signal + '):', new Date())
     if (e) {
       console.log('e : ', e, e && e.stack)

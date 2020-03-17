@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-var schema = new Schema({
+const schema = new Schema({
   mangaId: { type: mongoose.Types.ObjectId, required: true, index: true },
   from: { type: String, required: true, enum: ['mangakakalot', 'manganelo', 'fanfox'] },
   // Ideas of such format is
