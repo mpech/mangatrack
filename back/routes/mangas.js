@@ -55,7 +55,10 @@ function load (app) {
       nameId: rules.nameId
     }
   }), prom(async function (req, res) {
-    const m = await MangaModel.findOneForSure({ nameId: req.params.nameId })
+    const pred = req.params.nameId.match(/^[0-9a-f]{24}$/)
+      ? ({ _id: mongoose.Types.ObjectId(req.params.nameId) })
+      : ({ nameId: req.params.nameId })
+    const m = await MangaModel.findOneForSure(pred)
     const chapters = await ChapterModel.find({ mangaId: m._id })
     m.chapters = chapters
     return module.exports.formatter.formatFull(m)

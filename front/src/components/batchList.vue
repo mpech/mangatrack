@@ -7,8 +7,9 @@
       <thead>
         <tr>
           <th>status</th>
-          <th>link</th>
+          <th>lien externe</th>
           <th>at</th>
+          <th>lien interne</th>
         </tr>
       </thead>
       <tbody>
@@ -17,7 +18,7 @@
           :key="batch.id+'_'+batch.version"
           :batch="batch"
           :live="batch.live"
-          :fieldOrder="['status', 'link', 'at']"
+          :fieldOrder="['status', 'link', 'at', 'mangaId']"
         />
       </tbody>
       <tfoot>

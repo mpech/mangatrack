@@ -5,7 +5,8 @@ export const batch = {
   id: 'a',
   link: 'https://mangakakalot.com/manga/versatile_mage',
   at: 1578133232378,
-  status: 'OK'
+  status: 'OK',
+  mangaId: 'versatile_mage'
 }
 
 storiesOf('Batch', module)

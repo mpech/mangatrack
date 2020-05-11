@@ -17,7 +17,7 @@ describe('e2e/admin/batch', function () {
     await Promise.all([
       UserModel.create({ _id: userId, googleId: 'g', displayName: 'moran', admin: true }),
       AtModel.create({ token, userId }),
-      BatchModel.create({ link: 'a', status: 'OK', at: 1 }),
+      BatchModel.create({ link: 'a', status: 'OK', at: 1, mangaId: '1'.repeat(24) }),
       BatchModel.create({ link: 'b', at: 0 })
     ])
 
@@ -29,6 +29,7 @@ describe('e2e/admin/batch', function () {
     assert.strictEqual(items.length, 1)
     assert.strictEqual(items[0].link, 'a')
     assert.strictEqual(items[0].version, 0)
+    assert.strictEqual(items[0].mangaId, '1'.repeat(24))
   }))
 
   it('get batches page 2', Mocker.mockIt(async function (mokr) {

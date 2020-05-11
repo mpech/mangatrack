@@ -1,6 +1,13 @@
 <template>
   <tr :class="{ live }">
-    <td v-for="v in fields">{{v}}</td> 
+    <td v-for="[k,v] in fields">
+      <template v-if="k !== 'mangaId'">{{v}}</template>
+      <template v-else>
+        <template v-if="v">
+          <router-link :to="'/manga/' + v">voir</router-link>
+        </template>
+      </template>
+    </td>
   </tr>
 </template>
 <style scoped>
@@ -17,7 +24,7 @@ const Batch = {
     live: Boolean,
     fieldOrder: {
       validator (v) {
-        const keys = new Set(['link', 'at', 'status'])
+        const keys = new Set(['link', 'at', 'status', 'mangaId'])
         return Array.isArray(v) && v.every(x => keys.has(x))
       } 
     }
@@ -25,10 +32,11 @@ const Batch = {
   data () {
     return {
       fields: this.fieldOrder.map(fieldName => {
+        const v = this.batch[fieldName]
         if (fieldName === 'at') {
-          return this.humanDate(this.batch[fieldName])
+          return [fieldName, this.humanDate(v)]
         }
-        return this.batch[fieldName]
+        return [fieldName, v]
       })
     }
   },

@@ -24,6 +24,7 @@ LinkActivity.prototype.importChap = function (chap) {
 LinkActivity.prototype.importLink = function (link, chap = null, options = {}) {
   const ev = new EventEmitter()
   let batch
+  let mangaRecord = null
   APH.tail = [
     _ => BatchModel.create({ link }).then(a => { batch = a }),
     _ => ev.emit('batchstarted', batch),
@@ -32,10 +33,11 @@ LinkActivity.prototype.importLink = function (link, chap = null, options = {}) {
       try {
         config.logger.dbg('fetching', link)
         const { chapters, manga } = await this.imp.fetchMangaDetail(link, chap)
-        await MangaModel.upsertManga({ chapters, ...manga }, this.imp.from, options).catch(e => {
+        mangaRecord = await MangaModel.upsertManga({ chapters, ...manga }, this.imp.from, options).catch(e => {
           err = this._shortError(e)
           config.logger.inf('failed to save', chapters[0], '...', err)
         })
+        batch.set('mangaId', mangaRecord._id)
       } catch (e) {
         err = this._shortError(e)
         config.logger.inf('failed to fetch detail', err, chap && chap.url)
@@ -56,9 +58,7 @@ LinkActivity.prototype.importLink = function (link, chap = null, options = {}) {
       return Object.assign(batch, state)
     },
     _ => ev.emit('batchended', batch)
-  ].reduce((acc, f) => {
-    return acc.then(res => f(res))
-  }, Promise.resolve())
+  ].reduce((acc, f) => acc.then(f), Promise.resolve())
 
   return ev
 }

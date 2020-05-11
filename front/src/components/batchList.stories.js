@@ -3,6 +3,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import BatchList from './batchList'
 import { batch } from './batch.stories.js'
+import StoryRouter from 'storybook-vue-router'
 
 Vue.use(Vuex)
 
@@ -25,6 +26,7 @@ export const batches = [
 ]
 
 storiesOf('BatchList', module)
+  .addDecorator(StoryRouter())
   .add('default', () => {
     return {
       store: store,

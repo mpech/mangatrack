@@ -8,7 +8,8 @@ const schema = new Schema({
   at: { type: Number, default: Date.now },
   expiresAt: { type: Date, default: _ => new Date(Date.now() + config.batch_duration) },
   status: { type: String, enum: ['OK', 'KO', 'PENDING'], default: 'PENDING' },
-  reason: { type: String }
+  reason: { type: String },
+  mangaId: { type: String }
 })
 
 mongooseUtil.setStatic('findOneForSure', schema)

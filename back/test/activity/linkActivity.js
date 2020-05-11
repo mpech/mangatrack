@@ -35,10 +35,12 @@ describe('activity/refreshActivity', function () {
     }
 
     const activity = new Activity(importer)
-    await MangaModel.create({ name: 'Release That Witch' })
-    await new Promise((resolve, reject) => {
+    const manga = await MangaModel.create({ name: 'Release That Witch' })
+    const backBatch = await new Promise((resolve, reject) => {
       activity.importLink('xx').on('batchended', resolve)
     })
+    assert(manga._id.equals(backBatch.mangaId))
+    assert.strictEqual(backBatch.link, 'xx')
     assert(fetchedDetail)
     const { chapters } = await ChapterModel.findOne()
     assert.strictEqual(chapters.length, 3, 'all inserted')

@@ -171,4 +171,13 @@ describe('e2e/mangas', function () {
     assert.strictEqual(chapters[1].num, 0)
     assert.strictEqual(chapters[1].at, 3)
   }))
+
+  it('list one manga by id', Mocker.mockIt(async function (mokr) {
+    const manga = await MangaModel.create({ name: 'abc' })
+    const { body } = await utils.requester
+      .get('/mangas/' + manga.id)
+      .expect(200)
+
+    assert.strictEqual(body.name, 'abc')
+  }))
 })

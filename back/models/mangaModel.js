@@ -104,6 +104,7 @@ schema.statics.upsertManga = async function (manga, from, options = { refreshThu
     }
     const set = { ...lastChap, ...facultativeProps }
     if (Object.keys(set).length) {
+      el = Object.assign(el, set)
       await this.updateOne(
         { nameId: manga.nameId },
         { $set: set }
@@ -111,11 +112,12 @@ schema.statics.upsertManga = async function (manga, from, options = { refreshThu
     }
   }
 
-  return ChapterModel.upsertChapter({
+  await ChapterModel.upsertChapter({
     mangaId: el._id,
     from,
     chapters: manga.chapters
   })
+  return el
 }
 
 mongooseUtil.setStatic('findOneForSure', schema)
