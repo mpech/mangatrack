@@ -20,7 +20,9 @@ LinkActivity.prototype.importChap = function (chap) {
   const link = this.imp.linkFromChap(chap)
   return this.importLink(link, chap)
 }
-
+/**
+ * link: the global one, not the chap link
+ */
 LinkActivity.prototype.importLink = function (link, chap = null, options = {}) {
   const ev = new EventEmitter()
   let batch

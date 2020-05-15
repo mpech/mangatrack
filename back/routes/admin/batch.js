@@ -2,7 +2,7 @@ const BatchModel = require('../../models/batchModel')
 const prom = require('../../lib/prom')
 const Formatter = require('../../formatters/admin/batchFormatter')
 const helper = require('../../lib/helper')
-const linkProcess = require('../../process/linkProcess')
+const batchProcess = require('../../process/batchProcess')
 const config = require('../../config')
 const rules = require('../../lib/rules')
 const validate = require('express-validation')
@@ -38,18 +38,24 @@ function load (app) {
   }))
 
   app.post('/admin/batches', app.oauth.authenticate(), helper.userOnReq, helper.ensureAdmin, validate({
-    body: {
+    body: Joi.alternatives().try({
       link: Joi.string().required(),
       refreshThumb: Joi.boolean(),
       refreshDescription: Joi.boolean()
-    }
+    }, {
+      id: Joi.string().required(),
+      refreshThumb: Joi.boolean(),
+      refreshDescription: Joi.boolean()
+    })
   }), prom(async function (req, res) {
     const refreshThumb = req.body.refreshThumb
     const refreshDescription = req.body.refreshDescription
-    const batch = await new Promise((resolve, reject) => {
-      const ev = linkProcess.run(req.body.link, Date.now(), { refreshThumb, refreshDescription })
-      ev.on('batchstarted', resolve)
-    })
+    const run = req.body.id ? batchProcess.runId : batchProcess.runLink
+    const batch = await run(
+      req.body.id || req.body.link,
+      Date.now(),
+      { refreshThumb, refreshDescription }
+    )
     return module.exports.formatter.format(batch)
   }))
 }
