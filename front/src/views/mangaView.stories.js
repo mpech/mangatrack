@@ -4,7 +4,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import StoryRouter from 'storybook-vue-router'
 import MangaView from './mangaView'
-
+const lena = 'https://upload.wikimedia.org/wikipedia/en/7/7d/Lenna_%28test_image%29.png'
 Vue.use(Vuex)
 
 storiesOf('MangaView', module)
@@ -20,7 +20,7 @@ storiesOf('MangaView', module)
             data: {
               id: '0'.repeat(24),
               name: 'Cultivation Chat Group',
-              thumbUrl: 'https://upload.wikimedia.org/wikipedia/en/7/7d/Lenna_%28test_image%29.png',
+              thumbUrl: lena,
               description: {
                 content: 'One day, Song Shuhang was suddenly added to a chat',
                 from: 'manganelo'
@@ -57,7 +57,7 @@ storiesOf('MangaView', module)
             data: {
               id: '0'.repeat(24),
               name: 'Cultivation Chat Group',
-              thumbUrl: 'https://upload.wikimedia.org/wikipedia/en/7/7d/Lenna_%28test_image%29.png',
+              thumbUrl: lena,
               chapters: [],
               description: {
                 content: '',
@@ -91,7 +91,7 @@ storiesOf('MangaView', module)
             data: {
               id: '0'.repeat(24),
               name: 'Cultivation Chat Group',
-              thumbUrl: 'https://upload.wikimedia.org/wikipedia/en/7/7d/Lenna_%28test_image%29.png',
+              thumbUrl: lena,
               description: {},
               chapters: [
                 {
@@ -128,7 +128,7 @@ storiesOf('MangaView', module)
             data: {
               id: '0'.repeat(24),
               name: 'Cultivation Chat Group',
-              thumbUrl: 'https://upload.wikimedia.org/wikipedia/en/7/7d/Lenna_%28test_image%29.png',
+              thumbUrl: lena,
               chapters: [],
               description: {
                 content: 'each other &lsquo;Fellow Daoist&rsquo; and had &lt;strong&gt; brr &lt;/strong&gt; <strong>dos</strong>',
@@ -141,6 +141,41 @@ storiesOf('MangaView', module)
       }
     })
 
+    return {
+      store: store,
+      components: {
+        'mt-mangaView': MangaView
+      },
+      template: '<mt-mangaView/>'
+    }
+  })
+  .add('shows lena after refresh', () => {
+    const store = new Vuex.Store({
+      state: {
+        myMangas: {
+          ['0'.repeat(24)]: 1
+        }
+      },
+      actions: {
+        async fetchMangaDetail (context, { offset, limit } = {}) {
+          return {
+            data: {
+              id: '0'.repeat(24),
+              name: 'Cultivation Chat Group',
+              thumbUrl: context.state.refreshed ? lena : 'https://fails',
+              description: {},
+              chapters: []
+            }
+          }
+        },
+        fetchMyMangas: action('fetchMyMangas'),
+        refreshManga: async (context) => {
+          action('refreshManga')()
+          context.state.refreshed = true
+          return { status: 'OK' }
+        }
+      }
+    })
     return {
       store: store,
       components: {

@@ -4,7 +4,7 @@
     <div class="pure-g">
       <div class="pure-u-5-5 pure-u-lg-1-5">
         <figure>
-          <img :src="manga.thumbUrl"/>
+          <img :src="manga.thumbUrl" @error="refreshPicture"/>
         </figure>
       </div>
       <div class="pure-u-5-5 pure-u-lg-4-5">
@@ -56,7 +56,6 @@ export default {
     // assumes when getting details of a manga, manga is in the store
     return {
       chapters: [],
-      mangaId: '',
       ready: false,
       manga: { description: {} }
     }
@@ -82,6 +81,14 @@ export default {
   methods: {
     trackchapter (num) {
       this.$store.dispatch('trackManga', { id: this.manga.id, num })
+    },
+    async refreshPicture () {
+      const batch = await this.$store.dispatch('refreshManga', { id: this.manga.id, refreshThumb: true })
+      if (batch.status === 'OK') {
+        const { data: { chapters, ...manga } } = await this.$store.dispatch('fetchMangaDetail',
+          this.$route.params.nameId)
+        this.manga = manga
+      }
     }
   },
   mounted () {

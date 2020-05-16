@@ -194,6 +194,12 @@ export const actions = {
       throw new Error('no fallback available')
     })
     return data
+  },
+  async refreshManga (context, { id, refreshThumb, refreshDescription }) {
+    const { data } = await this.axios.post(apiRoutes.batches, { id, refreshThumb, refreshDescription }, _ => {
+      throw new Error('no fallback available')
+    })
+    return data
   }
 }
 

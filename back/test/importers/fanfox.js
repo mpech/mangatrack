@@ -1,11 +1,6 @@
 const assert = require('assert')
-const path = require('path')
-const cheerio = require('cheerio')
-const fs = require('fs')
-const util = require('util')
 const utils = require('../utils/')
 const Mocker = require('../../lib/mocker')
-const pread = util.promisify(fs.readFile)
 const Importer = require('../../importers/fanfox')
 const errorHandler = require('../../lib/errorHandler')
 
@@ -16,13 +11,7 @@ describe('importers/fanfox', function () {
     let called = false
     mokr.mock(Importer.prototype, 'domFetch', async _ => {
       called = true
-      const s = await pread(path.resolve(__dirname, '../../samples/fanfox/main.html'))
-      return cheerio.load(s.toString(), {
-        xml: {
-          normalizeWhitespace: true,
-          decodeEntities: false
-        }
-      })
+      return utils.loadDom('fanfox/main.html')
     })
     let firstCall = 0
     mokr.mock(Importer.prototype, 'parseDate', last => {
@@ -47,13 +36,7 @@ describe('importers/fanfox', function () {
     let called = false
     mokr.mock(Importer.prototype, 'domFetch', async url => {
       called = true
-      const s = await pread(path.resolve(__dirname, '../../samples/fanfox/detail.html'))
-      return cheerio.load(s.toString(), {
-        xml: {
-          normalizeWhitespace: true,
-          decodeEntities: false
-        }
-      })
+      return utils.loadDom('fanfox/detail.html')
     })
     const { chapters, manga } = await importer.fetchMangaDetail('https://fanfox.net/manga/wan_gu_shen_wang/', { ok: true })
     assert(called)
@@ -82,13 +65,7 @@ describe('importers/fanfox', function () {
     let called = false
     mokr.mock(Importer.prototype, 'domFetch', async url => {
       called = true
-      const s = await pread(path.resolve(__dirname, '../../samples/fanfox/wan_gu_shen_wang.html'))
-      return cheerio.load(s.toString(), {
-        xml: {
-          normalizeWhitespace: true,
-          decodeEntities: false
-        }
-      })
+      return utils.loadDom('fanfox/wan_gu_shen_wang.html')
     })
     let i = 0
     mokr.mock(Importer.prototype, 'parseDate', s => {
@@ -107,13 +84,7 @@ describe('importers/fanfox', function () {
     let called = false
     mokr.mock(Importer.prototype, 'domFetch', async url => {
       called = true
-      const s = await pread(path.resolve(__dirname, '../../samples/fanfox/tadokoro_san_tatsubon.html'))
-      return cheerio.load(s.toString(), {
-        xml: {
-          normalizeWhitespace: true,
-          decodeEntities: false
-        }
-      })
+      return utils.loadDom('fanfox/tadokoro_san_tatsubon.html')
     })
     let thrown = false
     try {
@@ -137,13 +108,7 @@ describe('importers/fanfox', function () {
     let called = false
     mokr.mock(Importer.prototype, 'domFetch', async _ => {
       called = true
-      const s = await pread(path.resolve(__dirname, '../../samples/fanfox/wan_gu_shen_wang.html'))
-      return cheerio.load(s.toString(), {
-        xml: {
-          normalizeWhitespace: true,
-          decodeEntities: false
-        }
-      })
+      return utils.loadDom('fanfox/wan_gu_shen_wang.html')
     })
     const { manga } = await importer.fetchMangaDetail()
     assert(called)

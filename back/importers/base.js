@@ -1,11 +1,11 @@
-const rp = require('request-promise-native')
+const axios = require('axios')
 const moment = require('moment')
 const cheerio = require('cheerio')
 class Base {}
 
 Base.prototype.domFetch = async function (url) {
-  const body = await rp(url)
-  const $ = cheerio.load(body, {
+  const { data } = await axios.get(url)
+  const $ = cheerio.load(data, {
     xml: {
       normalizeWhitespace: true
     },

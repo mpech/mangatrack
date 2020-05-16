@@ -1,12 +1,10 @@
 const assert = require('assert')
-const path = require('path')
+const cheerio = require('cheerio')
 const utils = require('../utils/')
 const Mocker = require('../../lib/mocker')
-const fs = require('fs')
-const util = require('util')
-const pread = util.promisify(fs.readFile)
 const Importer = require('../../importers/mangakakalot')
-const cheerio = require('cheerio')
+const errorHandler = require('../../lib/errorHandler')
+
 utils.bindDb()
 describe('importers/mangakakalot', function () {
   it('allUpdates', Mocker.mockIt(async mokr => {
@@ -14,13 +12,7 @@ describe('importers/mangakakalot', function () {
     let called = false
     mokr.mock(Importer.prototype, 'domFetch', async _ => {
       called = true
-      const s = await pread(path.resolve(__dirname, '../../samples/mangakakalot/main.html'))
-      return cheerio.load(s.toString(), {
-        xml: {
-          normalizeWhitespace: true,
-          decodeEntities: false
-        }
-      })
+      return utils.loadDom('mangakakalot/main.html')
     })
     mokr.mock(Importer.prototype, 'parseDate', _ => 5)
     const res = await importer.allUpdates()
@@ -39,13 +31,7 @@ describe('importers/mangakakalot', function () {
     let called = false
     mokr.mock(Importer.prototype, 'domFetch', async _ => {
       called = true
-      const s = await pread(path.resolve(__dirname, '../../samples/mangakakalot/allUpdates_small.html'))
-      return cheerio.load(s.toString(), {
-        xml: {
-          normalizeWhitespace: true,
-          decodeEntities: false
-        }
-      })
+      return utils.loadDom('mangakakalot/allUpdates_small.html')
     })
     mokr.mock(Importer.prototype, 'parseDate', _ => 5)
     const res = await importer.allUpdates()
@@ -61,13 +47,7 @@ describe('importers/mangakakalot', function () {
     let called = false
     mokr.mock(Importer.prototype, 'domFetch', async _ => {
       called = true
-      const s = await pread(path.resolve(__dirname, '../../samples/mangakakalot/detail.html'))
-      return cheerio.load(s.toString(), {
-        xml: {
-          normalizeWhitespace: true,
-          decodeEntities: false
-        }
-      })
+      return utils.loadDom('mangakakalot/detail.html')
     })
     const { chapters, manga } = await importer.fetchMangaDetail(null, { keptChapt: true })
     assert(called)
@@ -94,13 +74,7 @@ describe('importers/mangakakalot', function () {
   it('fetchMangaDetail special chars in title', Mocker.mockIt(async mokr => {
     const importer = new Importer()
     mokr.mock(Importer.prototype, 'domFetch', async _ => {
-      const s = await pread(path.resolve(__dirname, '../../samples/mangakakalot/ticplus.html'))
-      return cheerio.load(s.toString(), {
-        xml: {
-          normalizeWhitespace: true,
-          decodeEntities: false
-        }
-      })
+      return utils.loadDom('mangakakalot/ticplus.html')
     })
     const { manga: { description } } = await importer.fetchMangaDetail(null, { keptChapt: true })
     assert(description.startsWith('Gag driven, short episodes'))
@@ -129,13 +103,7 @@ describe('importers/mangakakalot', function () {
     let called = false
     mokr.mock(Importer.prototype, 'domFetch', async _ => {
       called = true
-      const s = await pread(path.resolve(__dirname, '../../samples/mangakakalot/detail.html'))
-      return cheerio.load(s.toString(), {
-        xml: {
-          normalizeWhitespace: true,
-          decodeEntities: false
-        }
-      })
+      return utils.loadDom('mangakakalot/detail.html')
     })
     const { manga } = await importer.fetchMangaDetail()
     assert(called)
@@ -156,5 +124,39 @@ describe('importers/mangakakalot', function () {
   it('accepts chap url', Mocker.mockIt(async mokr => {
     const imp = new Importer()
     assert(imp.accepts('https://mangakakalot.com/chapter/to_you_the_immortal/chapter_110'))
+  }))
+
+  it('handles redirect', Mocker.mockIt(async mokr => {
+    const importer = new Importer()
+    let called = false
+
+    mokr.mock(Importer.prototype, 'accepts', () => true)
+    mokr.mock(Importer.prototype, 'domFetch', async link => {
+      if (link === 'first') {
+        return utils.loadDom('mangakakalot/redirect.html')
+      }
+      assert.strictEqual(link, 'https://mangakakalot.com/read-iz9jc158504822298')
+      called = true
+      return utils.loadDom('mangakakalot/martial_peak.html')
+    })
+    const { manga, chapters } = await importer.fetchMangaDetail('first')
+    assert(called)
+    assert(manga)
+    assert.strictEqual(manga.name, 'Martial Peak')
+    assert.strictEqual(manga.thumbUrl, 'https://avt.mkklcdnv6.com/20/b/16-1583494192.jpg')
+    assert(manga.description.startsWith('The journey to the marti'), manga.description)
+    assert.strictEqual(chapters.length, 547)
+  }))
+
+  it('throws on infinit loop', Mocker.mockIt(async mokr => {
+    const importer = new Importer()
+    mokr.mock(Importer.prototype, 'accepts', () => true)
+    mokr.mock(Importer.prototype, 'domFetch', async link => {
+      return cheerio.load('<html><script>window.location.assign("first")</script></html>')
+    })
+    assert.rejects(
+      () => importer.fetchMangaDetail('first'),
+      { id: errorHandler.tooManyRedirect.id }
+    )
   }))
 })

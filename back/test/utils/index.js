@@ -5,6 +5,9 @@ const appStarter = require('../../lib/appStarter')
 const app = require('../../app')
 const Singleton = require('../../lib/singleton')
 const requester = require('supertest')
+const fs = require('fs')
+const cheerio = require('cheerio')
+const path = require('path')
 
 function dbConnect () {
   if (mongoose.connection && mongoose.connection.constructor.STATES.connected === mongoose.connection._readyState) {
@@ -64,3 +67,13 @@ exports.runImport = async function (fn) {
   return dbSingle.close()
 }
 exports.setTimeout = require('util').promisify(setTimeout)
+
+exports.loadDom = async relpath => {
+  const file = await fs.promises.readFile(path.resolve(__dirname, `../../samples/${relpath}`))
+  return cheerio.load(file.toString(), {
+    xml: {
+      normalizeWhitespace: true,
+      decodeEntities: false
+    }
+  })
+}
