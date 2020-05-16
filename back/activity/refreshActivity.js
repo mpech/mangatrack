@@ -41,7 +41,7 @@ RefreshActivity.prototype.upsertChapters = async function (chapters) {
       return Promise.resolve()
     }
 
-    const ev = activity.importChap(chap)
+    const ev = activity.importChap(chap, { refreshThumb: true })
 
     return new Promise((resolve, reject) => {
       return ev.on('batchended', resolve)

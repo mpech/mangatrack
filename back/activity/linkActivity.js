@@ -16,9 +16,9 @@ LinkActivity.prototype.accepts = function (url) {
   return this.imp.accepts(url)
 }
 
-LinkActivity.prototype.importChap = function (chap) {
+LinkActivity.prototype.importChap = function (chap, options) {
   const link = this.imp.linkFromChap(chap)
-  return this.importLink(link, chap)
+  return this.importLink(link, chap, options)
 }
 /**
  * link: the global one, not the chap link
