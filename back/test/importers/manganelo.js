@@ -1,12 +1,8 @@
 const assert = require('assert')
-const path = require('path')
 const utils = require('../utils/')
 const Mocker = require('../../lib/mocker')
-const fs = require('fs')
-const util = require('util')
-const pread = util.promisify(fs.readFile)
 const Importer = require('../../importers/manganelo')
-const cheerio = require('cheerio')
+
 utils.bindDb()
 describe('importers/manganelo', function () {
   it('allUpdates', Mocker.mockIt(async mokr => {
@@ -14,13 +10,7 @@ describe('importers/manganelo', function () {
     let called = false
     mokr.mock(Importer.prototype, 'domFetch', async _ => {
       called = true
-      const s = await pread(path.resolve(__dirname, '../../samples/manganelo/main.html'))
-      return cheerio.load(s.toString(), {
-        xml: {
-          normalizeWhitespace: true,
-          decodeEntities: false
-        }
-      })
+      return utils.loadDom('manganelo/main.html')
     })
     mokr.mock(Importer.prototype, 'parseDate', _ => 5)
     const res = await importer.allUpdates()
@@ -39,13 +29,7 @@ describe('importers/manganelo', function () {
     let called = false
     mokr.mock(Importer.prototype, 'domFetch', async _ => {
       called = true
-      const s = await pread(path.resolve(__dirname, '../../samples/manganelo/half.html'))
-      return cheerio.load(s.toString(), {
-        xml: {
-          normalizeWhitespace: true,
-          decodeEntities: false
-        }
-      })
+      return utils.loadDom('manganelo/half.html')
     })
     const { chapters, manga } = await importer.fetchMangaDetail(null, { keptChapt: true })
     assert(called)
@@ -73,13 +57,7 @@ describe('importers/manganelo', function () {
     let called = false
     mokr.mock(Importer.prototype, 'domFetch', async _ => {
       called = true
-      const s = await pread(path.resolve(__dirname, '../../samples/manganelo/detail.html'))
-      return cheerio.load(s.toString(), {
-        xml: {
-          normalizeWhitespace: true,
-          decodeEntities: false
-        }
-      })
+      return utils.loadDom('manganelo/detail.html')
     })
     const { manga } = await importer.fetchMangaDetail()
     assert(called)

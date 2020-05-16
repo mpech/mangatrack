@@ -1,6 +1,7 @@
 const Base = require('./base')
 const config = require('../config')
 const safeRegExp = require('../lib/safeRegExp')
+const errorHandler = require('../lib/errorHandler')
 
 class Importer extends Base {
   constructor () {
@@ -69,7 +70,10 @@ Importer.prototype.linkFromChap = function (chap) {
  *  }
  * @return {[type]} [description]
  */
-Importer.prototype.fetchMangaDetail = async function (link, chap = null) {
+Importer.prototype.fetchMangaDetail = async function (link, chap = null, seen = new Set()) {
+  if (seen.has(link)) { return errorHandler.tooManyRedirect() }
+  seen.add(link)
+
   const $ = await this.domFetch(link)
   const chapters = $('.chapter-list .row').map((i, x) => {
     const a = $(x).find('a')
@@ -80,6 +84,13 @@ Importer.prototype.fetchMangaDetail = async function (link, chap = null) {
     at = this.parseDateDetail(at)
     return { name, url, num, at }
   }).toArray()
+  if (chapters.length === 0) {
+    // handle js redirect ?
+    const url = $.html().match(/location\.assign\(['"]([^'"]+)['"]\)/)
+    if (url && this.accepts(url[1])) {
+      return this.fetchMangaDetail(url[1], chap, seen)
+    }
+  }
 
   if (!chap) {
     chap = {
