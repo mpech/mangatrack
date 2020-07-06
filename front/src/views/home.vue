@@ -1,6 +1,6 @@
 <template>
   <div>
-    <mt-autocomplete></mt-autocomplete>
+    <mt-filter-form></mt-filter-form>
     <mt-grid :mangas="mangas" :myMangas="myMangas" :more="more"></mt-grid>
   </div>
 </template>
@@ -8,6 +8,7 @@
 <script>
 import Grid from '../components/grid'
 import Autocomplete from '../components/autocomplete'
+import FilterForm from '../components/filterForm'
 
 const Home = {
   computed: {
@@ -19,8 +20,8 @@ const Home = {
     }
   },
   components: {
-    'mt-autocomplete': Autocomplete,
-    'mt-grid': Grid
+    'mt-grid': Grid,
+    'mt-filter-form': FilterForm
   },
   methods: {
     more () {

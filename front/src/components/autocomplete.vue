@@ -1,53 +1,34 @@
 <template>
   <div>
-    <autocomplete 
-      :search="search"
-      :get-result-value="getResultValue"
-      placeholder="Search mangas"
-      aria-label="Search mangas"
-      @submit="onSubmit"></autocomplete>
+  <autocomplete
+    :search="search"
+    :get-result-value="getResultValue"
+    placeholder="Search mangas"
+    aria-label="Search mangas"
+    @submit="onSubmit"
+    debounceTime="300"
+  />
   </div>
 </template>
-
 <script>
 import Vue from 'vue'
 import TrevoreyreAuto from '@trevoreyre/autocomplete-vue'
 
 const Autocomplete = {
+  props: ['onQuery'],
   data () {
     return {
-      timeout: 0,
       _q: ''
     }
   },
   components: {
     autocomplete: TrevoreyreAuto
   },
-  computed: {
-    followMangas () {
-      return this.mangas.map(m => {
-        Vue.set(m, 'followed', typeof (this.myMangas[m.id]) !== 'undefined')
-        Vue.set(m, 'num', this.myMangas[m.id])
-        return m
-      })
-    }
-  },
   methods: {
-    search (q) {
+    async search (q) {
       this._q = q
-      if (q.length < 3) {
-        return []
-      }
-      if (this.timeout) {
-        clearTimeout(this.timeout)
-      }
-      return new Promise((resolve, reject) => {
-        this.timeout = setTimeout(_ => {
-          return this.$store.dispatch('searchMangas', { q }).then(res => {
-            return resolve(res.items)
-          }).catch(reject)
-        }, 300)
-      })
+      const res = await this.onQuery(q)
+      return res.items
     },
     getResultValue (result) {
       return result.name

@@ -172,6 +172,21 @@ describe('e2e/mangas', function () {
     assert.strictEqual(chapters[1].at, 3)
   }))
 
+  it('filters mangas by min chapters', Mocker.mockIt(async function (mokr) {
+    await Promise.all([
+      MangaModel.create({ _id: '0'.repeat(24), name: 'aaaaaa', lastChap_at: 1, lastChap_num: 10 }),
+      MangaModel.create({ _id: '1'.repeat(24), name: 'abaaaa', lastChap_at: 2, lastChap_num: 5 }),
+      MangaModel.create({ _id: '2'.repeat(24), name: 'abcabc', lastChap_num: 2 })
+    ])
+    const { body: { items } } = await utils.requester
+      .get(`/mangas?minChapters=5`)
+      .expect(200)
+
+    assert.strictEqual(items.length, 2)
+    assert.strictEqual(items[0].name, 'abaaaa')
+    assert.strictEqual(items[1].name, 'aaaaaa')
+  }))
+
   it('list one manga by id', Mocker.mockIt(async function (mokr) {
     const manga = await MangaModel.create({ name: 'abc' })
     const { body } = await utils.requester

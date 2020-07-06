@@ -72,8 +72,8 @@ export const actions = {
       context.commit('fetchMangas', data)
     }
   },
-  async filterMangas (context, { q }) {
-    if (!q) {
+  async filterMangas (context, { q = '', minChapters = 0 }) {
+    if (!q && !minChapters) {
       // whenever you filter mangas, and you apply an empty filter
       // reinitializes the standard pagination
       context.state.mangas = []
@@ -82,8 +82,10 @@ export const actions = {
     }
     const payload = {
       anonAllowed: true,
-      params: { q }
+      params: {}
     }
+    q.length > 3 && (payload.params.q = q)
+    minChapters && (payload.params.minChapters = minChapters)
     const { data } = await this.axios.get(apiRoutes.mangas, payload)
     context.commit('filterMangas', data)
     return data
@@ -162,10 +164,11 @@ export const actions = {
       context.commit('logout')
     }
   },
-  async searchMangas (context, { q } = {}) {
+  async searchMangas (context, { q, minChapters } = {}) {
     const payload = {
       params: {
         q,
+        minChapters,
         sort: 'search=1'
       },
       anonAllowed: true

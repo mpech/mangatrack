@@ -18,6 +18,7 @@ function load (app) {
   app.get('/mangas', validate({
     query: {
       q: Joi.string().min(3),
+      minChapters: Joi.number().min(0),
       id: Joi.alternatives().try(Joi.array().items(rules.objId), rules.objId),
       type: Joi.string().valid(...MangaModel.schema.tree.type.enum),
       offset: Joi.number().min(0),
@@ -39,6 +40,10 @@ function load (app) {
 
     if (req.query.q) {
       crit.name = new RegExp(req.query.q, 'i')
+    }
+
+    if (req.query.minChapters) {
+      crit.lastChap_num = { $gte: parseInt(req.query.minChapters, 10) }
     }
 
     if (req.query.type) { crit.type = req.query.type }
