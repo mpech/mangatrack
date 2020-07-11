@@ -7,7 +7,6 @@
 
 <script>
 import Grid from '../components/grid'
-import Autocomplete from '../components/autocomplete'
 import FilterForm from '../components/filterForm'
 
 const Home = {

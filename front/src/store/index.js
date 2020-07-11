@@ -14,13 +14,9 @@ const vuexLocal = new VuexPersistence({
 })
 
 export const mutations = {
-  fetchMangas (state, { items, links }) {
-    state.mangas = state.mangas.concat(items)
+  fetchMangas (state, { items, links, reset }) {
+    state.mangas = reset ? items : state.mangas.concat(items)
     state.moreMangas = links
-  },
-  filterMangas (state, { items, links }) {
-    state.mangas = items
-    state.moreMangas = apiRoutes.mangas
   },
   fetchMyMangas (state, data) {
     if (data === state.myMangas) {
@@ -53,42 +49,33 @@ export const mutations = {
   },
   setMe (state, me) {
     state.me = me
+  },
+  resetMangas (state, me) {
+    state.moreMangas = { next: apiRoutes.mangas }
+    state.mangas = []
   }
 }
 
 export const actions = {
-  async fetchMangas (context) {
+  async fetchMangas (context, { q, minChapters, offset } = {}) {
     const payload = {
       params: {
-        limit: 18
+        limit: 18,
+        q,
+        minChapters,
       },
       anonAllowed: true
     }
-    let url = context.state.moreMangas.next
+    let url = offset === 0 ? apiRoutes.mangas : context.state.moreMangas.next
     if (url) {
       // should not occur, but should not fail either
       url = url.replace(/limit=\d+/, '')// do not send an array of limit
       const { data } = await this.axios.get(url, payload)
+      if (offset === 0) {
+        data.reset = true
+      }
       context.commit('fetchMangas', data)
     }
-  },
-  async filterMangas (context, { q = '', minChapters = 0 }) {
-    if (!q && !minChapters) {
-      // whenever you filter mangas, and you apply an empty filter
-      // reinitializes the standard pagination
-      context.state.mangas = []
-      context.state.moreMangas = { next: apiRoutes.mangas }
-      return this.dispatch('fetchMangas')
-    }
-    const payload = {
-      anonAllowed: true,
-      params: {}
-    }
-    q.length > 3 && (payload.params.q = q)
-    minChapters && (payload.params.minChapters = minChapters)
-    const { data } = await this.axios.get(apiRoutes.mangas, payload)
-    context.commit('filterMangas', data)
-    return data
   },
   async fetchMyMangas (context) {
     const { data } = await this.axios.get(apiRoutes.myMangaSuite, _ => {
@@ -163,17 +150,6 @@ export const actions = {
       // if even refreshing token fails, consider yourself as logged out
       context.commit('logout')
     }
-  },
-  async searchMangas (context, { q, minChapters } = {}) {
-    const payload = {
-      params: {
-        q,
-        minChapters,
-        sort: 'search=1'
-      },
-      anonAllowed: true
-    }
-    return this.axios.get(apiRoutes.mangas, payload).then(({ data }) => data)
   },
   async fetchMangaDetail (context, { nameId }) {
     const url = apiRoutes.mangaDetail.replace('{{nameId}}', nameId)

@@ -1,14 +1,14 @@
 <template>
   <div id="filterForm">
     <div>
-      <input placeholder="min chapters" type="text" pattern="[0-9]*" @change='onChange'></input>
-      <mt-autocomplete class="autocomplete" :onQuery='onQuery'></mt-autocomplete>
+      <input placeholder="manga name" type="text" name="q" @keyup='onKeyUp'></input>
+      <input placeholder="min chapters" type="text" name="min" pattern="[0-9]*" @change='onMinChange'></input>
     </div>
   </div>
 </template>
 
 <style scoped>
-#filterForm input:first-child {
+#filterForm input {
   background: inherit;
   border: none;
   padding:12px 12px 12px 48px;
@@ -16,7 +16,7 @@
   display: inline-box;
   margin-bottom: 2px;
 }
-#filterForm input:first-child:focus{
+#filterForm input {
   background-color: #fff;
   outline: none;
   box-shadow: 0 2px 2px rgba(0,0,0,.16);
@@ -26,12 +26,9 @@
 </style>
 <script>
 import Vue from 'vue'
-import Autocomplete from '../components/autocomplete'
+import debounce from 'debounce'
 
 const FilterForm = {
-  components: {
-    'mt-autocomplete': Autocomplete
-  },
   data () {
     return {
       q: '',
@@ -39,14 +36,18 @@ const FilterForm = {
     }
   },
   methods: {
-    onChange (e) {
+    onMinChange (e) {
       this.min = parseInt(e.target.value, 10) || 0
-      return this.$store.dispatch('filterMangas', { q: this.q, minChapters: this.min })
+      return this.$store.dispatch('fetchMangas', { q: this.q, minChapters: this.min, offset: 0 })
     },
-    async onQuery (q) {
-      this.q = q
-      if (this.q.length < 3) { return { items: [] } }
-      return this.$store.dispatch('searchMangas', { q: this.q, minChapters: this.min })
+    wait: debounce((q, cb) => q.length >= 3 && cb(), 1000),
+    onKeyUp (e) {
+      this.q = e.target.value
+      this.wait(this.q, () => {
+        this.$store.dispatch('fetchMangas', {
+          q: this.q, minChapters: this.min, offset: 0
+        })
+      })
     }
   }
 }
