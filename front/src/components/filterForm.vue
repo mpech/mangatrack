@@ -2,7 +2,7 @@
   <div id="filterForm">
     <div>
       <input placeholder="manga name" type="text" name="q" @keyup='onKeyUp'></input>
-      <input placeholder="min chapters" type="text" name="min" pattern="[0-9]*" @change='onMinChange'></input>
+      <input placeholder="min chapters" type="text" name="min" pattern="[0-9]*" @keyup='onKeyUp'></input>
     </div>
   </div>
 </template>
@@ -27,27 +27,26 @@
 <script>
 import Vue from 'vue'
 import debounce from 'debounce'
-
+const defaultQ = q => q.length >= 3 ? q : undefined
+const myDebounce = debounce((q, min, cb) => (defaultQ(q) || q.length === 0 || min) && cb(), 1000)
 const FilterForm = {
   data () {
     return {
       q: '',
-      min: 0
+      min: ''
     }
   },
   methods: {
-    onMinChange (e) {
-      this.min = parseInt(e.target.value, 10) || 0
-      return this.$store.dispatch('fetchMangas', { q: this.q, minChapters: this.min, offset: 0 })
-    },
-    wait: debounce((q, cb) => q.length >= 3 && cb(), 1000),
-    onKeyUp (e) {
-      this.q = e.target.value
-      this.wait(this.q, () => {
-        this.$store.dispatch('fetchMangas', {
-          q: this.q, minChapters: this.min, offset: 0
-        })
+    fetch () {
+      return this.$store.dispatch('fetchMangas', {
+        q: defaultQ(this.q),
+        minChapters: parseInt(this.min, 10) || 0,
+        offset: 0
       })
+    },
+    onKeyUp (e) {
+      this[e.target.name] = e.target.value
+      myDebounce(this.q, this.min, () => this.fetch())
     }
   }
 }

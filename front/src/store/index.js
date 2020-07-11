@@ -62,7 +62,7 @@ export const actions = {
       params: {
         limit: 18,
         q,
-        minChapters,
+        minChapters
       },
       anonAllowed: true
     }
