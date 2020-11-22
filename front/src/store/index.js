@@ -107,6 +107,8 @@ export const actions = {
   async trackManga (context, { id, num }) {
     const { data } = await this.axios.put(apiRoutes.myMangas.replace('{{mangaId}}', id), { num }, _ => ({ data: { mangaId: id, num } }))
     context.commit('trackManga', { id: data.mangaId, num: data.num })
+
+    Vue.notify(`c${num} saved`)
   },
   async untrackManga (context, { id }) {
     await this.axios.delete(apiRoutes.myMangas.replace('{{mangaId}}', id), _ => {})

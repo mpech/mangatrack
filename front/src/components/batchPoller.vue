@@ -63,7 +63,7 @@ const BatchPoller = {
     handleBatch (b) {
       if (b.status === 'OK' || b.status === 'KO') {
         this.$notify({
-          group: 'batch',
+          type: 'success',
           title: 'batch update',
           text: `${b.status} ${b.link}`
         })
