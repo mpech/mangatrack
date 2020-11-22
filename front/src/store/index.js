@@ -19,24 +19,28 @@ export const mutations = {
     state.moreMangas = links
   },
   fetchMyMangas (state, data) {
-    if (data === state.myMangas) {
-      return
+    const { myMangas } = state
+    state.myMangas = {
+      ...state.myMangas,
+      ...data.items.reduce((acc, { mangaId, state, updatedAt, num }) => {
+        if (!myMangas[mangaId] || myMangas[mangaId].updatedAt < updatedAt) {
+          acc[mangaId] = { updatedAt, num, state }
+        }
+        return acc
+      }, {})
     }
-    state.myMangas = data.items.reduce((acc, { mangaId, num }) => {
-      acc[mangaId] = num
-      return acc
-    }, {})
   },
   fetchMyPopulatedMangas (state, { items, links }) {
     state.myPopulatedMangas = items
   },
   trackManga (state, trackedManga) {
-    state.myMangas[trackedManga.id] = trackedManga.num
+    state.myMangas[trackedManga.id] = { num: trackedManga.num, updatedAt: Date.now(), state: 'write' }
     state.myMangas = { ...state.myMangas }
   },
   untrackManga (state, untrackedManga) {
-    const { [untrackedManga.id]: del, ...others } = { ...state.myMangas }
-    state.myMangas = others
+    state.myMangas[untrackedManga.id].state = 'deleted'
+    state.myMangas[untrackedManga.id].updatedAt = Date.now()
+    state.myMangas = { ...state.myMangas }
   },
   authenticate (state, { accessToken, refreshToken }) {
     state.accessToken = accessToken
@@ -86,7 +90,7 @@ export const actions = {
   async fetchMyPopulatedMangas (context) {
     const payload = {
       params: {
-        id: Object.keys(context.state.myMangas),
+        id: Object.keys(context.state.myMangas).filter(key => context.state.myMangas[key].state !== 'deleted'),
         limit: 50
       },
       anonAllowed: true
@@ -111,7 +115,8 @@ export const actions = {
   // bidrectionnal by default, down|up flow to be disabled by caller
   async sync (context, { down = true, up = true } = {}) {
     const items = Object.keys(context.state.myMangas).reduce((acc, id) => {
-      acc.push({ mangaId: id, num: context.state.myMangas[id] })
+      const { num, updatedAt } = context.state.myMangas[id]
+      acc.push({ mangaId: id, num, updatedAt })
       return acc
     }, [])
     if (up) {

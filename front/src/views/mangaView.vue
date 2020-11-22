@@ -63,7 +63,7 @@ export default {
   computed: {
     lastRead () {
       const m = this.$store.state.myMangas[this.manga.id]
-      return typeof m !== 'undefined' ? m : -1
+      return typeof m !== 'undefined' ? m.num : -1
     },
     description () {
       if (!this.manga || !this.manga.description || !this.manga.description.content) {

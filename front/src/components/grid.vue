@@ -32,8 +32,12 @@ const Grid = {
   computed: {
     followMangas () {
       return this.mangas.map(m => {
-        Vue.set(m, 'followed', typeof (this.myMangas[m.id]) !== 'undefined')
-        Vue.set(m, 'num', this.myMangas[m.id])
+        if (this.myMangas[m.id] && this.myMangas[m.id].state !== 'deleted') {
+          Vue.set(m, 'followed', true)
+          Vue.set(m, 'num', this.myMangas[m.id].num)
+        } else {
+          Vue.set(m, 'followed', false)
+        }
         return m
       })
     },

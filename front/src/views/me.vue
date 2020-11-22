@@ -28,7 +28,7 @@ const Me = {
     },
     myPopulatedMangas () {
       return this.$store.state.myPopulatedMangas.map(x => {
-        x.hasNew = this.myMangas[x.id] < (x.lastChap && x.lastChap.num)
+        x.hasNew = this.myMangas[x.id].num < (x.lastChap && x.lastChap.num)
         return x
       })
     }
