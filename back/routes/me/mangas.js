@@ -7,11 +7,9 @@ const prom = require('../../lib/prom')
 const rules = require('../../lib/rules')
 const errorHandler = require('../../lib/errorHandler')
 const helper = require('../../lib/helper')
-const Formatter = require('../../formatters/me/mangaFormatter')
+const formatter = require('../../formatters/me/mangaFormatter')
 
 function load (app) {
-  module.exports.formatter = new Formatter()
-
   app.put('/me/mangas/:mangaId', app.oauth.authenticate(), validate({
     params: {
       mangaId: rules.objId
@@ -26,8 +24,7 @@ function load (app) {
     if (!m) {
       return errorHandler.notFound('Manga')
     }
-    const manga = await req.user.saveManga({ mangaId, num })
-    return module.exports.formatter.format(manga)
+    return req.user.saveManga({ mangaId, num, updatedAt: Date.now() }).then(formatter.format)
   }))
 
   app.delete('/me/mangas/:mangaId', app.oauth.authenticate(), validate({
@@ -36,19 +33,19 @@ function load (app) {
     }
   }), helper.userOnReq, prom(function (req, res) {
     const mangaId = req.params.mangaId
-    return req.user.removeManga({ mangaId }).then(m => ({}))
+    return req.user.removeManga({ mangaId, updatedAt: Date.now() }).then(formatter.format).catch(e => console.log('e : ', e))
   }))
 
   app.patch('/me/mangas', app.oauth.authenticate(), validate({
     body: {
       items: Joi.array().min(1).items(Joi.object({
         mangaId: rules.objId,
-        num: rules.chapterNum
+        num: rules.chapterNum,
+        updatedAt: rules.timestamp
       })).required()
     }
   }), helper.userOnReq, prom(async function (req, res) {
     const items = req.body.items
-
     { // check manga existence
       const matchedIds = await ChapterModel.find({
         mangaId: {
@@ -57,13 +54,10 @@ function load (app) {
       }).select('mangaId').lean()
       const foundMangaIds = new Set(matchedIds.map(x => x.mangaId.toString()))
       if (foundMangaIds.size !== items.length) {
-        const notFound = items.reduce((acc, { mangaId }) => {
-          if (!foundMangaIds.has(mangaId)) {
-            acc.push(mangaId)
-          }
-          return acc
-        }, [])
-        return errorHandler.unknownMangas(notFound)
+        const invalids = items
+          .map(({ mangaId }) => mangaId)
+          .filter(mangaId => !foundMangaIds.has(mangaId))
+        return errorHandler.unknownMangas(invalids)
       }
     }
 
@@ -91,24 +85,19 @@ function load (app) {
         }
       ])
       const foundMangaIds = new Set(matchedChapters.map(x => x._id.toString()))
-      const invalids = items.reduce((acc, { mangaId, num }) => {
-        if (!foundMangaIds.has(mangaId)) {
-          acc.push({ mangaId, num })
-        }
-        return acc
-      }, [])
+      const invalids = items
+        .map(({ mangaId, num }) => ({ mangaId, num }))
+        .filter(({ mangaId }) => !foundMangaIds.has(mangaId))
 
       if (invalids.length) {
         return errorHandler.unknownChapters(JSON.stringify(invalids))
       }
     }
-
-    return req.user.updateMangas(items).then(mangas => ({}))
+      return req.user.updateMangas(items).then(formatter.formatCollection)
   }))
 
   app.get('/me/mangas', app.oauth.authenticate(), helper.userOnReq, prom(async (req, res) => {
-    const items = [...req.user.mangas.entries()].map(([mangaId, num]) => ({ mangaId, num }))
-    return { items }
+    return formatter.formatCollection(req.user.mangas)
   }))
 }
 

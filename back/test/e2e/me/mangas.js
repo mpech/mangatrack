@@ -34,7 +34,7 @@ describe('e2e/me/mangas', function () {
     assert.strictEqual(mangaId, dbz)
     assert.strictEqual(num, 5)
     const u = await UserModel.findOne({ _id: userId })
-    assert.strictEqual(u.mangas.get(dbz), 5)
+    assert.strictEqual(u.mangas.get(dbz).num, 5)
   }))
 
   it('rejects if not existing manga', Mocker.mockIt(async function (mokr) {
@@ -70,7 +70,7 @@ describe('e2e/me/mangas', function () {
     const userId = '0'.repeat(24)
     const token = 'abc'
     const [, at] = await Promise.all([
-      UserModel.create({ _id: userId, googleId: 'g', displayName: 'moran', mangas: { ['1'.repeat(24)]: 5 } }),
+      UserModel.create({ _id: userId, googleId: 'g', displayName: 'moran', mangas: { ['1'.repeat(24)]: { num: 5 } } }),
       AtModel.create({ token, userId })
     ])
 
@@ -80,7 +80,7 @@ describe('e2e/me/mangas', function () {
       .expect(200)
 
     const u = await UserModel.findOne({ _id: userId })
-    assert(!u.mangas.size)
+    assert.strictEqual(u.mangas.size, 1)
   }))
 
   it('patches my manga collection', Mocker.mockIt(async function (mokr) {
@@ -91,9 +91,9 @@ describe('e2e/me/mangas', function () {
     const notOverridenIfInferior = '7'.repeat(24)
     const overriden = '5'.repeat(24)
     const mangas = {
-      [ignored]: 1,
-      [notOverridenIfInferior]: 7,
-      [overriden]: 5
+      [ignored]: { num: 1 },
+      [notOverridenIfInferior]: { num: 7, updatedAt: 10 },
+      [overriden]: { num: 5, updatedAt: 2 }
     }
     const [, at] = await Promise.all([
       UserModel.create({ _id: userId, googleId: 'g', displayName: 'moran', mangas }),
@@ -112,7 +112,7 @@ describe('e2e/me/mangas', function () {
         name: 'overriden',
         chapters: [
           { num: 5, url: 'x' },
-          { num: 7, url: 'x' }
+          { num: 6, url: 'x' }
         ]
       }, 'fanfox')
     ])
@@ -121,15 +121,15 @@ describe('e2e/me/mangas', function () {
       .set({ Authorization: `Bearer ${at.token}` })
       .send({
         items: [
-          { mangaId: notOverridenIfInferior, num: 5 },
-          { mangaId: overriden, num: 7 }
+          { mangaId: notOverridenIfInferior, num: 5, updatedAt: 8 },
+          { mangaId: overriden, num: 6, updatedAt: 3 }
         ]
       })
       .expect(200)
 
     const u = await UserModel.findOne({ _id: userId })
-    assert.strictEqual(u.mangas.get(notOverridenIfInferior), 7)
-    assert.strictEqual(u.mangas.get(overriden), 7)
+    assert.strictEqual(u.mangas.get(notOverridenIfInferior).num, 7)
+    assert.strictEqual(u.mangas.get(overriden).num, 6)
   }))
 
   it('gives me back my failing mangas', Mocker.mockIt(async function (mokr) {
@@ -140,16 +140,16 @@ describe('e2e/me/mangas', function () {
     const dbz = '0'.repeat(24)
     const ccc = '4'.repeat(24)
     const mangas = {
-      [dbz]: 5,
-      ['1'.repeat(24)]: 7,
-      ['2'.repeat(24)]: 5,
-      [ccc]: 3
+      [dbz]: { num: 5 },
+      ['1'.repeat(24)]: { num: 7 },
+      ['2'.repeat(24)]: { num: 5 },
+      [ccc]: { num: 3 }
     }
     const [, at] = await Promise.all([
       UserModel.create({ _id: userId, googleId: 'g', displayName: 'moran', mangas }),
       AtModel.create({ token, userId }),
-      MangaModel.upsertManga({ _id: dbz, name: 'dbz', chapters: [{ num: mangas[dbz], url: 'a' }] }, 'fanfox'),
-      MangaModel.upsertManga({ _id: ccc, name: 'ccc', chapters: [{ num: mangas[ccc], url: 'a' }] }, 'fanfox')
+      MangaModel.upsertManga({ _id: dbz, name: 'dbz', chapters: [{ num: mangas[dbz].num, url: 'a' }] }, 'fanfox'),
+      MangaModel.upsertManga({ _id: ccc, name: 'ccc', chapters: [{ num: mangas[ccc].num, url: 'a' }] }, 'fanfox')
     ])
 
     const { body } = await utils.requester
@@ -157,9 +157,9 @@ describe('e2e/me/mangas', function () {
       .set({ Authorization: `Bearer ${at.token}` })
       .send({
         items: [
-          { mangaId: failingOnes, num: 5 },
-          { mangaId: failingTwos, num: 1 },
-          { mangaId: ccc, num: 5 }
+          { mangaId: failingOnes, num: 5, updatedAt: Date.now() },
+          { mangaId: failingTwos, num: 1, updatedAt: Date.now() },
+          { mangaId: ccc, num: 5, updatedAt: Date.now() }
         ]
       })
       .expect(400)
@@ -172,8 +172,8 @@ describe('e2e/me/mangas', function () {
     const dbz = '0'.repeat(24)
     const ccc = '1'.repeat(24)
     const mangas = {
-      [dbz]: 1,
-      [ccc]: 2
+      [dbz]: { num: 1 },
+      [ccc]: { num: 2 }
     }
     const [, at] = await Promise.all([
       UserModel.create({ _id: userId, googleId: 'g', displayName: 'moran', mangas }),
@@ -187,8 +187,8 @@ describe('e2e/me/mangas', function () {
       .set({ Authorization: `Bearer ${at.token}` })
       .send({
         items: [
-          { mangaId: dbz, num: 3 },
-          { mangaId: ccc, num: 4 }
+          { mangaId: dbz, num: 3, updatedAt: Date.now() },
+          { mangaId: ccc, num: 4, updatedAt: Date.now() }
         ]
       })
       .expect(400)
@@ -216,10 +216,10 @@ describe('e2e/me/mangas', function () {
     const dbz = '0'.repeat(24)
     const ccc = '4'.repeat(24)
     const mangas = {
-      [dbz]: 5,
-      ['1'.repeat(24)]: 7,
-      ['2'.repeat(24)]: 5,
-      [ccc]: 3
+      [dbz]: { num: 5 },
+      ['1'.repeat(24)]: { num: 7 },
+      ['2'.repeat(24)]: { num: 5 },
+      [ccc]: { num: 3 }
     }
     const [, at] = await Promise.all([
       UserModel.create({ _id: userId, googleId: 'g', displayName: 'moran', mangas }),

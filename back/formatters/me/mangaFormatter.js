@@ -1,8 +1,15 @@
-const Base = require('../mangaFormatter')
-class Formatter extends Base {
-  async format ({ num, mangaId }) {
-    return { num, mangaId }
+const format = async function ({ num, _id: mangaId, updatedAt }) {
+  return { num, mangaId: mangaId, updatedAt }
+}
+const formatCollection = async function (map) {
+  return {
+    items: [...map.entries()].map(([id, { num, updatedAt, state }]) => ({
+      mangaId: id,
+      num,
+      updatedAt,
+      state
+    }))
   }
 }
 
-module.exports = Formatter
+module.exports = { format, formatCollection }
