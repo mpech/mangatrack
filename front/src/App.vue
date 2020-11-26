@@ -5,7 +5,7 @@
     <div id="pageDisplay">
       <router-view></router-view>
     </div>
-    <notifications/>
+    <notifications position="bottom right"/>
   </div>
 </template>
 

@@ -13,10 +13,10 @@ it('separates my mangas by unread and up to date', () => {
   const store = new Vuex.Store({
     state: {
       myMangas: {
-        d: 100,
-        a: 100,
-        c: 120,
-        b: 100
+        d: { updatedAt: 1, num: 100, state: 'write' },
+        a: { updatedAt: 1, num: 100, state: 'write' },
+        c: { updatedAt: 1, num: 120, state: 'write' },
+        b: { updatedAt: 1, num: 100, state: 'write' }
       },
       myPopulatedMangas: [
         makeManga('a', 100), // all read
