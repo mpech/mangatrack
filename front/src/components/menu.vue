@@ -5,33 +5,36 @@
     <!-- specify the link by passing the to prop. -->
     <!-- <router-link> will be rendered as an <a> tag by default -->
     <!-- actually, DO reload on home click -->
-    <a href="/" class="pure-menu-heading pure-menu-link">MangaTrack</a>
+    <a href="/" class="pure-menu-heading pure-menu-link"
+      :class="{active: active.home}"
+    >MangaTrack</a>
 
     <a href="/me"
       class="pure-menu-heading pure-menu-link"
+      :class="{active: active.me}"
       title="my space"
     >Me</a>
 
     <router-link to="/admin" 
       class="pure-menu-heading pure-menu-link admin"
-      :class="{hide:!admin}"
+      :class="{hide: !logged, active: active.admin}"
     >Admin</router-link>
 
     <router-link to="/login" 
       class="pure-menu-heading pure-menu-link login" 
-      :class="{hide:logged}"
+      :class="{hide:logged, active: active.login}"
       title="Mainly sync your tracked stuff"
     >Login</router-link>
 
     <router-link to="/login" 
       class="pure-menu-heading pure-menu-link logout"
-      :class="{hide:!logged}"
+      :class="{hide:!logged, active: active.login}"
     >Logout</router-link>
   </div>
 
 </template>
 <style scoped>
-.admin {
+.active {
   color: #ff8080;
 }
 .admin.hide {
@@ -47,6 +50,15 @@ const Menu = {
     },
     admin () {
       return !!this.$store.getters.isAdmin
+    },
+    active () {
+      const { path } = this.$route
+      return {
+        home: path === '/',
+        me: path === '/me',
+        admin: path === '/admin',
+        login: path === '/login'
+      }
     }
   },
   mounted () {
