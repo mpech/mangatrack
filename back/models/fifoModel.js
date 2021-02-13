@@ -33,14 +33,9 @@ schema.methods.restart = async function (fn) {
   await this.restart(fn)
 }
 
-schema.methods.queue = async function (params, delay) {
+schema.methods.queueAll = async function (vArgs, delay) {
   if (typeof(delay) !== 'number') throw new Error('expect delay')
-  this.tasks.push({ delay, params })
+  this.tasks.push(...vArgs.map(args => ({ delay, args })))
   await this.save()
-
-  if (this.tasks.length === 1) {
-    APH.tail = this.restart()
-  }
 }
-
 module.exports = mongoose.model('Fifo', schema, 'fifos')

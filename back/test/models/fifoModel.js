@@ -36,17 +36,17 @@ describe('models/fifoModel', function () {
     })
 
     it('processes second task with delay', async () => {
-      const f = new FifoModel({ type: 'link', tasks: [{ delay: 0, params: 'a'}, { delay: 20, params: 'b'}] })
+      const f = new FifoModel({ type: 'link', tasks: [{ delay: 0, args: 'a'}, { delay: 20, args: 'b'}] })
       let called = { a: false, b: false }
       const now = Date.now()
-      const fn = async ({ params }) => {
-        assert.ok(params === 'a' || params === 'b')
-        called[params] = true
-        if (params === 'a') {
+      const fn = async ({ args }) => {
+        assert.ok(args === 'a' || args === 'b')
+        called[args] = true
+        if (args === 'a') {
           // check first task is indeed been unsaved
           const f = await FifoModel.findOne({ type: 'link' })
           assert.strictEqual(f.tasks.length, 1)
-          assert.strictEqual(f.tasks[0].params, 'b')
+          assert.strictEqual(f.tasks[0].args, 'b')
           return new Promise(resolve => setTimeout(resolve, 10))
         }
         const delay = Date.now() - now
@@ -60,27 +60,16 @@ describe('models/fifoModel', function () {
     })
   })
 
-  describe('queue', () => {
+  describe('queueAll', () => {
     it('does nothing if already processing', async () => {
       const f = new FifoModel({ type: 'link', tasks: [{}] })
       const called = false
       f.restart = () => called = true
-      await f.queue({ mangaId: 1 }, 0)
+      await f.queueAll([{ mangaId: 1 }], 0)
       const dbFifo = await FifoModel.findOne({ type: 'link' })
-      assert.deepEqual(dbFifo.tasks, [{}, { delay: 0, params: { mangaId: 1 } }])
+      assert.deepEqual(dbFifo.tasks, [{}, { delay: 0, args: { mangaId: 1 } }])
 
       return APH.all().then(() => assert.ok(!called))
-    })
-
-    it('restarts the fifo if stalled', async () => {
-      const f = new FifoModel({ type: 'link', tasks: [] })
-      let called = false
-      f.restart = () => called = true
-      await f.queue({ mangaId: 2 }, 1)
-      const dbFifo = await FifoModel.findOne({ type: 'link' })
-      assert.deepEqual(dbFifo.tasks, [{ delay: 1, params: { mangaId: 2 } }])
-
-      return APH.all().then(() => assert.ok(called))
     })
   })
 })
