@@ -1,4 +1,3 @@
-const exports = module.exports
 const mongoose = require('mongoose')
 const config = require('../../config')
 const appStarter = require('../../lib/appStarter')
@@ -40,17 +39,17 @@ function appStarterClose (appStarter) {
 const dbSingle = Singleton(dbConnect, dbClose, 'db')
 const appSingle = Singleton(appStarterConnect, appStarterClose, 'appStarter')
 
-exports.bindDb = function () {
+module.exports.bindDb = function () {
   before(function () { return dbSingle.open() })
   after(function () { return dbSingle.close() })
 }
 
-exports.bindApp = function () {
+module.exports.bindApp = function () {
   before(function () { return appSingle.open(app, exports) })
   after(function () { return appSingle.close() })
 }
 
-exports.clearColls = function (arr) {
+module.exports.clearColls = function (arr) {
   return function () {
     return Promise.resolve().then(_ => {
       const dfds = arr.map(Model => Model.deleteMany({}))
@@ -58,7 +57,7 @@ exports.clearColls = function (arr) {
     })
   }
 }
-exports.runImport = async function (fn) {
+module.exports.runImport = async function (fn) {
   config.selectedDb = config.dbUrl
   await dbSingle.open()
   try {
@@ -66,9 +65,9 @@ exports.runImport = async function (fn) {
   } catch (e) { console.log('runImport', e) }
   return dbSingle.close()
 }
-exports.setTimeout = require('util').promisify(setTimeout)
+module.exports.setTimeout = require('util').promisify(setTimeout)
 
-exports.loadDom = async relpath => {
+module.exports.loadDom = async relpath => {
   const file = await fs.promises.readFile(path.resolve(__dirname, `../../samples/${relpath}`))
   return cheerio.load(file.toString(), {
     xml: {

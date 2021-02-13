@@ -13,11 +13,11 @@ describe('importers/base', function () {
     assert(d.toString().includes('Nov 13 2019 08:00:00'))
   }))
 
-  it('parseDateDetail (mankakalot detail) mm-dd hh:mm', Mocker.mockIt(mokr => {
+  it('parseDateDetail (mangakakalot detail) mm-dd hh:mm', Mocker.mockIt(mokr => {
     const importer = new Importer()
     const ref = new Date(2019, 10, 13, 10)
     const d = new Date(importer.parseDate('11-05 16:04', ref.getTime()))
-    assert(d.toString().includes('Nov 05 2020 16:04:00'))
+    assert(d.toString().includes('Nov 05 2021 16:04:00'))
   }))
 
   it('parseDateDetail', Mocker.mockIt(mokr => {
