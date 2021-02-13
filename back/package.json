@@ -32,6 +32,7 @@
     },
     "devDependencies": {
         "eslint": "6.6.0",
+        "husky": "^5.0.9",
         "mocha": "6.2.2",
         "standard": "16.0.3"
     },
@@ -42,7 +43,8 @@
     },
     "scripts": {
         "test": "make custom",
-        "standard": "standard"
+        "standard": "standard",
+        "postinstall": "cd ../ && husky install"
     },
     "private": true,
     "license": "WTF"

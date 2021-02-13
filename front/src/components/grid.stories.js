@@ -28,7 +28,7 @@ const mangas = [
 ]
 
 const myMangas = {
-  'a': { updatedAt: 1, num: 1, state: 'write' }
+  a: { updatedAt: 1, num: 1, state: 'write' }
 }
 
 storiesOf('Grid', module)
