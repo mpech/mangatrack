@@ -1,4 +1,4 @@
-var exports = module.exports
+const exports = module.exports
 const mongoose = require('mongoose')
 const config = require('../../config')
 const appStarter = require('../../lib/appStarter')

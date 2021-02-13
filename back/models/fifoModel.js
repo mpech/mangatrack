@@ -1,11 +1,10 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
-const APH = require('../lib/asyncPromiseHandler')
 
 const pTimeout = async t => t <= 0 || new Promise(resolve => setTimeout(resolve, t))
 
 const schema = new Schema({
-  type: { type: String, enum: ['link'], required: true},
+  type: { type: String, enum: ['link'], required: true },
   tasks: [{ type: Schema.Types.Mixed }],
   lastAt: { type: Number, default: Date.now } // last execution done
 })
@@ -34,7 +33,7 @@ schema.methods.restart = async function (fn) {
 }
 
 schema.methods.queueAll = async function (vArgs, delay) {
-  if (typeof(delay) !== 'number') throw new Error('expect delay')
+  if (typeof (delay) !== 'number') throw new Error('expect delay')
   this.tasks.push(...vArgs.map(args => ({ delay, args })))
   await this.save()
 }

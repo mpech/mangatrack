@@ -1,10 +1,5 @@
 const LinkActivity = require('../activity/linkActivity')
-const RefreshActivity = require('../activity/refreshActivity')
-const bulker = require('../lib/bulker')
 const utils = require('../test/utils')
-const ctx = require('../lib/ctx')
-const importers = require('../importers')
-const errorHandler = require('../lib/errorHandler')
 const APH = require('../lib/asyncPromiseHandler')
 const UserModel = require('../models/userModel')
 const ChapterModel = require('../models/chapterModel')
@@ -15,27 +10,33 @@ const importer = require('../importers')
 async function run (name, ts) {
   const { mangaIds } = await UserModel.aggregate([
     { $group: { _id: 'root', mangas: { $mergeObjects: '$mangas' } } },
-    { $project: { mangaIds: { $map: {
-      input: { $objectToArray: '$mangas' },
-      as: 'manga',
-      in: '$$manga.k'
-    } } } },
+    {
+      $project: {
+        mangaIds: {
+          $map: {
+            input: { $objectToArray: '$mangas' },
+            as: 'manga',
+            in: '$$manga.k'
+          }
+        }
+      }
+    }
   ]).then(x => x[0])
 
   const urls = await ChapterModel.aggregate([
     { $match: { mangaId: { $in: mangaIds.map(mongoose.Types.ObjectId) }, from: { $ne: 'mangakakalot' } } },
     { $group: { _id: '$mangaId', chapters: { $first: '$chapters' } } },
     { $project: { chapter: { $first: '$chapters' } } },
-    { $project: { url: '$chapter.url' } },
+    { $project: { url: '$chapter.url' } }
   ])
-  
+
   const { nameToActivity, imps } = importer.all().reduce(({ imps, nameToActivity }, Imp) => {
     const imp = Reflect.construct(Imp, [])
     const activity = new LinkActivity(imp)
     nameToActivity.set(imp.from, activity)
     imps.push(imp)
     return { imps, nameToActivity }
-  }, { nameToActivity: new Map, imps: [] })
+  }, { nameToActivity: new Map(), imps: [] })
 
   const vArgs = urls.flatMap(({ url }) => {
     const imp = imps.find(imp => {
@@ -49,7 +50,7 @@ async function run (name, ts) {
       link: imp.linkFromChap({ url }),
       name: imp.from
     }
-  }, new Map)
+  }, new Map())
   console.log('var', vArgs)
   const fn = async ({ args: { link, name } }) => {
     const activity = nameToActivity.get(name)

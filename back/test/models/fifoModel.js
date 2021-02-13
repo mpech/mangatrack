@@ -1,8 +1,6 @@
 const assert = require('assert')
 const utils = require('../utils/')
 const FifoModel = require('../../models/fifoModel')
-const Mocker = require('../../lib/mocker')
-const mongoose = require('mongoose')
 const APH = require('../../lib/asyncPromiseHandler')
 
 utils.bindDb()
@@ -11,7 +9,7 @@ describe('models/fifoModel', function () {
 
   describe('load', () => {
     it('find existing one', async () => {
-      await FifoModel.create({ type: 'link', tasks: [1, 2 ] })
+      await FifoModel.create({ type: 'link', tasks: [1, 2] })
       const f = await FifoModel.load('link')
       assert.strictEqual(f.tasks.length, 2)
     })
@@ -28,7 +26,7 @@ describe('models/fifoModel', function () {
     it('does nothing if no tasks', async () => {
       const f = new FifoModel({ tasks: [] })
       let called = false
-      const fn = () => called = true
+      const fn = () => (called = true)
       await f.restart(fn)
       return APH.all().then(() => {
         assert.ok(!called)
@@ -36,8 +34,8 @@ describe('models/fifoModel', function () {
     })
 
     it('processes second task with delay', async () => {
-      const f = new FifoModel({ type: 'link', tasks: [{ delay: 0, args: 'a'}, { delay: 20, args: 'b'}] })
-      let called = { a: false, b: false }
+      const f = new FifoModel({ type: 'link', tasks: [{ delay: 0, args: 'a' }, { delay: 20, args: 'b' }] })
+      const called = { a: false, b: false }
       const now = Date.now()
       const fn = async ({ args }) => {
         assert.ok(args === 'a' || args === 'b')
@@ -63,8 +61,8 @@ describe('models/fifoModel', function () {
   describe('queueAll', () => {
     it('does nothing if already processing', async () => {
       const f = new FifoModel({ type: 'link', tasks: [{}] })
-      const called = false
-      f.restart = () => called = true
+      let called = false
+      f.restart = () => (called = true)
       await f.queueAll([{ mangaId: 1 }], 0)
       const dbFifo = await FifoModel.findOne({ type: 'link' })
       assert.deepEqual(dbFifo.tasks, [{}, { delay: 0, args: { mangaId: 1 } }])

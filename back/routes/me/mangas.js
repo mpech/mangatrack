@@ -93,7 +93,7 @@ function load (app) {
         return errorHandler.unknownChapters(JSON.stringify(invalids))
       }
     }
-      return req.user.updateMangas(items).then(formatter.formatCollection)
+    return req.user.updateMangas(items).then(formatter.formatCollection)
   }))
 
   app.get('/me/mangas', app.oauth.authenticate(), helper.userOnReq, prom(async (req, res) => {

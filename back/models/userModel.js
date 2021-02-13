@@ -14,7 +14,7 @@ const schema = new Schema({
   googleId: { type: String, index: true },
   createdAt: { type: Number, default: Date.now },
   mangas: { type: Schema.Types.Map, of: writeSchema, default: _ => new Map() },
-  admin: { type: Boolean },
+  admin: { type: Boolean }
 })
 
 schema.methods.saveManga = async function ({ mangaId, num, updatedAt }) {

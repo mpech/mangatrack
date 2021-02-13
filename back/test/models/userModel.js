@@ -54,7 +54,7 @@ describe('models/userModel', function () {
       const a = { updatedAt: 2, num: 5, mangaId: id }
       const u = await UserModel.create({ displayName: 'a', mangas: { [id]: a } })
       {
-        const { state, updatedAt, num } = await u.removeManga({ mangaId: '0', updatedAt: 1 })
+        const { state, updatedAt } = await u.removeManga({ mangaId: '0', updatedAt: 1 })
         assert.strictEqual(state, 'deleted')
         assert.strictEqual(updatedAt, 1)
       }
@@ -63,7 +63,7 @@ describe('models/userModel', function () {
     it('does not mark the manga if not existing', Mocker.mockIt(async function (mokr) {
       const u = await UserModel.create({ displayName: 'a' })
       {
-        const { state, updatedAt, num } = await u.removeManga({ mangaId: '0', updatedAt: 1 })
+        const { state, updatedAt } = await u.removeManga({ mangaId: '0', updatedAt: 1 })
         assert.strictEqual(state, 'deleted')
         assert.strictEqual(updatedAt, 1)
         assert.strictEqual(u.mangas.size, 0)
