@@ -3,7 +3,8 @@ const utils = require('../test/utils')
 const importer = require('../importers')
 const errorHandler = require('../lib/errorHandler')
 const BatchModel = require('../models/batchModel')
-const MangaModel = require('../models/mangaModel')
+const ChapterModel = require('../models/chapterModel')
+const config = require('../config')
 
 async function runLink (link, ts, options = {}) {
   let selectedImporter = null
@@ -34,8 +35,12 @@ async function runLink (link, ts, options = {}) {
 }
 
 async function runId (id, ts, options = {}) {
-  const manga = await MangaModel.findOneForSure({ _id: id })
-  return runLink(manga.lastChap_url, ts, options)
+  const { chapters: [chapter] } = await ChapterModel.findOneForSure(
+    { mangaId: id, from: { $nin: config.excludeCdnImporter } },
+    { chapters: { $first: '$chapters' } }
+  )
+
+  return runLink(chapter.url, ts, options)
 }
 
 module.exports = { runLink, runId }

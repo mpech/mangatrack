@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
+const mongooseUtil = require('../lib/mongooseUtil')
 
 const schema = new Schema({
   mangaId: { type: mongoose.Types.ObjectId, required: true, index: true },
@@ -34,4 +35,6 @@ schema.statics.upsertChapter = async function ({ mangaId, from, chapters }) {
   c.chapters = sortWithNoDupes(c.chapters.concat(chapters))
   return c.save()
 }
+
+mongooseUtil.setStatic('findOneForSure', schema)
 module.exports = mongoose.model('Chapter', schema, 'chapters')

@@ -18,12 +18,13 @@ module.exports.pagination_limit = 50
 module.exports.oauth2_google_clientId = '936593177518-0spv3m56a0a9nslh6lq669glos9c55na.apps.googleusercontent.com'
 module.exports.oauth2_google_secret = 'private'
 // this is the redirect callback upon google authorization
-module.exports.oauth2_google_redirect_uri = `http://localhost:${exports.port}/oauth/google/callback`
+module.exports.apiHost = `http://localhost:${exports.port}` // replace in privateConfig.json with your public endpoint
+module.exports.oauth2_google_redirect_uri = `${exports.apiHost}/oauth/google/callback`
 
 module.exports.oauth2_facebook_clientId = '2145773262189943'
 module.exports.oauth2_facebook_secret = 'private'
-module.exports.oauth2_facebook_redirect_uri = `http://localhost:${exports.port}/oauth/facebook/callback`
-module.exports.front_login_success = 'http://mangatrack/?access_token={{access_token}}&refresh_token={{refresh_token}}'
+module.exports.oauth2_facebook_redirect_uri = `${exports.apiHost}/oauth/facebook/callback`
+module.exports.front_login_success = 'https://mangatrack/?access_token={{access_token}}&refresh_token={{refresh_token}}'
 
 module.exports.oauth_accessToken_duration = 7 * 24 * 3600 * 1000// 7days
 module.exports.oauth_refreshToken_duration = 14 * 24 * 3600 * 1000
@@ -40,7 +41,7 @@ module.exports.manga_detailDebounce = 3000
 module.exports.nameId_maxLength = 70
 
 module.exports.batch_duration = 3600 * 1000 * 24 // keep 1 day
-
+module.exports.excludeCdnImporter = ['mangakakalot', 'manganelo'] // cdn blocks referrer :(
 require('fs').existsSync(path.resolve(__dirname, 'privateConfig.json')) &&
     Object.assign(exports, require(path.resolve(__dirname, 'privateConfig.json')))
 const Logger = require('../lib/logger')

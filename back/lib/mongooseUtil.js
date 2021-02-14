@@ -1,8 +1,8 @@
 const errorHandler = require('./errorHandler')
 
 const base = {
-  findOneForSure: function (pred) {
-    return this.findOne(pred).then(x => {
+  findOneForSure: function (pred, proj) {
+    return this.findOne(pred, proj).then(x => {
       if (!x) {
         throw errorHandler.notFound(this.modelName)
       }
