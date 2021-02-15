@@ -41,7 +41,7 @@ RefreshActivity.prototype.upsertChapters = async function (chapters) {
       return Promise.resolve()
     }
 
-    const refreshThumb = config.excludeCdnImporter.every(x => !this.imp.from.includes(x)) //no-refererrer...
+    const refreshThumb = config.excludeCdnImporter.every(x => !this.imp.from.includes(x)) // no-refererrer...
     const ev = activity.importChap(chap, { refreshThumb })
 
     return new Promise((resolve, reject) => {
