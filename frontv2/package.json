@@ -1,33 +1,33 @@
 {
-    "name": "mangatrack",
-    "version": "1.0.0",
-    "description": "track fav mangas",
-    "author": "mpech",
-    "dependencies": {
-        "@appnest/web-router": "^1.4.2",
-        "axios": "0.19.0",
-        "dayjs": "^1.9.6",
-        "debounce": "^1.2.0",
-        "hybrids": "^4.3.3",
-        "vite": "^1.0.0-rc.13"
-    },
-    "devDependencies": {
-        "cypress": "^6.0.0",
-        "serve": "^11.3.2",
-        "eslint": "6.6.0",
-        "mocha": "^8.2.1",
-        "standard": "14.3.1"
-    },
-    "standard": {
-        "globals": [
-            "it",
-            "expect",
-            "jest"
-        ]
-    },
-    "scripts": {
-        "standard": "standard"
-    },
-    "private": true,
-    "license": "WTF"
+  "name": "mangatrack",
+  "version": "1.0.0",
+  "description": "track fav mangas",
+  "author": "mpech",
+  "dependencies": {
+    "@appnest/web-router": "^1.4.2",
+    "axios": "0.19.0",
+    "dayjs": "^1.10.4",
+    "debounce": "^1.2.1",
+    "ficusjs": "^3.2.2",
+    "hybrids": "^4.3.4"
+  },
+  "devDependencies": {
+    "eslint": "6.6.0",
+    "mocha": "^8.3.2",
+    "standard": "14.3.1",
+    "vite": "^2.1.5"
+  },
+  "standard": {
+    "globals": [
+      "it",
+      "expect",
+      "jest"
+    ]
+  },
+  "scripts": {
+    "standard": "standard",
+    "start": "cd src && npx vite"
+  },
+  "private": true,
+  "license": "WTF"
 }

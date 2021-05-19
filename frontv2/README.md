@@ -13,8 +13,3 @@ Architecture:
 
 Running the tests
 npm tests
-
-Running ui tests
-cypress open
-
-Uses hybridsjs
