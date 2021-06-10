@@ -7,7 +7,7 @@ const errorHandler = require('../../lib/errorHandler')
 
 utils.bindDb()
 describe('importers/mangakakalot', function () {
-  it('allUpdates', Mocker.mockIt(async mokr => {
+  it('allUpdates 1', Mocker.mockIt(async mokr => {
     const importer = new Importer()
     let called = false
     mokr.mock(Importer.prototype, 'domFetch', async _ => {
@@ -18,15 +18,15 @@ describe('importers/mangakakalot', function () {
     const res = await importer.allUpdates()
     assert(called)
     assert.strictEqual(Object.keys(res).length, 56)
-    assert.strictEqual(Object.keys(res)[0], "Girl's World")
-    const v = res["Girl's World"]
-    assert.strictEqual(v.num, 179)
+    assert.strictEqual(Object.keys(res)[0], "Dokuzakura")
+    const v = res["Dokuzakura"]
+    assert.strictEqual(v.num, 33)
     assert.strictEqual(v.last, 5)
-    assert.strictEqual(v.url, 'https://manganelo.com/chapter/girls_world/chapter_179')
-    assert.strictEqual(v.thumbUrl, 'https://avt.mkklcdnv3.com/avatar_225/18936-girls_world.jpg')
+    assert.strictEqual(v.url, 'https://mangakakalot.com/chapter/ql920170/chapter_33')
+    assert.strictEqual(v.thumbUrl, 'https://avt.mkklcdnv6temp.com/9/b/19-1583499431.jpg')
   }))
 
-  it('allUpdates', Mocker.mockIt(async mokr => {
+  it('allUpdates 2', Mocker.mockIt(async mokr => {
     const importer = new Importer()
     let called = false
     mokr.mock(Importer.prototype, 'domFetch', async _ => {

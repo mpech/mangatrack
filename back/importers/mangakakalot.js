@@ -29,7 +29,7 @@ Importer.prototype.allUpdates = async function () {
     const li = $x.find('li:nth-child(2)').eq(0)
     const url = this.ensureAbsoluteUrl(li.find('a').attr('href'))
     const last = li.find('i').text()
-    const num = parseFloat(li.find('a').attr('href').match(/_([^_]+)$/)[1])
+    const num = parseFloat(li.find('a').attr('href').match(/[_-]([^_-]+)$/)[1])
     const thumbUrl = $x.find('img').attr('src')
     return { title, last, url, num, thumbUrl }
   }).toArray()
