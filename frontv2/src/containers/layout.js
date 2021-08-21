@@ -1,12 +1,12 @@
-import { html, define } from 'https://unpkg.com/hybrids@^5'
+import { html, define } from 'hybrids'
 
 const onclick = (host, e) => host.path = e.target.pathname
 const Layout = {
   path: {
     get: () => location.pathname,
-    set: (host, val) => (console.log('val', val), val)
+    set: (host, val) => val
   },
-  activeClass: ({ path }) => (console.log('reload???', path), path === '/' ? 'home' : path.replace('/', '')),
+  activeClass: ({ path }) => path === '/' ? 'home' : path.replace('/', ''),
   adminClass: ({ isAdmin }) => isAdmin ? 'admin' : '',
   loggedClass: ({ isLogged }) => isLogged ? 'logged' : '',
   classes: ({ activeClass, adminClass, loggedClass }) => [activeClass, adminClass, loggedClass].filter(Boolean).join(''),
@@ -18,12 +18,15 @@ const Layout = {
       <a data-name="login" href="/login" title="Mainly sync your tracked stuff">Login</a>
       <a data-name="logout" href="/logout">Logout</a>
     </div>
-    <slot/>
+    <div>
+      <slot/>
+    </div>
   `.style(`
     :host {
       display: block;
-      margin-left: 20px;
-      margin-right: 20px;
+    }
+    :host > div:nth-child(2) {
+      padding: 32px;
     }
     a {
       margin-right: 32px;
