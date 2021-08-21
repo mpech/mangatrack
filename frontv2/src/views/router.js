@@ -10,21 +10,14 @@ const defs = define({
   MtViewsManga: manga
 })
 
+const routes = [
+  ['/me', defs.MtViewsMe],
+  ['/mangas/:mangaId', defs.MtViewsManga],
+  ['/', defs.MtViewsHome]
+].map(([path, component]) => ({ path, component }))
+
 const Router = {
-  routes: [
-    {
-      path: "/me",
-      component: defs.MtViewsMe
-    },
-    {
-      path: "/mangas/:mangaId",
-      component: defs.MtViewsManga
-    },
-    {
-      path: "/",
-      component: defs.MtViewsHome
-    }
-  ],
+  routes,
   render: () => (host, target) => {
     // https://github.com/hybridsjs/hybrids/issues/78
     target.innerHTML = ''

@@ -43,6 +43,9 @@ const FilterForm = {
   border: 1px solid #eee;
   border-radius: 8px;
 }
+:host {
+  display: block;
+}
     `)
 }
 export default FilterForm
