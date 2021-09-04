@@ -2,7 +2,6 @@ import { html } from 'hybrids'
 import MtFollow from '/components/follow'
 import MtA from '/components/a'
 import relativeTime from'dayjs/plugin/relativeTime'
-import Manga from '/store/mangas'
 // remove dayjs: no need expect fromNow
 import dayjs from 'dayjs'
 dayjs.extend(relativeTime)

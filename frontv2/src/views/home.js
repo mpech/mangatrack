@@ -14,6 +14,10 @@ const safe = (fn, opts = {}) => async (...args) => {
 }
 
 const setMangas = host => res => {
+  host.mangas = res.items
+  host.nextLink = res.links.next
+}
+const concatMangas = host => res => {
   host.mangas = host.mangas.concat(res.items)
   host.nextLink = res.links.next
 }
@@ -24,7 +28,7 @@ const onSearch = safe((host, e) => {
 })
 
 const onMore = safe(host => {
-  return host.nextLink && get(host.nextLink).then(setMangas(host))
+  return host.nextLink && get(host.nextLink).then(concatMangas(host))
 })
 
 const onFollow = safe(async (host, e) => {

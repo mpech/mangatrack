@@ -1,5 +1,4 @@
 import { html, define, property, dispatch } from 'hybrids'
-import Manga, { setMangas } from '/store/mangas'
 import MtCard from '/components/card'
 
 const handleClick = (host) => {
