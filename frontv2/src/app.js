@@ -1,14 +1,12 @@
 import { html, define } from 'hybrids'
 import MtRouter from '/views/router'
-
-const defs = {
-  MtRouter
-}
+import MtNotification from '/components/notification'
 
 const App = {
   render: () => html`
-    <mt-router/>
-  `.define(defs)
+    <mt-router></mt-router>
+    <mt-notification></mt-notification>
+  `.define({ MtRouter, MtNotification })
 }
 
 define('mt-app', App)

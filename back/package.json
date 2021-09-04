@@ -41,7 +41,8 @@
     },
     "scripts": {
         "test": "make custom",
-        "standard": "standard"
+        "standard": "standard",
+        "start": "./super.sh"
     },
     "private": true,
     "license": "WTF"
