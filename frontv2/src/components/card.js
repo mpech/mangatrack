@@ -14,35 +14,41 @@ const humanDate = at => {
 }
 const Card = {
   item: {},
-  lastItem: ({ item }) => item.lastChap || {},
+  lastChap: ({ item }) => item.lastChap || {},
   link: ({ item: { nameId } }) => '/manga/' + nameId,
-  lastHumanDate: ({ lastItem: { at } }) => humanDate(at),
-  footerClasses: ({ followed }) => 'footer' + (followed ? ' followed' : ''),
-  render: ({ item: { id, thumbUrl, name, num }, followed, lastItem, lastHumanDate, link, footerClasses }) => (html`
+  lastHumanDate: ({ lastChap: { at } }) => humanDate(at),
+  footerClasses: ({ item: { followed } }) => ['footer', followed ? 'followed' : ''].filter(Boolean),
+  render: ({
+    item,
+    lastChap,
+    lastHumanDate,
+    link,
+    footerClasses
+  }) => html`
 <div class="card">
   <mt-a to="${link}">
     <figure>
-      <img src="${thumbUrl}"/>
+      <img src="${item.thumbUrl}"/>
     </figure>
   </mt-a>
   <div class="content">
     <div>
-      <h4 title="${name}"><span><mt-a to="${link}">${name}</mt-a></span></h4>
+      <h4 title="${item.name}"><span><mt-a to="${link}">${item.name}</mt-a></span></h4>
       <div class="chapter">
         <span>
-          <mt-a to="${lastItem.url}">c<span>${lastItem.num}</span>↗</mt-a>
+          <mt-a to="${lastChap.url}">c<span>${lastChap.num}</span>↗</mt-a>
         </span>
-        <time updatedAt="${lastItem.at}">${lastHumanDate}</time>
+        <time updatedAt="${lastChap.at}">${lastHumanDate}</time>
       </div>
     </div>
     <hr/>
     <div class="${footerClasses}">
-      <mt-follow followData="${{ id, lastItem }}" followed="${followed}" name="${name}"></mt-follow>
-      <span class="stats">${num}/${lastItem.num}</span>
+      <mt-follow followData="${item}" followed="${item.followed}" name="${item.name}"></mt-follow>
+      <span class="stats">${item.followedNum}/${lastChap.num}</span>
     </div>
   </div>
 </div>
-  `).style(`
+  `.style`
 .card {
     text-align:left;
     border-radius: 20px;
@@ -84,7 +90,7 @@ const Card = {
     justify-content: space-between;
 }
 .card hr {
-  border-top: 1px solid aliceblue;
+  border-top: 1px solid gainsboro;
 }
 .footer {
   display: flex;
@@ -101,6 +107,6 @@ const Card = {
 .footer.followed .stats {
   display: block;
 }
-  `).define({ MtFollow, MtA })
+  `.define({ MtFollow, MtA })
 }
 export default Card

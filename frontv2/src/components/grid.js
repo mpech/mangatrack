@@ -1,16 +1,21 @@
 import { html, define, property, dispatch } from 'hybrids'
 import MtCard from '/components/card'
 
-const handleClick = (host) => {
-  console.log('onmore', host)
-  dispatch(host, 'more')
-}
+const handleClick = (host) => dispatch(host, 'more')
 
 const Grid = {
   mangas: [],
-  render: ({ mangas = [] }) => (html`
+  myMangas: [],
+  followedMangas: ({ mangas, myMangas }) => {
+    const bag = new Map(myMangas.filter(m => m.state !== 'deleted').map(m => [m.mangaId, m]))
+    return mangas.map(m => {
+      const myManga = bag.get(m.id)
+      return Object.assign({ followed: !!myManga, followedNum: myManga && myManga.num }, m)
+    })
+  },
+  render: ({ followedMangas }) => (console.log('rr', followedMangas), html`
   <div>
-    ${mangas.map(manga => (html`<mt-card item="${manga}"></mt-card>`))}
+    ${followedMangas.map(manga => (html`<mt-card item="${manga}"></mt-card>`))}
   </div>
   <button onclick="${handleClick}">Moarrr</button>
 `).style(`

@@ -1,7 +1,7 @@
 import { apiHost } from '../config'
 
 const headers = () => {
-  const token = localStorage.getItem('token')
+  const token = localStorage.getItem('accessToken')
   return {
     'Accept': 'application/json',
     'Content-Type': 'application/json',
@@ -32,5 +32,5 @@ const del = (url, data = {}) => {
 
 export const fetchMangas = ({ q, minChapters } = {}) => get('/mangas', { q, minChapters, limit: 18 })
 export const fetchMyMangas = () => get('/me/mangas')
-export const trackManga = ({ id, num = 1 }) => put('/me/mangas/' + id, { mangaId: id })
-export const untrackManga = ({ id, num = 1 }) => del('/me/mangas/' + id, { mangaId: id })
+export const trackManga = ({ id, num = 1 }) => put('/me/mangas/' + id, { mangaId: id, num })
+export const untrackManga = ({ id }) => del('/me/mangas/' + id, { mangaId: id })

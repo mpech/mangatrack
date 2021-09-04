@@ -15,7 +15,7 @@ export default  {
   followData: property({}),
   name: '',
   title: ({ followed, name }) => `${followed ? 'Untrack' : 'Track'} ${name}`,
-  classes: ({ followed }) => [followed && 'followed', 'mt-follow'].filter(Boolean).join(' '),
+  classes: ({ followed }) => [followed && 'followed', 'mt-follow'].filter(Boolean),
   render: ({ title, classes }) => html`
     <span onclick="${onclick}" class="${classes}" title="${title}">
       <mt-a href="#">♥</mt-a>
@@ -24,7 +24,7 @@ export default  {
       mt-a:hover {
         --a-hover-color: pink;
       }
-      mt-a.followed {
+      .followed mt-a {
         --a-color: red;
       }
   `).define({ MtA })

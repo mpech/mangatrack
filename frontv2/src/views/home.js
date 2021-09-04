@@ -32,13 +32,13 @@ const onMore = safe(host => {
 })
 
 const onFollow = safe(async (host, e) => {
-  const { id, lastItem: { num } } = e.composedPath()[0].followData
+  const { id, lastChap: { num } } = e.composedPath()[0].followData
   try {
     const res = await trackManga({ id, num })
     if (res.error === 'invalid_token') {
-      // TODO: retry
       return notifyError(host, `failed to save c${num}`)
     }
+    host.myMangas = host.myMangas.concat(res)
     notify(host, `c${num} marked`)
   } catch(e) {
     notifyError(host, `failed to save c${num}`)
@@ -46,10 +46,15 @@ const onFollow = safe(async (host, e) => {
 })
 
 const onUnfollow = safe(async (host, e) => {
-  const { id, name, safe: { num } } = e.composedPath()[0].followData
+  const { id, name, lastChap: { num } } = e.composedPath()[0].followData
   try {
-    await untrackManga({ id, num })
-    notify(host, `c${name} unfollowed`)
+    const res = await untrackManga({ id, num })
+    if (res.error === 'invalid_token') {
+      // TODO: retry
+      return notifyError(host, `failed to save c${num}`)
+    }
+    host.myMangas = host.myMangas.filter(m => m.mangaId !== id)
+    notify(host, `${name} unfollowed`)
   } catch(e) {
     notifyError(host, `failed to unmark ${name}`)
   }
@@ -65,13 +70,13 @@ const Home = {
   nextLink: {
     set: (host, v) => v
   },
-  myMangas: {},
+  myMangas: [],
   hasMore: false,
 
   reload: {
     connect (host) {
       safe(fetchMangas)().then(setMangas(host))
-      safe(fetchMyMangas)().then(res => host.myMangas = setMangas(host))
+      safe(fetchMyMangas)().then(res => host.myMangas = res.items)
     },
   },
   render: ({ mangas = [], myMangas }) => (html`
