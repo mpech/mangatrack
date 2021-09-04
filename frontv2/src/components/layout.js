@@ -6,11 +6,12 @@ const Layout = {
     get: () => location.pathname,
     set: (host, val) => val
   },
+  isLogged: () => !!localStorage.getItem('accessToken'),
   activeClass: ({ path }) => path === '/' ? 'home' : path.replace('/', ''),
   adminClass: ({ isAdmin }) => isAdmin ? 'admin' : '',
-  loggedClass: ({ isLogged }) => isLogged ? 'logged' : '',
-  classes: ({ activeClass, adminClass, loggedClass }) => [activeClass, adminClass, loggedClass].filter(Boolean).join(''),
-  render: ({ classes }) => html`
+  loggedClass: ({ isLogged }) => isLogged ? 'logged' : 'unlogged',
+  classes: ({ activeClass, adminClass, loggedClass }) => [activeClass, adminClass, loggedClass].filter(Boolean),
+  render: ({ classes }) => (html`
     <div class="${classes}" onclick="${onclick}">
       <a data-name="home" href="/">MangaTrack</a>
       <a data-name="me" href="/me" title="my space">Me</a>
@@ -21,7 +22,7 @@ const Layout = {
     <div>
       <slot/>
     </div>
-  `.style(`
+  `).style`
     :host {
       display: block;
     }
@@ -38,7 +39,7 @@ const Layout = {
     a:hover {
       text-decoration: underline;
     }
-    .hide {
+    .logged [data-name="login"], .unlogged [data-name="logout"] {
       display: none;
     }
     .home [data-name="home"],
@@ -48,6 +49,6 @@ const Layout = {
     .logout [data-name="logout"] {
       color: #ff8080;
     }
-  `)
+  `
 }
 export default Layout

@@ -1,5 +1,5 @@
 import { html } from 'hybrids'
-import MtLayout from '/containers/layout'
+import MtLayout from '/components/layout'
 const Me = {
   render: () => html`
     <mt-layout>

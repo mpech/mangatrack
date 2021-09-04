@@ -51,7 +51,7 @@ const NotificationCenter = {
   notifications: {
     set: (h, v) => v,
     connect (host) {
-      host.notifications = [{ id: '' + Date.now(), msg: 'test', status: 'success' }]
+      host.notifications = []
       const fn = (e) => {
         const { status, msg } = e.detail
         host.notifications = [{ id: '' + Date.now(), status, msg }].concat(host.notifications)

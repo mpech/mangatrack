@@ -1,5 +1,5 @@
 import { html, define } from 'hybrids'
-import MtLayout from '/containers/layout'
+import MtLayout from '/components/layout'
 import MtFilterForm from '/components/filterForm'
 import MtGrid from '/components/grid'
 import { get, fetchMangas, fetchMyMangas, trackManga, untrackManga } from '/api'

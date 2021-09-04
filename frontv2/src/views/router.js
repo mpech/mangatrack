@@ -1,19 +1,24 @@
 import '@appnest/web-router'
 import { define } from 'hybrids'
-import home from '/views/home'
-import me from '/views/me'
-import manga from '/views/manga'
-
+import MtViewsHome from '/views/home'
+import MtViewsMe from '/views/me'
+import MtViewsManga from '/views/manga'
+import MtViewsLogin from '/views/login'
+import MtViewsLogout from '/views/logout'
 const defs = define({
-  MtViewsHome: home,
-  MtViewsMe: me,
-  MtViewsManga: manga
+  MtViewsHome,
+  MtViewsMe,
+  MtViewsManga,
+  MtViewsLogin,
+  MtViewsLogout,
 })
 
 const routes = [
   ['/me', defs.MtViewsMe],
   ['/mangas/:mangaId', defs.MtViewsManga],
-  ['/', defs.MtViewsHome]
+  ['/login', defs.MtViewsLogin],
+  ['/logout', defs.MtViewsLogout],
+  ['/', defs.MtViewsHome],
 ].map(([path, component]) => ({ path, component }))
 
 const Router = {
