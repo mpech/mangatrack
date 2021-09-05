@@ -8,14 +8,12 @@ const Layout = {
   },
   isLogged: () => !!localStorage.getItem('accessToken'),
   activeClass: ({ path }) => path === '/' ? 'home' : path.replace('/', ''),
-  adminClass: ({ isAdmin }) => isAdmin ? 'admin' : '',
   loggedClass: ({ isLogged }) => isLogged ? 'logged' : 'unlogged',
-  classes: ({ activeClass, adminClass, loggedClass }) => [activeClass, adminClass, loggedClass].filter(Boolean),
+  classes: ({ activeClass, loggedClass }) => [activeClass, loggedClass].filter(Boolean),
   render: ({ classes }) => (html`
     <div class="${classes}" onclick="${onclick}">
       <a data-name="home" href="/">MangaTrack</a>
       <a data-name="me" href="/me" title="my space">Me</a>
-      <a data-name="admin" href="/admin">Admin</a>
       <a data-name="login" href="/login" title="Mainly sync your tracked stuff">Login</a>
       <a data-name="logout" href="/logout">Logout</a>
     </div>
@@ -44,7 +42,6 @@ const Layout = {
     }
     .home [data-name="home"],
     .me [data-name="me"],
-    .admin [data-name="admin"],
     .login [data-name="login"],
     .logout [data-name="logout"] {
       color: #ff8080;

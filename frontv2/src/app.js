@@ -1,5 +1,5 @@
 import { html, define } from 'hybrids'
-import MtRouter from '/views/router'
+import MtRouter from '/components/router'
 import MtNotification from '/components/notification'
 
 const App = {

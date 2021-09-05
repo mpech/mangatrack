@@ -22,6 +22,6 @@ if (import.meta.hot) {
   }
 })
 module.exports = {
-  'resolve.alias': listFolders(__dirname),
+  'resolve.alias': listFolders(__dirname + '/src'),
   plugins: [hybridsHmr()]
 }

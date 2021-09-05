@@ -13,12 +13,12 @@ const Grid = {
       return Object.assign({ followed: !!myManga, followedNum: myManga && myManga.num }, m)
     })
   },
-  render: ({ followedMangas }) => (console.log('rr', followedMangas), html`
+  render: ({ followedMangas }) => (html`
   <div>
     ${followedMangas.map(manga => (html`<mt-card item="${manga}"></mt-card>`))}
   </div>
   <button onclick="${handleClick}">Moarrr</button>
-`).style(`
+`).style`
   :host > div {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -38,7 +38,7 @@ const Grid = {
   button:hover {
       background-image: linear-gradient(transparent,rgba(0,0,0,.05) 40%,rgba(0,0,0,.1));
   }
-`)
+`
 .define({ MtCard })
 }
 export default Grid
