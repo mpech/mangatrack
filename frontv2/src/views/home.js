@@ -5,11 +5,23 @@ import MtGrid from '/components/grid'
 import { fetchMangas } from '/api'
 import safe from '/utils/safe'
 import { follow, unfollow, fetchMyMangas } from '/services/manga'
-const onfollow = (host, e) => {
+const handleFollow = (host, e) => {
   const { id, lastChap: { num } } = e.composedPath()[0].followData
   return follow({
     host,
+    id,
+    num,
     onSuccess: res => host.myMangas = host.myMangas.concat(res)
+  })
+}
+const handleUnfollow = (host, e) => {
+  const { id, lastChap: { num }, name } = e.composedPath()[0].followData
+  return unfollow({
+    host,
+    id,
+    num,
+    name,
+    onSuccess: () => host.myMangas = host.myMangas.filter(m => m.mangaId !== id)
   })
 }
 const setMangas = host => res => {
@@ -26,7 +38,7 @@ const search = safe((host, e) => {
   return fetchMangas({ q, minChapters }).then(setMangas(host))
 })
 
-const loadMore = safe(host => {
+const handleMore = safe(host => {
   return host.nextLink && get(host.nextLink).then(concatMangas(host))
 })
 
@@ -40,7 +52,7 @@ const Home = {
       host.mangas = []
       host.nextLink = ''
       safe(fetchMangas)().then(setMangas(host))
-      fetchMyMangas().then(res => host.myMangas = res.items)
+      fetchMyMangas().then(({ items }) => host.myMangas = items)
     },
   },
   render: ({ mangas = [], myMangas }) => (html`
@@ -49,9 +61,9 @@ const Home = {
       <mt-grid
         mangas="${mangas}"
         myMangas="${myMangas}"
-        onmore="${loadMore}"
-        onfollow="${onfollow}"
-        onunfollow="${unfollow}"
+        onmore="${handleMore}"
+        onfollow="${handleFollow}"
+        onunfollow="${handleUnfollow}"
       ></mt-grid>
     </mt-layout>
 `.style(`

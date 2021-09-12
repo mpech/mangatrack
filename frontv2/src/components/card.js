@@ -15,7 +15,7 @@ const humanDate = at => {
 const Card = {
   item: {},
   lastChap: ({ item }) => item.lastChap || {},
-  link: ({ item: { nameId } }) => '/mangas/' + nameId,
+  link: ({ item: { nameId } }) => 'mangas/' + nameId,
   lastHumanDate: ({ lastChap: { at } }) => humanDate(at),
   footerClasses: ({ item: { followed } }) => ['footer', followed ? 'followed' : ''].filter(Boolean),
   render: ({

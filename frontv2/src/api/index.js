@@ -9,13 +9,20 @@ const headers = () => {
   }
 }
 
+const throwOnKo = async res => {
+  const json = await res.json()
+  if (!res.ok) {
+    throw json
+  }
+  return json
+}
 export const get = (url, query = {}) => {
   const queryStr = Object.keys(query).length
     ? '?' + Object.entries(query).filter(([k, v]) => k && v).map(([k, v]) => `${k}=${v}`).join('&')
     : ''
 
   url = url.startsWith('http') ? url : apiHost + url
-  return fetch(url + queryStr, { headers: headers() }).then(res => res.json())
+  return fetch(url + queryStr, { headers: headers() }).then(throwOnKo)
 }
 
 const makeBodyVerb = verb => (url, data = {}) => {
@@ -24,7 +31,7 @@ const makeBodyVerb = verb => (url, data = {}) => {
     method: verb,
     headers: headers(),
     body: JSON.stringify(data)
-  }).then(res => res.json())
+  }).then(throwOnKo)
 }
 
 const put = makeBodyVerb('PUT')
@@ -37,3 +44,16 @@ export const trackManga = ({ id, num = 1 }) => put('/me/mangas/' + id, { mangaId
 export const untrackManga = ({ id }) => del('/me/mangas/' + id, { mangaId: id })
 export const refreshManga = ({ id, refreshThumb, refreshDescription }) => post('/admin/batches', { id, refreshThumb, refreshDescription })
 export const fetchMangaDetail = ({ nameId }) => get('/mangas/' + nameId)
+export const refreshToken = ({ refreshToken }) => {
+  const params = new URLSearchParams()
+  params.append('grant_type', 'refresh_token')
+  params.append('client_id', 'mangatrack')
+  params.append('refresh_token', refreshToken)
+  const headers = {
+    'content-type': 'application/x-www-form-urlencoded'
+  }
+  return fetch(
+    apiHost + '/oauth/token',
+    { method: 'POST', headers, body: params.toString() }
+  ).then(throwOnKo)
+}

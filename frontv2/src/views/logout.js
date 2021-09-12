@@ -1,9 +1,10 @@
 import { html } from 'hybrids'
+import { logout } from '/services/oauth'
+
 const Logout = {
   token: {
     connect () {
-      localStorage.removeItem('accessToken')
-      localStorage.removeItem('refreshToken')
+      logout()
       location = '/'
     }
   },

@@ -1,34 +1,47 @@
 import { get, fetchMangas, trackManga, untrackManga, fetchMyMangas as apiFetchMyMangas } from '/api'
 import { notify, notifyError } from '/components/notification'
 import safe from '/utils/safe'
+import { refreshToken, logout } from '/services/oauth'
 
-export const follow = safe(async ({ host, onSuccess, id, num }) => {
-  try {
-    const res = await trackManga({ id, num })
-    if (res.error === 'invalid_token') {
-      return notifyError(host, `failed to save c${num}`)
-    }
-    onSuccess(res)
-    notify(host, `c${num} marked`)
-  } catch(e) {
-    notifyError(host, `failed to save c${num}`)
+const retry = fn => async (...args) => {
+  if (!localStorage.getItem('accessToken') && !localStorage.getItem('refreshToken')) {
+    throw new Error('no token')
   }
-})
-
-
-export const unfollow = safe(async (host, e) => {
-  const { id, name, lastChap: { num } } = e.composedPath()[0].followData
-  try {
-    const res = await untrackManga({ id, num })
-    if (res.error === 'invalid_token') {
-      // TODO: retry
-      return notifyError(host, `failed to save c${num}`)
+  return await fn(...args).catch(async e => {
+    if (e.error === 'invalid_token') {
+      await refreshToken()
+      return fn(...args).catch(async e => {
+        if (e.error === 'invalid_token') {
+          await logout()
+          return e
+        }
+      })
+    } else {
+      console.log('e??', e)
+      return e
     }
-    host.myMangas = host.myMangas.filter(m => m.mangaId !== id)
-    notify(host, `${name} unfollowed`)
-  } catch(e) {
-    notifyError(host, `failed to unmark ${name}`)
-  }
-})
+  })
+}
+const safeRetry = fn => safe(retry(fn))
 
-export const fetchMyMangas = safe(apiFetchMyMangas)
+const safeTrackManga = safeRetry(trackManga)
+export const follow = async ({ host, onSuccess, id, num }) => {
+  const res = await safeTrackManga({ id, num })
+  if (res.error) {
+    return notifyError(host, `failed to save c${num}`)
+  }
+  onSuccess(res)
+  notify(host, `c${num} marked`)
+}
+
+const safeUntrackManga = safeRetry(untrackManga)
+export const unfollow = async ({ host, onSuccess, id, num, name }) => {
+  const res = await safeUntrackManga({ id, num })
+  if (res.error === 'invalid_token') {
+    return notifyError(host, `failed to unfollow ${name}`)
+  }
+  onSuccess(res)
+  notify(host, `${name} unfollowed`)
+}
+
+export const fetchMyMangas = safeRetry(apiFetchMyMangas)
