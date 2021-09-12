@@ -39,7 +39,7 @@ const del = makeBodyVerb('DELETE')
 const post = makeBodyVerb('POST')
 
 export const fetchMangas = ({ q, minChapters } = {}) => get('/mangas', { q, minChapters, limit: 18 })
-export const fetchMyMangas = () => get('/me/mangas')
+export const fetchMyMangas = ({ populated } = {}) => get('/me/mangas', { populated })
 export const trackManga = ({ id, num = 1 }) => put('/me/mangas/' + id, { mangaId: id, num })
 export const untrackManga = ({ id }) => del('/me/mangas/' + id, { mangaId: id })
 export const refreshManga = ({ id, refreshThumb, refreshDescription }) => post('/admin/batches', { id, refreshThumb, refreshDescription })
