@@ -52,7 +52,7 @@ const Home = {
       host.mangas = []
       host.nextLink = ''
       safe(fetchMangas)().then(setMangas(host))
-      fetchMyMangas().then(({ items }) => {
+      fetchMyMangas().then(({ items = [] }) => {
         host.myMangas = items
       })
     },

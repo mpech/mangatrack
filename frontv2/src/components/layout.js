@@ -37,7 +37,7 @@ const Layout = {
     a:hover {
       text-decoration: underline;
     }
-    .logged [data-name="login"], .unlogged [data-name="logout"] {
+    .logged [data-name="login"], .unlogged [data-name="logout"], .unlogged [data-name="me"] {
       display: none;
     }
     .home [data-name="home"],

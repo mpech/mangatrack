@@ -77,10 +77,13 @@ const Me = {
       </div>
     </mt-layout>
   `).style`
-    hr {
-      margin-top: 60px;
-      margin-bottom: 40px;
-    }
+h1, h2 {
+  font-family: sans-serif;
+}
+hr {
+  margin-top: 60px;
+  margin-bottom: 40px;
+}
   `.define({ MtLayout, MtGrid })
 }
 export default Me
