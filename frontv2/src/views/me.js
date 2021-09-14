@@ -5,6 +5,10 @@ import safe from '/utils/safe'
 import { fetchMangas } from '/api'
 import { follow, unfollow, fetchMyMangas } from '/services/manga'
 
+const handleClick = (host, e) => {
+  host.tabClass = e.target.name
+}
+
 const handleFollow = (host, e) => {
   const { id, lastChap: { num } } = e.composedPath()[0].followData
   return follow({
@@ -14,6 +18,7 @@ const handleFollow = (host, e) => {
     onSuccess: res => host.myMangas = host.myMangas.concat(res)
   })
 }
+
 const handleUnfollow = (host, e) => {
   const { id, lastChap: { num }, name } = e.composedPath()[0].followData
   return unfollow({
@@ -24,6 +29,7 @@ const handleUnfollow = (host, e) => {
     onSuccess: () => host.myMangas = host.myMangas.filter(m => m.mangaId !== id)
   })
 }
+
 const Me = {
   myPopulatedMangas: {
     set: (h, v) => v
@@ -31,7 +37,7 @@ const Me = {
   newMangas: {
     get ({ myPopulatedMangas }) {
       return myPopulatedMangas
-        .filter(x =>  x.num < x?.manga?.lastChap?.num)
+        .filter(x => x.num < x?.manga?.lastChap?.num)
         .sort((a, b) => b.manga?.lastChap?.at - a.manga?.lastChap?.at)
         .map(m => m.manga)
     },
@@ -47,6 +53,10 @@ const Me = {
     },
     set: (h, v) => v
   },
+  tabClass: {
+    get: (h, v = 'new-mangas') => v,
+    set: (h, v) => v
+  },
   load: {
     connect (host) {
       host.myPopulatedMangas = []
@@ -55,34 +65,56 @@ const Me = {
       })
     },
   },
-  render: ({ upToDateMangas, newMangas, myPopulatedMangas }) => (html`
+  render: ({ upToDateMangas, newMangas, myPopulatedMangas, tabClass }) => (html`
     <mt-layout>
       <div>
         <h1>Tracked mangas</h1>
-        <h2>Updates</h2>
-        <mt-grid
-          mangas="${newMangas}"
-          myMangas="${myPopulatedMangas}"
-          onfollow="${handleFollow}"
-          onunfollow="${handleUnfollow}"
-        ></mt-grid>
-        <hr/>
-        <h2>Up to date</h2>
-        <mt-grid
-          mangas="${upToDateMangas}"
-          myMangas="${myPopulatedMangas}"
-          onfollow="${handleFollow}"
-          onunfollow="${handleUnfollow}"
-        ></mt-grid>
+        <nav class="${[tabClass, 'tabs']}">
+          <button name="new-mangas" onclick="${handleClick}">nouveaux</button>
+          <button name="uptodate-mangas" onclick="${handleClick}">à jour</button>
+        </nav>
+        <div class="${tabClass}">
+          <mt-grid
+            data-name="new-mangas"
+            mangas="${newMangas}"
+            myMangas="${myPopulatedMangas}"
+            onfollow="${handleFollow}"
+            onunfollow="${handleUnfollow}"
+          ></mt-grid>
+
+          <mt-grid
+            data-name="uptodate-mangas"
+            mangas="${upToDateMangas}"
+            myMangas="${myPopulatedMangas}"
+            onfollow="${handleFollow}"
+            onunfollow="${handleUnfollow}"
+          ></mt-grid>
+        </div>
       </div>
     </mt-layout>
   `).style`
-h1, h2 {
-  font-family: sans-serif;
+.tabs {
+  display: flex;
+  margin-bottom: 20px;
 }
-hr {
-  margin-top: 60px;
-  margin-bottom: 40px;
+.tabs button {
+  padding: 10px;
+  border: none;
+  margin: 10px 1px;
+  color: white;
+  min-width: 100px;
+  background: #A0A0A0;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 30%);
+  cursor: pointer;
+}
+.tabs button:hover {
+  opacity: 0.8;
+}
+.tabs.new-mangas [name='new-mangas'], .tabs.uptodate-mangas [name='uptodate-mangas'] {
+  border-bottom: 1px solid rgb(255, 128, 128);
+}
+.new-mangas [data-name="uptodate-mangas"], .uptodate-mangas [data-name="new-mangas"] {
+  display: none;
 }
   `.define({ MtLayout, MtGrid })
 }
