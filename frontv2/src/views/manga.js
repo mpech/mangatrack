@@ -1,8 +1,8 @@
 import { html } from 'hybrids'
 import MtChapters, { UNREAD } from '/components/chapters'
 import MtLayout from '/components/layout'
-import { follow, fetchMyMangas } from '/services/manga'
-import { fetchMangaDetail, refreshManga } from '/api'
+import { follow, fetchMyMangas, refreshManga } from '/services/manga'
+import { fetchMangaDetail } from '/api'
 import safe from '/utils/safe'
 
 const trackchapter = (host, e) => {
@@ -29,6 +29,7 @@ const setMangaDetail = host => ({ chapters, ...manga }) => {
 }
 
 const refreshPicture = safe(async (host) => {
+  if (!host.manga.thumbUrl) return
   const batch = await refreshManga({ id: host.manga.id, refreshThumb: true })
   if (batch.status === 'OK') {
     safe(fetchMangaDetail)({ nameId: host.manga.nameId }).then(setMangaDetail(host))
@@ -94,7 +95,7 @@ export default {
   `).style`
 .mangaView .header {
   display: flex;
-  display: none;
+  margin-bottom: 20px;
 }
 .mangaView .header > div:first-child {
   width: 20%;

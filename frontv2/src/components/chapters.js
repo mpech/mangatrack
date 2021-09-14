@@ -41,7 +41,6 @@ const Chapters = {
     get: (host, old) => old || UNREAD,
     set: (host, v) => v,
     observe: (host, value) => {
-      console.log('triegfffff??', host.lastRead)
       host.lastTracked = value
     }
   },
@@ -52,7 +51,6 @@ const Chapters = {
   oldTracked: {
     connect(host) {
       host.lastTracked = host.lastRead
-      console.log('cccc', host.lastRead)
     }
   },
   anchor ({ lastRead, chapters }) {

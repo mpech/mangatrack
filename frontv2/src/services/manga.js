@@ -1,4 +1,4 @@
-import { get, fetchMangas, trackManga, untrackManga, fetchMyMangas as apiFetchMyMangas } from '/api'
+import { get, fetchMangas, trackManga, untrackManga, fetchMyMangas as apiFetchMyMangas, refreshManga as apiRefreshManga } from '/api'
 import { notify, notifyError } from '/components/notification'
 import safe from '/utils/safe'
 import { refreshToken, logout } from '/services/oauth'
@@ -45,3 +45,4 @@ export const unfollow = async ({ host, onSuccess, id, num, name }) => {
 }
 
 export const fetchMyMangas = safeRetry(apiFetchMyMangas)
+export const refreshManga = safeRetry(apiRefreshManga)
