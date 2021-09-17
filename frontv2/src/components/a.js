@@ -20,4 +20,15 @@ a:hover {
 }
   `)
 }
+
+export const handleScroll = (host, e) => {
+  const a = e.target
+  const hasAnchor = a.to.includes('#')
+  if (!hasAnchor) return
+  e.preventDefault()
+  const el = host.shadowRoot.getElementById(a.to.replace('#', ''))
+  el && el.scrollIntoView(false)
+  e.preventDefault()
+  return false
+}
 export default A

@@ -27,8 +27,8 @@ const safeRetry = fn => safe(retry(fn))
 const safeTrackManga = safeRetry(trackManga)
 export const follow = async ({ host, onSuccess, id, num }) => {
   const res = await safeTrackManga({ id, num })
-  if (res.error) {
-    return notifyError(host, `failed to save c${num}`)
+  if (res.error || res instanceof Error) {
+    return notifyError(host, `failed to save c${num} (${res.message})`)
   }
   onSuccess(res)
   notify(host, `c${num} marked`)
@@ -37,8 +37,8 @@ export const follow = async ({ host, onSuccess, id, num }) => {
 const safeUntrackManga = safeRetry(untrackManga)
 export const unfollow = async ({ host, onSuccess, id, num, name }) => {
   const res = await safeUntrackManga({ id, num })
-  if (res.error === 'invalid_token') {
-    return notifyError(host, `failed to unfollow ${name}`)
+  if (res.error || res instanceof Error) {
+    return notifyError(host, `failed to unfollow ${name} (${res.message})`)
   }
   onSuccess(res)
   notify(host, `${name} unfollowed`)

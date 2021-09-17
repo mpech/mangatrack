@@ -15,7 +15,7 @@ const handleFollow = (host, e) => {
     host,
     id,
     num,
-    onSuccess: res => host.myMangas = host.myMangas.concat(res)
+    onSuccess: res => host.myPopulatedMangas = host.myPopulatedMangas.concat(res)
   })
 }
 
@@ -26,7 +26,7 @@ const handleUnfollow = (host, e) => {
     id,
     num,
     name,
-    onSuccess: () => host.myMangas = host.myMangas.filter(m => m.mangaId !== id)
+    onSuccess: () => host.myPopulatedMangas = host.myPopulatedMangas.filter(m => m.mangaId !== id)
   })
 }
 

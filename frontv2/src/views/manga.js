@@ -50,7 +50,9 @@ export default {
   load: {
     connect (host) {
       const nameId = location.pathname.match(/mangas\/(.*)/)[1]
-      fetchMyMangas().then(res => host.myMangas = res.items)
+      fetchMyMangas().then(res => {
+        res.items && (host.myMangas = res.items)
+      })
       safe(fetchMangaDetail)({ nameId }).then(setMangaDetail(host))
     }
   },
