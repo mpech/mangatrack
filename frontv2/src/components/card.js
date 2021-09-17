@@ -12,7 +12,8 @@ const humanDate = at => {
   sinceDate = sinceDate.replace('seconds', 'sec')
   return sinceDate
 }
-const Card = {
+export default {
+  tag: 'MtCard',
   item: {},
   lastChap: ({ item }) => item.lastChap || {},
   link: ({ item: { nameId } }) => 'mangas/' + nameId,
@@ -107,6 +108,5 @@ const Card = {
 .footer.followed .stats {
   display: block;
 }
-  `.define({ MtFollow, MtA })
+  `.define(MtFollow, MtA)
 }
-export default Card

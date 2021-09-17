@@ -2,7 +2,8 @@ import MtGoogleBtn from '@/components/login/googleBtn'
 import MtFacebookBtn from '@/components/login/facebookBtn'
 import MtLayout from '@/components/layout'
 import { html } from 'hybrids'
-const SignIn = {
+export default {
+  tag: 'MtLogin',
   token: {
     connect () {
       const params = new URLSearchParams(window.location.search)
@@ -36,7 +37,6 @@ const SignIn = {
   justify-content: space-around;
   align-items: center;
 }
-  `.define({ MtGoogleBtn, MtFacebookBtn, MtLayout })
+  `.define(MtGoogleBtn, MtFacebookBtn, MtLayout)
 }
 
-export default SignIn

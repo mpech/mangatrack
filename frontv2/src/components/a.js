@@ -1,6 +1,7 @@
 import { html } from 'hybrids'
 
-const A = {
+export default {
+  tag: 'MtA',
   to: '',
   render: ({ to }) => (html`
 <a href="${to}">
@@ -31,4 +32,3 @@ export const handleScroll = (host, e) => {
   e.preventDefault()
   return false
 }
-export default A

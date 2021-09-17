@@ -6,25 +6,26 @@ import MtViewsManga from '@/views/manga'
 import MtViewsLogin from '@/views/login'
 import MtViewsLogout from '@/views/logout'
 import MtViewsNotFound from '@/views/notFound'
-const defs = define({
+ define(
   MtViewsHome,
   MtViewsMe,
   MtViewsManga,
   MtViewsLogin,
   MtViewsLogout,
   MtViewsNotFound
-})
+)
 
 const routes = [
-  ['me', defs.MtViewsMe],
-  ['mangas/:mangaId', defs.MtViewsManga],
-  ['login', defs.MtViewsLogin],
-  ['logout', defs.MtViewsLogout],
-  ['/[^\\w]', defs.MtViewsHome],
-  ['**', defs.MtViewsNotFound]
+  ['me', document.createElement('mt-me')],
+  ['mangas/:mangaId', document.createElement('mt-manga')],
+  ['login', document.createElement('mt-login')],
+  ['logout', document.createElement('mt-logout')],
+  ['/[^\\w]', document.createElement('mt-home')],
+  ['**', document.createElement('mt-not-found')]
 ].map(([path, component]) => ({ path, component, fuzzy: false }))
 
 const Router = {
+  tag: 'mt-router',
   routes,
   render: () => (host, target) => {
     // https://github.com/hybridsjs/hybrids/issues/78

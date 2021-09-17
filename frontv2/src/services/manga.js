@@ -17,7 +17,6 @@ const retry = fn => async (...args) => {
         }
       })
     } else {
-      console.log('e??', e)
       return e
     }
   })

@@ -7,7 +7,7 @@
     "@appnest/web-router": "^1.4.2",
     "dayjs": "^1.10.4",
     "debounce": "^1.2.1",
-    "hybrids": "^4.3.4"
+    "hybrids": "^6.1.0"
   },
   "devDependencies": {
     "eslint": "6.6.0",

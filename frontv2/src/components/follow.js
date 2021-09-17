@@ -11,6 +11,7 @@ const onclick = (host, e) => {
 }
 
 export default {
+  tag: 'MtFollow',
   followed: false,
   followData: property({}),
   name: '',
@@ -27,5 +28,5 @@ export default {
       .followed mt-a {
         --a-color: red;
       }
-  `).define({ MtA })
+  `).define(MtA)
 }

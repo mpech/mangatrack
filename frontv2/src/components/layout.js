@@ -4,7 +4,8 @@ const onclick = (host, e) => {
   host.path = e.target.pathname
 }
 
-const Layout = {
+export default {
+  tag: 'MtLayout',
   path: {
     get: () => window.location.pathname,
     set: (host, val) => val
@@ -51,4 +52,3 @@ const Layout = {
     }
   `
 }
-export default Layout

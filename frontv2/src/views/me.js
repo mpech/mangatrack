@@ -33,6 +33,7 @@ const handleUnfollow = (host, e) => {
 }
 
 const Me = {
+  tag: 'mtMe',
   myPopulatedMangas: {
     set: (h, v) => v
   },
@@ -118,6 +119,6 @@ const Me = {
 .new-mangas [data-name="uptodate-mangas"], .uptodate-mangas [data-name="new-mangas"] {
   display: none;
 }
-  `.define({ MtLayout, MtGrid })
+  `.define(MtLayout, MtGrid)
 }
 export default Me

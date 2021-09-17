@@ -46,7 +46,8 @@ const handleMore = safe(host => {
   return host.nextLink && get(host.nextLink).then(concatMangas(host))
 })
 
-const Home = {
+export default {
+  tag: 'mtHome',
   mangas: { set: (h, v) => v },
   nextLink: { set: (host, v) => v },
   myMangas: [],
@@ -61,7 +62,7 @@ const Home = {
       })
     }
   },
-  render: ({ mangas = [], myMangas }) => (html`
+  render: ({ mangas = [], myMangas }) => html`
     <mt-layout>
       <mt-filter-form onsearch="${search}"></mt-filter-form>
       <mt-grid
@@ -91,7 +92,6 @@ const Home = {
   button:hover {
       background-image: linear-gradient(transparent,rgba(0,0,0,.05) 40%,rgba(0,0,0,.1));
   }
-`)).define({ MtLayout, MtFilterForm, MtGrid })
+`).define(MtLayout, MtFilterForm, MtGrid)
 }
 
-export default Home

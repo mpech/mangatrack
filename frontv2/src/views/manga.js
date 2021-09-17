@@ -39,6 +39,7 @@ const refreshPicture = safe(async (host) => {
 })
 
 export default {
+  tag: 'MtManga',
   chapters: [],
   manga: {
     get: (host, last) => last || { description: {} },
@@ -155,5 +156,5 @@ blockquote footer:before {
   }
 }
 }
-  `.define({ MtChapters, MtLayout })
+  `.define(MtChapters, MtLayout)
 }

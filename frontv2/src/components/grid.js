@@ -1,7 +1,8 @@
 import { html } from 'hybrids'
 import MtCard from '@/components/card'
 
-const Grid = {
+export default {
+  tag: 'MtGrid',
   mangas: [],
   myMangas: [],
   followedMangas: ({ mangas, myMangas }) => {
@@ -23,6 +24,5 @@ const Grid = {
     grid-gap: 2em;
   }
 `
-    .define({ MtCard })
+    .define(MtCard)
 }
-export default Grid

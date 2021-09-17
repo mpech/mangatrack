@@ -4,6 +4,7 @@ import MtLayout from '@/components/layout'
 
 // https://github.com/dysfunc/ascii-emoji/blob/master/emojis
 export default {
+  tag: 'MtNotFound',
   render: () => html`
 <mt-layout>
   <div class="notFound">
@@ -15,5 +16,5 @@ export default {
 </mt-layout>
   `.style`
 
-  `.define({ MtLayout })
+  `.define(MtLayout)
 }

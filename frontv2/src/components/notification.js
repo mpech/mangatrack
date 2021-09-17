@@ -1,6 +1,7 @@
 import { html, dispatch } from 'hybrids'
 
 const MtNotificationItem = {
+  tag: 'mt-notification-item',
   duration: 2000,
   status: '',
   msg: {
@@ -44,7 +45,8 @@ const handleDone = (host, e) => {
   host.notifications = host.notifications.filter(n => n.id !== detailId)
 }
 // just trying some notif
-const NotificationCenter = {
+export default {
+  tag: 'MtNotification',
   duration: 4000,
   notifications: {
     set: (h, v) => v,
@@ -74,7 +76,7 @@ const NotificationCenter = {
     text-align: center;
     box-sizing: border-box;
   }
-`)).define({ MtNotificationItem })
+`)).define(MtNotificationItem)
 }
 export const notify = (host, msg) => {
   dispatch(host, 'notify', { composed: true, bubbles: true, detail: { status: 'success', msg } })
@@ -83,4 +85,3 @@ export const notifyError = (host, msg) => {
   dispatch(host, 'notify', { composed: true, bubbles: true, detail: { status: 'failure', msg } })
 }
 
-export default NotificationCenter

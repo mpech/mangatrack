@@ -12,6 +12,7 @@ scope=${oauth.facebook_scope}&\
 state=${oauth.self_callback}`
 
 export default {
+  tag: 'MtFacebookBtn',
   uri,
   render: () => html`
   <button class="loginBtn loginBtn--facebook" onclick="${fbOauth}">

@@ -15,7 +15,8 @@ const onKeyUp = (host, { target: { name, value } }) => {
   myDebounce({ name, q, minChapters, [name]: value, cb })
 }
 
-const FilterForm = {
+export default {
+  tag: 'MtFilterForm',
   q: { set: (host, val) => val },
   minChapters: { set: (host, val) => val },
   render: () => html`
@@ -44,4 +45,3 @@ const FilterForm = {
 }
     `)
 }
-export default FilterForm

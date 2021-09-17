@@ -34,7 +34,8 @@ const select = (host, e) => {
   })
 }
 
-const Chapters = {
+export default {
+  tag: 'MtChapters',
   mangaId: '',
   chapters: [],
   lastRead: {
@@ -165,7 +166,6 @@ const Chapters = {
     cursor: pointer;
     background: #CCCCCC;
 }
-  `.define({ MtA })
+  `.define(MtA)
 }
 
-export default Chapters

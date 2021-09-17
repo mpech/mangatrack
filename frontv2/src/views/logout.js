@@ -1,7 +1,8 @@
 import { html } from 'hybrids'
 import { logout } from '@/services/oauth'
 
-const Logout = {
+export default {
+  tag: 'MtLogout',
   token: {
     connect () {
       logout()
@@ -13,5 +14,3 @@ const Logout = {
   </div>
 `
 }
-
-export default Logout
