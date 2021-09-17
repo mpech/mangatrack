@@ -1,7 +1,7 @@
 const path = require('path')
-const fs = require('fs')
 const { defineConfig } = require('vite')
 const SRC_PATH = path.join(__dirname, '/src')
+
 const hybridsHmr = () => ({
   name: 'hybridsHmr',
   transform (src, id) {
@@ -16,7 +16,6 @@ if (import.meta.hot) {
     }
   }
 })
-
 
 module.exports = defineConfig({
   root: SRC_PATH,
