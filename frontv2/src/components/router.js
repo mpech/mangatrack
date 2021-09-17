@@ -21,14 +21,14 @@ const routes = [
   ['login', defs.MtViewsLogin],
   ['logout', defs.MtViewsLogout],
   ['/[^\\w]', defs.MtViewsHome],
-  ['**', defs.MtViewsNotFound],
+  ['**', defs.MtViewsNotFound]
 ].map(([path, component]) => ({ path, component, fuzzy: false }))
 
 const Router = {
   routes,
   render: () => (host, target) => {
     // https://github.com/hybridsjs/hybrids/issues/78
-    /* target.innerHTML = ''*/
+    /* target.innerHTML = '' */
     const router = document.createElement('router-slot')
     target.appendChild(router)
     router.add(host.routes)

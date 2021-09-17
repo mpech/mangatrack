@@ -1,11 +1,11 @@
 import { apiHost } from '../config'
 
 const headers = () => {
-  const token = localStorage.getItem('accessToken')
+  const token = window.localStorage.getItem('accessToken')
   return {
-    'Accept': 'application/json',
+    Accept: 'application/json',
     'Content-Type': 'application/json',
-    'Authorization': 'Bearer '+token
+    Authorization: 'Bearer ' + token
   }
 }
 
@@ -22,12 +22,12 @@ export const get = (url, query = {}) => {
     : ''
 
   url = url.startsWith('http') ? url : apiHost + url
-  return fetch(url + queryStr, { headers: headers() }).then(throwOnKo)
+  return window.fetch(url + queryStr, { headers: headers() }).then(throwOnKo)
 }
 
 const makeBodyVerb = verb => (url, data = {}) => {
   url = url.startsWith('http') ? url : apiHost + url
-  return fetch(url, {
+  return window.fetch(url, {
     method: verb,
     headers: headers(),
     body: JSON.stringify(data)
@@ -52,7 +52,7 @@ export const refreshToken = ({ refreshToken }) => {
   const headers = {
     'content-type': 'application/x-www-form-urlencoded'
   }
-  return fetch(
+  return window.fetch(
     apiHost + '/oauth/token',
     { method: 'POST', headers, body: params.toString() }
   ).then(throwOnKo)

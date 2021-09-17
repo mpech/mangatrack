@@ -1,10 +1,10 @@
-import { get, fetchMangas, trackManga, untrackManga, fetchMyMangas as apiFetchMyMangas, refreshManga as apiRefreshManga } from '/api'
+import { trackManga, untrackManga, fetchMyMangas as apiFetchMyMangas, refreshManga as apiRefreshManga } from '/api'
 import { notify, notifyError } from '/components/notification'
 import safe from '/utils/safe'
 import { refreshToken, logout } from '/services/oauth'
 
 const retry = fn => async (...args) => {
-  if (!localStorage.getItem('accessToken') && !localStorage.getItem('refreshToken')) {
+  if (!window.localStorage.getItem('accessToken') && !window.localStorage.getItem('refreshToken')) {
     throw new Error('no token')
   }
   return await fn(...args).catch(async e => {

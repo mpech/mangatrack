@@ -4,13 +4,13 @@ import { html } from 'hybrids'
 const SignIn = {
   token: {
     connect () {
-      const params = new URLSearchParams(location.search)
+      const params = new URLSearchParams(window.location.search)
       const accessToken = params.get('access_token')
       const refreshToken = params.get('refresh_token')
-      accessToken && localStorage.setItem('accessToken', accessToken)
-      refreshToken && localStorage.setItem('refreshToken', refreshToken)
+      accessToken && window.localStorage.setItem('accessToken', accessToken)
+      refreshToken && window.localStorage.setItem('refreshToken', refreshToken)
       if (accessToken || refreshToken) {
-        location = '/'
+        window.location = '/'
       }
     }
   },

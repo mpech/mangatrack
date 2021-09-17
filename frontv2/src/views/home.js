@@ -1,4 +1,4 @@
-import { html, define } from 'hybrids'
+import { html } from 'hybrids'
 import MtLayout from '/components/layout'
 import MtFilterForm from '/components/filterForm'
 import MtGrid from '/components/grid'
@@ -11,7 +11,9 @@ const handleFollow = (host, e) => {
     host,
     id,
     num,
-    onSuccess: res => host.myMangas = host.myMangas.concat(res)
+    onSuccess: res => {
+      host.myMangas = host.myMangas.concat(res)
+    }
   })
 }
 const handleUnfollow = (host, e) => {
@@ -21,7 +23,9 @@ const handleUnfollow = (host, e) => {
     id,
     num,
     name,
-    onSuccess: () => host.myMangas = host.myMangas.filter(m => m.mangaId !== id)
+    onSuccess: () => {
+      host.myMangas = host.myMangas.filter(m => m.mangaId !== id)
+    }
   })
 }
 const setMangas = host => res => {
@@ -34,7 +38,7 @@ const concatMangas = host => res => {
 }
 
 const search = safe((host, e) => {
-  const { detail: { q, minChapters }} = e
+  const { detail: { q, minChapters } } = e
   return fetchMangas({ q, minChapters }).then(setMangas(host))
 })
 
@@ -55,7 +59,7 @@ const Home = {
       fetchMyMangas().then(({ items = [] }) => {
         host.myMangas = items
       })
-    },
+    }
   },
   render: ({ mangas = [], myMangas }) => (html`
     <mt-layout>

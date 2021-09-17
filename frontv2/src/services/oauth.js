@@ -1,12 +1,12 @@
 import { refreshToken as apiRefreshToken } from '/api'
 export const logout = () => {
-  localStorage.removeItem('accessToken')
-  localStorage.removeItem('refreshToken')
+  window.localStorage.removeItem('accessToken')
+  window.localStorage.removeItem('refreshToken')
 }
 export const refreshToken = () => {
-  return apiRefreshToken({ refreshToken: localStorage.getItem('refreshToken') }).then((res) => {
-    const { access_token: accessToken, refresh_token: refreshToken }  = res
-    localStorage.setItem('accessToken', accessToken)
-    localStorage.setItem('refreshToken', refreshToken)
+  return apiRefreshToken({ refreshToken: window.localStorage.getItem('refreshToken') }).then((res) => {
+    const { access_token: accessToken, refresh_token: refreshToken } = res
+    window.localStorage.setItem('accessToken', accessToken)
+    window.localStorage.setItem('refreshToken', refreshToken)
   })
 }

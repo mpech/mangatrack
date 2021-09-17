@@ -1,4 +1,4 @@
-import { html, define, property, dispatch } from 'hybrids'
+import { html } from 'hybrids'
 import MtCard from '/components/card'
 
 const Grid = {
@@ -23,6 +23,6 @@ const Grid = {
     grid-gap: 2em;
   }
 `
-.define({ MtCard })
+    .define({ MtCard })
 }
 export default Grid

@@ -7,7 +7,9 @@ import safe from '/utils/safe'
 
 const trackchapter = (host, e) => {
   const onSuccess = (myManga) => {
-    fetchMyMangas().then(res => host.myMangas = res.items)
+    fetchMyMangas().then(res => {
+      host.myMangas = res.items
+    })
   }
   return follow({ host, id: host.manga.id, num: e.detail.num, onSuccess })
 }
@@ -39,7 +41,7 @@ const refreshPicture = safe(async (host) => {
 export default {
   chapters: [],
   manga: {
-    get: (host, last) => last ? last : { description: {} },
+    get: (host, last) => last || { description: {} },
     set: (host, v) => v
   },
   myMangas: [],
@@ -49,7 +51,7 @@ export default {
   },
   load: {
     connect (host) {
-      const nameId = location.pathname.match(/mangas\/(.*)/)[1]
+      const nameId = window.location.pathname.match(/mangas\/(.*)/)[1]
       fetchMyMangas().then(res => {
         res.items && (host.myMangas = res.items)
       })
@@ -155,4 +157,3 @@ blockquote footer:before {
 }
   `.define({ MtChapters, MtLayout })
 }
-

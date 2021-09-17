@@ -1,4 +1,4 @@
-import { html, define, dispatch } from 'hybrids'
+import { html, dispatch } from 'hybrids'
 import debounce from 'debounce'
 
 const myDebounce = debounce(({ q, minChapters, name, cb }) => {
@@ -12,7 +12,7 @@ const onKeyUp = (host, { target: { name, value } }) => {
     host[name] = value
     dispatch(host, 'search', { detail: { q, minChapters, [name]: value } })
   }
-  myDebounce({ name, q, minChapters, [name]:value, cb })
+  myDebounce({ name, q, minChapters, [name]: value, cb })
 }
 
 const FilterForm = {
@@ -45,4 +45,3 @@ const FilterForm = {
     `)
 }
 export default FilterForm
-

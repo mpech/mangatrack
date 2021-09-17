@@ -1,4 +1,4 @@
-import { html, define } from 'hybrids'
+import { html } from 'hybrids'
 
 const Form = {
   render: () => html`

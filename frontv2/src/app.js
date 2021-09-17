@@ -1,6 +1,6 @@
 import { html, define } from 'hybrids'
-import MtRouter from '/components/router'
-import MtNotification from '/components/notification'
+import MtRouter from '@/components/router'
+import MtNotification from '@/components/notification'
 
 const App = {
   render: () => html`

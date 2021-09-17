@@ -1,8 +1,6 @@
 import { html } from 'hybrids'
 import MtLayout from '/components/layout'
 import MtGrid from '/components/grid'
-import safe from '/utils/safe'
-import { fetchMangas } from '/api'
 import { follow, unfollow, fetchMyMangas } from '/services/manga'
 
 const handleClick = (host, e) => {
@@ -15,7 +13,9 @@ const handleFollow = (host, e) => {
     host,
     id,
     num,
-    onSuccess: res => host.myPopulatedMangas = host.myPopulatedMangas.concat(res)
+    onSuccess: res => {
+      host.myPopulatedMangas = host.myPopulatedMangas.concat(res)
+    }
   })
 }
 
@@ -26,7 +26,9 @@ const handleUnfollow = (host, e) => {
     id,
     num,
     name,
-    onSuccess: () => host.myPopulatedMangas = host.myPopulatedMangas.filter(m => m.mangaId !== id)
+    onSuccess: () => {
+      host.myPopulatedMangas = host.myPopulatedMangas.filter(m => m.mangaId !== id)
+    }
   })
 }
 
@@ -63,7 +65,7 @@ const Me = {
       fetchMyMangas({ populated: true }).then(({ items }) => {
         host.myPopulatedMangas = items.filter(x => x.state !== 'deleted')
       })
-    },
+    }
   },
   render: ({ upToDateMangas, newMangas, myPopulatedMangas, tabClass }) => (html`
     <mt-layout>

@@ -10,7 +10,7 @@ const onclick = (host, e) => {
   )
 }
 
-export default  {
+export default {
   followed: false,
   followData: property({}),
   name: '',
@@ -29,4 +29,3 @@ export default  {
       }
   `).define({ MtA })
 }
-

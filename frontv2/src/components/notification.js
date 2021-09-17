@@ -1,7 +1,5 @@
-import { html, define, dispatch } from 'hybrids'
-const onNotificationItemEnd = (host, e) => {
-  host.remove()
-}
+import { html, dispatch } from 'hybrids'
+
 const MtNotificationItem = {
   duration: 2000,
   status: '',
@@ -62,7 +60,7 @@ const NotificationCenter = {
   },
   render: ({ duration, notifications }) => (html`
     ${notifications
-      .map(({ id, msg, status}) => html`
+      .map(({ id, msg, status }) => html`
         <mt-notification-item id="${id}" ondone="${handleDone}" duration="${duration}" msg="${msg}" status="${status}"></mt-notification-item>
       `.key(id))
     }

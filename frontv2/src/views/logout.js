@@ -5,7 +5,7 @@ const Logout = {
   token: {
     connect () {
       logout()
-      location = '/'
+      window.location = '/'
     }
   },
   render: () => html`

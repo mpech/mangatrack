@@ -49,7 +49,7 @@ const Chapters = {
     set: (host, v) => v
   },
   oldTracked: {
-    connect(host) {
+    connect (host) {
       host.lastTracked = host.lastRead
     }
   },
@@ -61,7 +61,7 @@ const Chapters = {
   render: ({ chapters, anchor, updatedAt, lastTracked }) => (html`
 
 <div class="mangaChapters">
-  ${anchor && html`<mt-a to="${'#chap'+anchor}" onclick="${handleScroll}">
+  ${anchor && html`<mt-a to="${'#chap' + anchor}" onclick="${handleScroll}">
     ↓ Scroll to last read (c${anchor})
     </mt-a>
   `}
@@ -75,7 +75,7 @@ const Chapters = {
       </thead>
       <tbody>
       ${chapters.map(({ num, froms, at }) => html`
-        <tr id="${'chap'+num}" class="${num <= lastTracked ? 'read' :  undefined}">
+        <tr id="${'chap' + num}" class="${num <= lastTracked ? 'read' : undefined}">
           <td>c${num}</td>
           <td>
             ${froms.map(from => html`

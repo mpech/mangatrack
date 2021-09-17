@@ -13,7 +13,7 @@
     "eslint": "6.6.0",
     "mocha": "^8.3.2",
     "standard": "14.3.1",
-    "vite": "^2.1.5"
+    "vite": "^2.5.8"
   },
   "standard": {
     "globals": [
@@ -23,8 +23,8 @@
     ]
   },
   "scripts": {
-    "standard": "standard",
-    "start": "cd src && npx vite"
+    "standard": "npx standard --fix",
+    "start": "npx vite"
   },
   "private": true,
   "license": "WTF"

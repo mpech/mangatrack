@@ -1,12 +1,15 @@
-import { html, define } from 'hybrids'
+import { html } from 'hybrids'
 
-const onclick = (host, e) => host.path = e.target.pathname
+const onclick = (host, e) => {
+  host.path = e.target.pathname
+}
+
 const Layout = {
   path: {
-    get: () => location.pathname,
+    get: () => window.location.pathname,
     set: (host, val) => val
   },
-  isLogged: () => !!localStorage.getItem('accessToken'),
+  isLogged: () => !!window.localStorage.getItem('accessToken'),
   activeClass: ({ path }) => path === '/' ? 'home' : path.replace('/', ''),
   loggedClass: ({ isLogged }) => isLogged ? 'logged' : 'unlogged',
   classes: ({ activeClass, loggedClass }) => [activeClass, loggedClass].filter(Boolean),

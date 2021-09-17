@@ -1,16 +1,11 @@
-const path = require('path');
+const path = require('path')
 const fs = require('fs')
-const listFolders = loc => {
-  return fs.readdirSync(loc, { withFileTypes: true })
-    .filter(dirent => dirent.isDirectory())
-    .map(x => x.name)
-    .reduce((o, name) => (o[name] = path.resolve(loc, name), o), {})
-}
+const { defineConfig } = require('vite')
+const SRC_PATH = path.join(__dirname, '/src')
 const hybridsHmr = () => ({
   name: 'hybridsHmr',
   transform (src, id) {
-    if (id !== __dirname + '/app.js') { return }
-    console.log('transform?', id)
+    if (id !== path.join(SRC_PATH, 'app.js')) { return }
     return {
       code: src + `
 if (import.meta.hot) {
@@ -21,7 +16,17 @@ if (import.meta.hot) {
     }
   }
 })
-module.exports = {
-  'resolve.alias': listFolders(__dirname + '/src'),
+
+
+module.exports = defineConfig({
+  root: SRC_PATH,
+  resolve: {
+    alias: [
+      {
+        find: '@',
+        replacement: SRC_PATH
+      }
+    ]
+  },
   plugins: [hybridsHmr()]
-}
+})

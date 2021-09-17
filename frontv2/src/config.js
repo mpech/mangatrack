@@ -20,4 +20,3 @@ export const ops = {
   bug_tracker: 'https://github.com/mpech/mangatrack/issues',
   url_404: '/img/404.jpg'
 }
-
