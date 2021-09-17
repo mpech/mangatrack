@@ -1,10 +1,10 @@
 import { html } from 'hybrids'
-import MtLayout from '/components/layout'
-import MtFilterForm from '/components/filterForm'
-import MtGrid from '/components/grid'
-import { fetchMangas, get } from '/api'
-import safe from '/utils/safe'
-import { follow, unfollow, fetchMyMangas } from '/services/manga'
+import MtLayout from '@/components/layout'
+import MtFilterForm from '@/components/filterForm'
+import MtGrid from '@/components/grid'
+import { fetchMangas, get } from '@/api'
+import safe from '@/utils/safe'
+import { follow, unfollow, fetchMyMangas } from '@/services/manga'
 const handleFollow = (host, e) => {
   const { id, lastChap: { num } } = e.composedPath()[0].followData
   return follow({

@@ -1,5 +1,5 @@
 import { html } from 'hybrids'
-import MtCard from '/components/card'
+import MtCard from '@/components/card'
 
 const Grid = {
   mangas: [],

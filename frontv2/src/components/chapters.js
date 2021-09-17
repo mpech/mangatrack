@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 import { html, dispatch } from 'hybrids'
-import MtA, { handleScroll } from '/components/a'
+import MtA, { handleScroll } from '@/components/a'
 export const UNREAD = -1
 
 const _ensureTd = (host, e, fn) => {

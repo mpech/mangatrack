@@ -1,9 +1,9 @@
 import { html } from 'hybrids'
-import MtChapters, { UNREAD } from '/components/chapters'
-import MtLayout from '/components/layout'
-import { follow, fetchMyMangas, refreshManga } from '/services/manga'
-import { fetchMangaDetail } from '/api'
-import safe from '/utils/safe'
+import MtChapters, { UNREAD } from '@/components/chapters'
+import MtLayout from '@/components/layout'
+import { follow, fetchMyMangas, refreshManga } from '@/services/manga'
+import { fetchMangaDetail } from '@/api'
+import safe from '@/utils/safe'
 
 const trackchapter = (host, e) => {
   const onSuccess = (myManga) => {

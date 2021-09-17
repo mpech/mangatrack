@@ -1,5 +1,5 @@
 import { html } from 'hybrids'
-import { oauth } from '/config.js'
+import { oauth } from '@/config.js'
 
 const uri = `${oauth.google_endpoint}?response_type=code&\
 client_id=${oauth.google_clientId}&\

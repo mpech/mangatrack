@@ -1,7 +1,7 @@
-import { trackManga, untrackManga, fetchMyMangas as apiFetchMyMangas, refreshManga as apiRefreshManga } from '/api'
-import { notify, notifyError } from '/components/notification'
-import safe from '/utils/safe'
-import { refreshToken, logout } from '/services/oauth'
+import { trackManga, untrackManga, fetchMyMangas as apiFetchMyMangas, refreshManga as apiRefreshManga } from '@/api'
+import { notify, notifyError } from '@/components/notification'
+import safe from '@/utils/safe'
+import { refreshToken, logout } from '@/services/oauth'
 
 const retry = fn => async (...args) => {
   if (!window.localStorage.getItem('accessToken') && !window.localStorage.getItem('refreshToken')) {

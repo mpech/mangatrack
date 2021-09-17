@@ -1,6 +1,6 @@
 import { html } from 'hybrids'
-import MtFollow from '/components/follow'
-import MtA from '/components/a'
+import MtFollow from '@/components/follow'
+import MtA from '@/components/a'
 import relativeTime from 'dayjs/plugin/relativeTime'
 // remove dayjs: no need expect fromNow
 import dayjs from 'dayjs'

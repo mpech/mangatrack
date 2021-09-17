@@ -1,4 +1,4 @@
-import { refreshToken as apiRefreshToken } from '/api'
+import { refreshToken as apiRefreshToken } from '@/api'
 export const logout = () => {
   window.localStorage.removeItem('accessToken')
   window.localStorage.removeItem('refreshToken')

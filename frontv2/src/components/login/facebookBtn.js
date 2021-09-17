@@ -1,5 +1,5 @@
 import { html } from 'hybrids'
-import { oauth } from '/config'
+import { oauth } from '@/config'
 
 const fbOauth = ({ uri }) => {
   window.location.href = this.uri

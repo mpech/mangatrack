@@ -1,6 +1,6 @@
 import { html } from 'hybrids'
-import { ops } from '/config'
-import MtLayout from '/components/layout'
+import { ops } from '@/config'
+import MtLayout from '@/components/layout'
 
 // https://github.com/dysfunc/ascii-emoji/blob/master/emojis
 export default {

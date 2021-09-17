@@ -1,7 +1,7 @@
 import { html } from 'hybrids'
-import MtLayout from '/components/layout'
-import MtGrid from '/components/grid'
-import { follow, unfollow, fetchMyMangas } from '/services/manga'
+import MtLayout from '@/components/layout'
+import MtGrid from '@/components/grid'
+import { follow, unfollow, fetchMyMangas } from '@/services/manga'
 
 const handleClick = (host, e) => {
   host.tabClass = e.target.name

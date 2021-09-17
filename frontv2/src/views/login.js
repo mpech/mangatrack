@@ -1,5 +1,5 @@
-import MtGoogleBtn from '/components/login/googleBtn'
-import MtFacebookBtn from '/components/login/facebookBtn'
+import MtGoogleBtn from '@/components/login/googleBtn'
+import MtFacebookBtn from '@/components/login/facebookBtn'
 import { html } from 'hybrids'
 const SignIn = {
   token: {

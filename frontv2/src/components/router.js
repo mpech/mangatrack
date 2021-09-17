@@ -1,11 +1,11 @@
 import '@appnest/web-router'
 import { define } from 'hybrids'
-import MtViewsHome from '/views/home'
-import MtViewsMe from '/views/me'
-import MtViewsManga from '/views/manga'
-import MtViewsLogin from '/views/login'
-import MtViewsLogout from '/views/logout'
-import MtViewsNotFound from '/views/notFound'
+import MtViewsHome from '@/views/home'
+import MtViewsMe from '@/views/me'
+import MtViewsManga from '@/views/manga'
+import MtViewsLogin from '@/views/login'
+import MtViewsLogout from '@/views/logout'
+import MtViewsNotFound from '@/views/notFound'
 const defs = define({
   MtViewsHome,
   MtViewsMe,

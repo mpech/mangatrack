@@ -1,5 +1,5 @@
 import { html, property, dispatch } from 'hybrids'
-import MtA from '/components/a'
+import MtA from '@/components/a'
 
 const onclick = (host, e) => {
   e.preventDefault()
