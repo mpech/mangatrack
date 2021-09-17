@@ -1,5 +1,6 @@
 import MtGoogleBtn from '@/components/login/googleBtn'
 import MtFacebookBtn from '@/components/login/facebookBtn'
+import MtLayout from '@/components/layout'
 import { html } from 'hybrids'
 const SignIn = {
   token: {
@@ -15,22 +16,15 @@ const SignIn = {
     }
   },
   render: () => html`
-  <div>
-    <p>
-    Login is basically <strong>useless</strong> if you never clear your browser history since your preferences are saved in your browser's localStorage.
-    </p>
-    <p>
-    If however you clear your cache, your tracked mangas will be <strong>lost</strong>.
-    </p>
-
-    <p> To save them remote, then you can log by fb or google. <strong>No</strong> mail is used/stored/shared. Read the
+  <mt-layout>
+    <p> To save bookmarks you need to login. <strong>No</strong> mail is used/stored/shared. Read the
       <a href="https://github.com/mpech/mangatrack/blob/master/models/userModel.js">source</a> of mangatrack.
     </p>
     <div class="btns">
       <mt-facebook-btn></mt-facebook-btn>
       <mt-google-btn></mt-google-btn>
     </div>
-  </div>
+  </mt-layout>
   `.style`
 .btns {
   text-align:center;
@@ -42,7 +36,7 @@ const SignIn = {
   justify-content: space-around;
   align-items: center;
 }
-  `.define({ MtGoogleBtn, MtFacebookBtn })
+  `.define({ MtGoogleBtn, MtFacebookBtn, MtLayout })
 }
 
 export default SignIn
