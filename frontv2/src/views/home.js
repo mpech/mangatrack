@@ -94,4 +94,3 @@ export default {
   }
 `).define(MtLayout, MtFilterForm, MtGrid)
 }
-

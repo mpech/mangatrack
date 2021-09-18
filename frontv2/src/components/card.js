@@ -54,7 +54,10 @@ export default {
     text-align:left;
     border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 4px 10px rgb(0 0 0 / 25%);
+    box-shadow: 0 2px 4px rgb(0 0 0 / 25%);
+}
+.card:hover {
+    box-shadow: 0 3px 8px rgb(0 0 0 / 25%);
 }
 .card .content {
   padding: 10px;

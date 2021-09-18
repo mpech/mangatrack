@@ -166,6 +166,9 @@ export default {
     cursor: pointer;
     background: #CCCCCC;
 }
+mt-a {
+  display: inline-block;
+  margin-bottom: 5px;
+}
   `.define(MtA)
 }
-

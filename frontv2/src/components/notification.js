@@ -84,4 +84,3 @@ export const notify = (host, msg) => {
 export const notifyError = (host, msg) => {
   dispatch(host, 'notify', { composed: true, bubbles: true, detail: { status: 'failure', msg } })
 }
-

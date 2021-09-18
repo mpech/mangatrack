@@ -6,7 +6,7 @@ import MtViewsManga from '@/views/manga'
 import MtViewsLogin from '@/views/login'
 import MtViewsLogout from '@/views/logout'
 import MtViewsNotFound from '@/views/notFound'
- define(
+define(
   MtViewsHome,
   MtViewsMe,
   MtViewsManga,

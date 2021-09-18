@@ -1,6 +1,7 @@
 import { html } from 'hybrids'
 import MtLayout from '@/components/layout'
 import MtGrid from '@/components/grid'
+import MtH1 from '@/components/h1'
 import { follow, unfollow, fetchMyMangas } from '@/services/manga'
 
 const handleClick = (host, e) => {
@@ -71,10 +72,10 @@ const Me = {
   render: ({ upToDateMangas, newMangas, myPopulatedMangas, tabClass }) => (html`
     <mt-layout>
       <div>
-        <h1>Tracked mangas</h1>
+        <mt-h1>Tracked mangas</mt-h1>
         <nav class="${[tabClass, 'tabs']}">
-          <button name="new-mangas" onclick="${handleClick}">nouveaux</button>
-          <button name="uptodate-mangas" onclick="${handleClick}">à jour</button>
+          <button name="new-mangas" onclick="${handleClick}">new</button>
+          <button name="uptodate-mangas" onclick="${handleClick}">up to date</button>
         </nav>
         <div class="${tabClass}">
           <mt-grid
@@ -119,6 +120,6 @@ const Me = {
 .new-mangas [data-name="uptodate-mangas"], .uptodate-mangas [data-name="new-mangas"] {
   display: none;
 }
-  `.define(MtLayout, MtGrid)
+  `.define(MtLayout, MtGrid, MtH1)
 }
 export default Me

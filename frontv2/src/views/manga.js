@@ -1,6 +1,7 @@
 import { html } from 'hybrids'
 import MtChapters, { UNREAD } from '@/components/chapters'
 import MtLayout from '@/components/layout'
+import MtH1 from '@/components/h1'
 import { follow, fetchMyMangas, refreshManga } from '@/services/manga'
 import { fetchMangaDetail } from '@/api'
 import safe from '@/utils/safe'
@@ -69,24 +70,19 @@ export default {
   render: ({ manga, chapters, lastRead, description }) => (html`
 
 <mt-layout>
-  <div class="mangaView">
-    <h1>${manga.name}</h1>
+  ${manga.name && html`<div class="mangaView">
+    <mt-h1>${manga.name}</mt-h1>
     <div class="header">
-      <div>
-        <figure>
-          <img src="${manga.thumbUrl}" onerror="${refreshPicture}"/>
-        </figure>
-      </div>
-      <div>
-        <div class="description">
-          <h3>Description</h3>
-          <blockquote>
-            ${description}
-            <footer>
-              <cite>${manga.description.from}</cite>
-            </footer>
-          </blockquote>
-        </div>
+      <figure>
+        <img src="${manga.thumbUrl}" onerror="${refreshPicture}"/>
+      </figure>
+      <div class="description">
+        <blockquote>
+          ${description}
+          <footer>
+            <cite>${manga.description.from}</cite>
+          </footer>
+        </blockquote>
       </div>
     </div>
     <mt-chapters
@@ -95,66 +91,45 @@ export default {
       lastRead="${lastRead}"
       ontrackchapter="${trackchapter}">
     </mt-chapters>
-  </div>
+  </div>`}
 </mt-layout>
   `).style`
-.mangaView .header {
+.header {
   display: flex;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
 }
-.mangaView .header > div:first-child {
-  width: 20%;
+figure {
+  width: 230px;
+  height: 300px;
   flex-shrink: 0;
-  margin-right: 30px;
-}
-.mangaView figure{
-    padding:0;
-    margin:0;
-    width:100%;
-    height:15em;
-}
-.mangaView figure img{
-    height:100%;
-    width:100%;
-    object-fit: cover;
-}
-.mangaView .pure-g > div {
-  box-sizing: border-box;
-  padding: 1em;
-}
-.mangaView .description-from {
-  text-align:right;
-}
-.mangaView h3 {
-  margin-top: 0;
-}
-.mangaView .pure-g > div {
-  margin-bottom: 2em;
-}
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgb(0 0 0 / 25%);
 
+  padding:0;
+  margin:0;
+  flex-grow: 0;
+}
+.description {
+  flex-basis: 400px;
+  flex-grow: 1;
+}
+figure img {
+  height:100%;
+  width:100%;
+  object-fit: cover;
+}
 blockquote {
-  padding: .75em .5em .75em 1em;
-  background: #dddddd;
+  padding-left: 20px;
   line-height: 1.5;
   border-radius:1em 1em;
-}
-blockquote:before {
-  height: 0;
-  content: "“";
-  font: italic 300%/1 Cochin,Georgia,"Times New Roman", serif;
-  color: #999;
+  margin: 0;
 }
 blockquote footer:before {
   content: "— ";
 }
-@media only screen and (max-width: 1024px) {
-  blockquote {
-    margin-block-start: 0;
-    margin-block-end: 0;
-    margin-inline-start: 0;
-    margin-inline-end: 0;
-  }
-}
-}
-  `.define(MtChapters, MtLayout)
+  `.define(MtChapters, MtLayout, MtH1)
 }
