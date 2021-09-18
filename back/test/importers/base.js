@@ -17,7 +17,7 @@ describe('importers/base', function () {
     const importer = new Importer()
     const ref = new Date(2019, 10, 13, 10)
     const d = new Date(importer.parseDate('11-05 16:04', ref.getTime()))
-    assert(d.toString().includes('Nov 05 2020 16:04:00'))
+    assert(d.toString().includes('Nov 05 2021 16:04:00'))
   }))
 
   it('parseDateDetail', Mocker.mockIt(mokr => {

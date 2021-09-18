@@ -20,6 +20,7 @@ async function runLink (link, ts, options = {}) {
         return true
       }
     }
+    return false
   })
 
   if (!selectedImporter) {

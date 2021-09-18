@@ -179,7 +179,7 @@ describe('e2e/mangas', function () {
       MangaModel.create({ _id: '2'.repeat(24), name: 'abcabc', lastChap_num: 2 })
     ])
     const { body: { items } } = await utils.requester
-      .get(`/mangas?minChapters=5`)
+      .get('/mangas?minChapters=5')
       .expect(200)
 
     assert.strictEqual(items.length, 2)

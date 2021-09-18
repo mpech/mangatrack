@@ -31,6 +31,7 @@
     },
     "devDependencies": {
         "eslint": "6.6.0",
+        "istanbul": "^0.4.5",
         "mocha": "6.2.2",
         "standard": "14.3.1"
     },
@@ -40,9 +41,10 @@
         ]
     },
     "scripts": {
-        "test": "make custom",
+        "test": "npx mocha --recursive",
+        "test-cover": "npx istanbul cover node_modules/mocha/bin/_mocha -- --recursive test",
         "standard": "standard",
-        "start": "./super.sh"
+        "start": "./start.sh"
     },
     "private": true,
     "license": "WTF"

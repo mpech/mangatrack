@@ -2,8 +2,8 @@ const asyncHooks = require('async_hooks')
 // const fs = require('fs')
 // const log = (str) => fs.writeSync(1, `${str}\n`)
 
-var contexts = {}
-var enabled = false
+const contexts = {}
+let enabled = false
 
 const ah = asyncHooks.createHook({
   init: (asyncId, type, triggerAsyncId) => {
