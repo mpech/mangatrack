@@ -19,6 +19,9 @@ if (import.meta.hot) {
 
 module.exports = defineConfig({
   root: SRC_PATH,
+  build: {
+    outDir: path.join(__dirname, 'dist')
+  },
   resolve: {
     alias: [
       {
