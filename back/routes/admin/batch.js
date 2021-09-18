@@ -11,7 +11,7 @@ const mongoose = require('mongoose')
 
 function load (app) {
   module.exports.formatter = new Formatter()
-  app.get('/admin/batches', app.oauth.authenticate(), helper.userOnReq, helper.ensureAdmin, validate({
+  app.get('/admin/batches', helper.authenticate, helper.ensureAdmin, validate({
     query: {
       id: Joi.alternatives().try(Joi.array().items(rules.objId), rules.objId),
       offset: Joi.number().min(0),
@@ -37,7 +37,7 @@ function load (app) {
     return module.exports.formatter.formatCollection(coll, { count, offset, limit })
   }))
 
-  app.post('/admin/batches', app.oauth.authenticate(), helper.userOnReq, helper.ensureAdmin, validate({
+  app.post('/admin/batches', helper.authenticate, helper.ensureAdmin, validate({
     body: Joi.alternatives().try({
       link: Joi.string().required(),
       refreshThumb: Joi.boolean(),

@@ -1,6 +1,5 @@
 const express = require('express')
 const bodyParser = require('body-parser')
-const OAuthServer = require('express-oauth-server')
 const cors = require('cors')
 
 const config = require('./config')
@@ -8,7 +7,6 @@ const appStarter = require('./lib/appStarter')
 const ctx = require('./lib/ctx')
 const reqLogger = require('./lib/reqlogger')
 const errorHandler = require('./lib/errorHandler')
-const OauthService = require('./services/oauth')
 
 const app = express()
 app.enable('trust proxy')
@@ -21,7 +19,6 @@ app.use(reqLogger.express({
   maxRequestTime: config.reqlogger_maxRequestTime,
   logger: config.logger
 }))
-app.oauth = new OAuthServer({ model: OauthService, ...config.oauth2_server })
 
 require('./routes').load(app)
 app.get('/ping', (req, res) => res.send('OK'))

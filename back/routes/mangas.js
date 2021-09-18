@@ -10,11 +10,6 @@ const rules = require('../lib/rules')
 
 function load (app) {
   this.formatter = new Formatter()
-  // tags is not really meant to be supported. sites do it better
-  // Just offer the filtering of manhwa...
-  //
-  // allow to filter by name to follow a specific manga though
-  // there is a shitload of filter: type, offset, name, no sort: just timestamp desc
   app.get('/mangas', validate({
     query: {
       q: Joi.string().min(3),

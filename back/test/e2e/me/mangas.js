@@ -12,7 +12,7 @@ describe('e2e/me/mangas', function () {
 
   it('authenticate and set a manga', Mocker.mockIt(async function (mokr) {
     const userId = '0'.repeat(24)
-    const token = 'abc'
+    const token = 'a'.repeat(40)
     const dbz = '1'.repeat(24)
     await Promise.all([
       UserModel.create({ _id: userId, googleId: 'g', displayName: 'moran' }),
@@ -39,7 +39,7 @@ describe('e2e/me/mangas', function () {
 
   it('rejects if not existing manga', Mocker.mockIt(async function (mokr) {
     const userId = '0'.repeat(24)
-    const token = 'abc'
+    const token = 'a'.repeat(40)
     await Promise.all([
       UserModel.create({ _id: userId, googleId: 'g', displayName: 'moran' }),
       MangaModel.create({ _id: '1'.repeat(24), name: 'b' }),
@@ -55,7 +55,7 @@ describe('e2e/me/mangas', function () {
 
   it('does not authenticate and set a manga', Mocker.mockIt(async function (mokr) {
     const userId = '0'.repeat(24)
-    const token = 'abc'
+    const token = 'a'.repeat(40)
     await Promise.all([
       UserModel.create({ _id: userId, googleId: 'g', displayName: 'moran' }),
       AtModel.create({ token, userId })
@@ -68,7 +68,7 @@ describe('e2e/me/mangas', function () {
 
   it('deletes a manga', Mocker.mockIt(async function (mokr) {
     const userId = '0'.repeat(24)
-    const token = 'abc'
+    const token = 'a'.repeat(40)
     const [, at] = await Promise.all([
       UserModel.create({ _id: userId, googleId: 'g', displayName: 'moran', mangas: { ['1'.repeat(24)]: { num: 5 } } }),
       AtModel.create({ token, userId })
@@ -85,7 +85,7 @@ describe('e2e/me/mangas', function () {
 
   it('patches my manga collection', Mocker.mockIt(async function (mokr) {
     const userId = '0'.repeat(24)
-    const token = 'abc'
+    const token = 'a'.repeat(40)
 
     const ignored = '0'.repeat(24)
     const notOverridenIfInferior = '7'.repeat(24)
@@ -134,7 +134,7 @@ describe('e2e/me/mangas', function () {
 
   it('gives me back my failing mangas', Mocker.mockIt(async function (mokr) {
     const userId = '0'.repeat(24)
-    const token = 'abc'
+    const token = 'a'.repeat(40)
     const failingOnes = '1'.repeat(24)
     const failingTwos = '2'.repeat(24)
     const dbz = '0'.repeat(24)
@@ -168,7 +168,7 @@ describe('e2e/me/mangas', function () {
 
   it('rejects if unknown num', Mocker.mockIt(async function (mokr) {
     const userId = '0'.repeat(24)
-    const token = 'abc'
+    const token = 'a'.repeat(40)
     const dbz = '0'.repeat(24)
     const ccc = '1'.repeat(24)
     const mangas = {
@@ -197,9 +197,10 @@ describe('e2e/me/mangas', function () {
 
   it('rejects if no array', Mocker.mockIt(async function (mokr) {
     const userId = '0'.repeat(24)
+    const token = 'a'.repeat(40)
     const [, at] = await Promise.all([
       UserModel.create({ _id: userId, googleId: 'g', displayName: 'moran' }),
-      AtModel.create({ token: 'abc', userId })
+      AtModel.create({ token, userId })
     ])
     await utils.requester
       .patch('/me/mangas')
@@ -212,7 +213,7 @@ describe('e2e/me/mangas', function () {
 
   it('fetches my collection', Mocker.mockIt(async function (mokr) {
     const userId = '0'.repeat(24)
-    const token = 'abc'
+    const token = 'a'.repeat(40)
     const dbz = '0'.repeat(24)
     const ccc = '4'.repeat(24)
     const mangas = {
@@ -239,7 +240,7 @@ describe('e2e/me/mangas', function () {
 
   it('fetches my collection with populated manga', Mocker.mockIt(async function (mokr) {
     const userId = '0'.repeat(24)
-    const token = 'abc'
+    const token = 'a'.repeat(40)
     const dbz = '0'.repeat(24)
     const mangas = {
       [dbz]: { num: 5 }

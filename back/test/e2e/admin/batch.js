@@ -12,7 +12,7 @@ describe('e2e/admin/batch', function () {
 
   it('get batches', Mocker.mockIt(async function (mokr) {
     const userId = '0'.repeat(24)
-    const token = 'abc'
+    const token = 'a'.repeat(40)
     await Promise.all([
       UserModel.create({ _id: userId, googleId: 'g', displayName: 'moran', admin: true }),
       AtModel.create({ token, userId }),
@@ -33,7 +33,7 @@ describe('e2e/admin/batch', function () {
 
   it('get batches page 2', Mocker.mockIt(async function (mokr) {
     const userId = '0'.repeat(24)
-    const token = 'abc'
+    const token = 'a'.repeat(40)
     await Promise.all([
       UserModel.create({ _id: userId, googleId: 'g', displayName: 'moran', admin: true }),
       AtModel.create({ token, userId }),
@@ -52,15 +52,16 @@ describe('e2e/admin/batch', function () {
 
   it('does not get batches if unauth', Mocker.mockIt(async function (mokr) {
     const token = 'abc'
-    return utils.requester
+    const res = await utils.requester
       .get('/admin/batches?limit=1')
       .set({ Authorization: 'Bearer ' + token })
       .expect(401)
+    assert.strictEqual(res.headers['www-authenticate'], 'Bearer')
   }))
 
   it('does not get batches if not admin', Mocker.mockIt(async function (mokr) {
     const userId = '0'.repeat(24)
-    const token = 'abc'
+    const token = 'a'.repeat(40)
     await Promise.all([
       UserModel.create({ _id: userId, googleId: 'g', displayName: 'moran', admin: false }),
       AtModel.create({ token, userId })
@@ -74,7 +75,7 @@ describe('e2e/admin/batch', function () {
 
   it('can import link', Mocker.mockIt(async function (mokr) {
     const userId = '0'.repeat(24)
-    const token = 'abc'
+    const token = 'a'.repeat(40)
     await Promise.all([
       UserModel.create({ _id: userId, googleId: 'g', displayName: 'moran', admin: true }),
       AtModel.create({ token, userId })
@@ -96,7 +97,7 @@ describe('e2e/admin/batch', function () {
 
   it('can import link with options', Mocker.mockIt(async function (mokr) {
     const userId = '0'.repeat(24)
-    const token = 'abc'
+    const token = 'a'.repeat(40)
     await Promise.all([
       UserModel.create({ _id: userId, googleId: 'g', displayName: 'moran', admin: true }),
       AtModel.create({ token, userId })
@@ -118,7 +119,7 @@ describe('e2e/admin/batch', function () {
 
   it('can import id', Mocker.mockIt(async function (mokr) {
     const userId = '0'.repeat(24)
-    const token = 'abc'
+    const token = 'a'.repeat(40)
     await Promise.all([
       UserModel.create({ _id: userId, googleId: 'g', displayName: 'moran', admin: true }),
       AtModel.create({ token, userId })

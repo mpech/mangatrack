@@ -10,7 +10,7 @@ describe('e2e/me/me', function () {
 
   it('returns me', Mocker.mockIt(async function (mokr) {
     const userId = '0'.repeat(24)
-    const token = 'abc'
+    const token = 'a'.repeat(40)
     await Promise.all([
       UserModel.create({ _id: userId, googleId: 'g', displayName: 'moran', admin: true }),
       AtModel.create({ token, userId })

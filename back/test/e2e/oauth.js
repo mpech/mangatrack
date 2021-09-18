@@ -64,7 +64,7 @@ describe('e2e/oauth', function () {
 
   it('renew a token', Mocker.mockIt(async function (mokr) {
     const rt = await RtModel.create({
-      token: 'a',
+      token: 'a'.repeat(40),
       userId: '0'.repeat(24)
     })
     const { body } = await utils.requester
@@ -78,7 +78,7 @@ describe('e2e/oauth', function () {
       })
       .expect(200)
     return Promise.all([
-      RtModel.findOne({ token: 'a' }).then(x => assert(!x)),
+      RtModel.findOne({ token: rt.token }).then(x => assert(!x)),
       RtModel.findOne({ token: body.refresh_token }).then(x => assert(x)),
       AtModel.findOne({ token: body.access_token }).then(x => assert(x))
     ])

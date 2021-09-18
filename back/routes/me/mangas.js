@@ -10,14 +10,14 @@ const helper = require('../../lib/helper')
 const formatter = require('../../formatters/me/mangaFormatter')
 
 function load (app) {
-  app.put('/me/mangas/:mangaId', app.oauth.authenticate(), validate({
+  app.put('/me/mangas/:mangaId', helper.authenticate, validate({
     params: {
       mangaId: rules.objId
     },
     body: {
       num: rules.chapterNum
     }
-  }), helper.userOnReq, prom(async function (req, res) {
+  }), prom(async function (req, res) {
     const mangaId = req.params.mangaId
     const num = req.body.num
     const m = await MangaModel.findChapter({ _id: mangaId, num }, '*')
@@ -27,16 +27,16 @@ function load (app) {
     return req.user.saveManga({ mangaId, num, updatedAt: Date.now() }).then(formatter.format)
   }))
 
-  app.delete('/me/mangas/:mangaId', app.oauth.authenticate(), validate({
+  app.delete('/me/mangas/:mangaId', helper.authenticate, validate({
     params: {
       mangaId: rules.objId
     }
-  }), helper.userOnReq, prom(function (req, res) {
+  }), prom(function (req, res) {
     const mangaId = req.params.mangaId
     return req.user.removeManga({ mangaId, updatedAt: Date.now() }).then(formatter.format).catch(e => console.log('e : ', e))
   }))
 
-  app.patch('/me/mangas', app.oauth.authenticate(), validate({
+  app.patch('/me/mangas', helper.authenticate, validate({
     body: {
       items: Joi.array().min(1).items(Joi.object({
         mangaId: rules.objId,
@@ -44,7 +44,7 @@ function load (app) {
         updatedAt: rules.timestamp
       })).required()
     }
-  }), helper.userOnReq, prom(async function (req, res) {
+  }), prom(async function (req, res) {
     const items = req.body.items
     { // check manga existence
       const matchedIds = await ChapterModel.find({
@@ -100,7 +100,7 @@ function load (app) {
     query: {
       populated: Joi.boolean()
     }
-  }), app.oauth.authenticate(), helper.userOnReq, prom(async (req, res) => {
+  }), helper.authenticate, prom(async (req, res) => {
     let map = req.user.mangas
     if (req.query.populated) {
       map = await MangaModel

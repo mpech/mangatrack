@@ -1,10 +1,13 @@
 const config = require('../config')
+const Joi = require('joi')
+const validate = require('express-validation')
 const UserModel = require('../models/userModel')
 const OauthService = require('../services/oauth')
 const GoogleStrategy = require('passport-google-oauth20').Strategy
 const FacebookStrategy = require('passport-facebook').Strategy
 const passport = require('passport')
 const prom = require('../lib/prom')
+const Formatter = require('../formatters/oauthFormatter')
 
 passport.use(new GoogleStrategy({
   clientID: config.oauth2_google_clientId,
@@ -28,6 +31,7 @@ function (accessToken, refreshToken, profile, cb) {
 ))
 
 function load (app) {
+  this.formatter = new Formatter()
   app.use(passport.initialize())
 
   function oauth (endpoint) {
@@ -76,7 +80,20 @@ function load (app) {
     passportName: 'facebook'
   })
 
-  app.all('/oauth/token', app.oauth.token())
+  app.post('/oauth/token', validate({
+    body: {
+      grant_type: Joi.string().valid('refresh_token').required(),
+      refresh_token: Joi.string().max(100).required()
+    }
+  }), prom(async req => {
+    const { refresh_token: token } = req.body
+    const rt = await OauthService.getRefreshToken(token)
+    const [, tokens] = await Promise.all([
+      OauthService.revokeToken(rt),
+      OauthService.generateTokens(rt.user)
+    ])
+    return this.formatter.formatRefresh(tokens)
+  }))
 }
 
 module.exports = {

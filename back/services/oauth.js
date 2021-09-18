@@ -1,21 +1,12 @@
-const GrantType = require('oauth2-server').AbstractGrantType
-const InvalidTokenError = require('oauth2-server').InvalidTokenError
+const errorHandler = require('../lib/errorHandler')
 const config = require('../config')
 const AtModel = require('../models/oauth/atModel')
 const RtModel = require('../models/oauth/rtModel')
-/*
-https://oauth2-server.readthedocs.io/en/latest/model/overview.html
-Refresh Token Grant
-
-    [optional] generateRefreshToken(client, user, scope, [callback])
-    saveToken(token, client, user, [callback])
-    revokeToken(token, [callback])
-    getClient(clientId, clientSecret, [callback])
- */
+const randomstring = require('randomstring')
 module.exports.getRefreshToken = async function (token) {
   const tok = await RtModel.findOne({ token }).lean()
   if (!tok) {
-    throw new InvalidTokenError()
+    return errorHandler.invalidTokenError()
   }
   return {
     refreshToken: token,
@@ -87,7 +78,7 @@ Request Authentication
 module.exports.getAccessToken = async function (token) {
   const at = await AtModel.findOne({ token }).lean()
   if (!at) {
-    throw new InvalidTokenError()
+    return errorHandler.invalidTokenError()
   }
   return {
     accessToken: at.token,
@@ -98,17 +89,11 @@ module.exports.getAccessToken = async function (token) {
 }
 
 module.exports.generateTokens = async function (user) {
-  const options = { model: module.exports, ...config.oauth2_server }
   const client = { id: 'mangatrack' }
   const scope = undefined
-  const prot = GrantType.prototype
   const [at, rt] = await Promise.all([
-    prot.generateAccessToken.call(options, client, user, scope).then(at => {
-      return AtModel.create({ userId: user.id, token: at })
-    }),
-    prot.generateRefreshToken.call(options, client, user, scope).then(rt => {
-      return RtModel.create({ userId: user.id, token: rt })
-    })
+    AtModel.create({ userId: user.id, token: Date.now() + randomstring.generate(27) }),
+    RtModel.create({ userId: user.id, token: Date.now() + randomstring.generate(27) })
   ])
   // same payload as saveToken
   return {

@@ -47,5 +47,6 @@ module.exports = {
   importerRequiresInteraction: errFunc(6, 500, 'requires browser interaction for #0'),
   noImporterFound: errFunc(7, 500, 'no importer found for #0'),
   invalidGrants: errFunc(8, 401, 'invalid grants'),
-  tooManyRedirect: errFunc(9, 500, 'too many redirect')
+  tooManyRedirect: errFunc(9, 500, 'too many redirect'),
+  invalidTokenError: errFunc(10, 400, 'invalid token error')
 }
