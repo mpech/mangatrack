@@ -1,54 +1,54 @@
 {
-    "name": "mangatrack",
-    "version": "1.0.0",
-    "description": "track fav mangas",
-    "author": "mpech",
-    "dependencies": {
-        "@mongoosejs/async-hooks": "0.0.4",
-        "axios": "^0.21.1",
-        "body-parser": "1.19.0",
-        "cheerio": "0.22.0",
-        "cors": "2.8.5",
-        "death": "1.0.0",
-        "express": "4.17.1",
-        "express-validation": "1.0.3",
-        "google-auth-library": "0.10.0",
-        "joi": "14.3.1",
-        "moment": "2.24.0",
-        "moment-timezone": "0.5.13",
-        "mongoose": "5.11.16",
-        "passport": "0.4.0",
-        "passport-facebook": "3.0.0",
-        "passport-google-oauth20": "2.0.0",
-        "retryer": "1.1.2",
-        "safe-json-stringify": "1.2.0",
-        "standard": "^16.0.3",
-        "supertest": "3.0.0",
-        "winston": "3.2.1",
-        "winston-daily-rotate-file": "4.2.1",
-        "yargs": "15.0.2"
-    },
-    "devDependencies": {
-        "eslint": "^7.32.0",
-        "husky": "^5.0.9",
-        "istanbul": "^0.4.5",
-        "mocha": "6.2.2",
-        "randomstring": "^1.2.1",
-        "standard": "^16.0.3",
-        "supervisor": "^0.12.0"
-    },
-    "standard": {
-        "env": [
-            "mocha"
-        ]
-    },
-    "scripts": {
-        "postinstall": "cd ../ && husky install",
-        "test": "npx mocha --recursive",
-        "test-cover": "npx istanbul cover node_modules/mocha/bin/_mocha -- --recursive test",
-        "standard": "standard",
-        "start": "./start.sh"
-    },
-    "private": true,
-    "license": "WTF"
+  "name": "mangatrack",
+  "version": "1.0.0",
+  "description": "track fav mangas",
+  "author": "mpech",
+  "dependencies": {
+    "@mongoosejs/async-hooks": "0.0.4",
+    "axios": "^0.21.1",
+    "body-parser": "1.19.0",
+    "cheerio": "0.22.0",
+    "cors": "2.8.5",
+    "death": "1.0.0",
+    "express": "4.17.1",
+    "express-validation": "1.0.3",
+    "google-auth-library": "0.10.0",
+    "joi": "14.3.1",
+    "moment": "2.24.0",
+    "moment-timezone": "0.5.13",
+    "mongoose": "5.11.16",
+    "passport": "0.4.0",
+    "passport-facebook": "3.0.0",
+    "passport-google-oauth20": "2.0.0",
+    "retryer": "1.1.2",
+    "safe-json-stringify": "1.2.0",
+    "standard": "^16.0.3",
+    "supertest": "3.0.0",
+    "winston": "3.2.1",
+    "winston-daily-rotate-file": "4.2.1",
+    "yargs": "15.0.2"
+  },
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "husky": "^5.0.9",
+    "mocha": "^9.1.1",
+    "nyc": "^15.1.0",
+    "randomstring": "^1.2.1",
+    "standard": "^16.0.3",
+    "supervisor": "^0.12.0"
+  },
+  "standard": {
+    "env": [
+      "mocha"
+    ]
+  },
+  "scripts": {
+    "postinstall": "cd ../ && husky install",
+    "test": "npx mocha --recursive",
+    "coverage": "npx nyc npm run test",
+    "standard": "standard",
+    "start": "./start.sh"
+  },
+  "private": true,
+  "license": "WTF"
 }

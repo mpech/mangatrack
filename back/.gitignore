@@ -3,3 +3,4 @@ node_modules
 config/privateConfig.json
 patches/lastPatchRun.txt
 coverage
+.nyc_output
