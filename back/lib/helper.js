@@ -6,7 +6,7 @@ module.exports = {
   ensureAdmin: function (req, res, next) {
     return next(req.user.admin ? null : errorHandler.invalidGrants())
   },
-  authenticate: (req, res, next) => {
+  authenticate: async (req, res, next) => {
     if (!req.headers.authorization) {
       return res.status(400).send('invalid_client')
     }
