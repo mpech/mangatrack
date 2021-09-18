@@ -96,8 +96,24 @@ function load (app) {
     return req.user.updateMangas(items).then(formatter.formatCollection)
   }))
 
-  app.get('/me/mangas', app.oauth.authenticate(), helper.userOnReq, prom(async (req, res) => {
-    return formatter.formatCollection(req.user.mangas)
+  app.get('/me/mangas', validate({
+    query: {
+      populated: Joi.boolean()
+    }
+  }), app.oauth.authenticate(), helper.userOnReq, prom(async (req, res) => {
+    let map = req.user.mangas
+    if (req.query.populated) {
+      map = await MangaModel
+        .find({ _id: { $in: [...map.keys()].map(k => mongoose.Types.ObjectId(k)) } })
+        .lean()
+        .then(mangas => {
+          const mangaMap = new Map(mangas.map(m => [m._id.toString(), m]))
+          return new Map([...map.entries()].map(([id, myManga]) => {
+            return [id, { ...myManga.toJSON(), manga: mangaMap.get(id) }]
+          }))
+        })
+    }
+    return formatter.formatCollection(map, { populated: req.query.populated })
   }))
 }
 

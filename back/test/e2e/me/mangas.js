@@ -236,4 +236,29 @@ describe('e2e/me/mangas', function () {
     assert.strictEqual(items[3].mangaId, ccc)
     assert.strictEqual(items[3].num, 3)
   }))
+
+  it('fetches my collection with populated manga', Mocker.mockIt(async function (mokr) {
+    const userId = '0'.repeat(24)
+    const token = 'abc'
+    const dbz = '0'.repeat(24)
+    const mangas = {
+      [dbz]: { num: 5 }
+    }
+    const [, at] = await Promise.all([
+      UserModel.create({ _id: userId, googleId: 'g', displayName: 'moran', mangas }),
+      AtModel.create({ token, userId }),
+      MangaModel.create({ _id: dbz, name: 'gro', lastChap_at: 5, lastChap_num: 6 })
+    ])
+    const { body: { items: [item] } } = await utils.requester
+      .get('/me/mangas?populated=true')
+      .set({ Authorization: `Bearer ${at.token}` })
+      .expect(200)
+
+    assert.deepEqual(item.manga, {
+      id: '000000000000000000000000',
+      name: 'gro',
+      nameId: 'gro',
+      lastChap: { num: 6, at: 5 }
+    })
+  }))
 })

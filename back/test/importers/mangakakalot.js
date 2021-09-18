@@ -18,8 +18,8 @@ describe('importers/mangakakalot', function () {
     const res = await importer.allUpdates()
     assert(called)
     assert.strictEqual(Object.keys(res).length, 56)
-    assert.strictEqual(Object.keys(res)[0], "Dokuzakura")
-    const v = res["Dokuzakura"]
+    assert.strictEqual(Object.keys(res)[0], 'Dokuzakura')
+    const v = res.Dokuzakura
     assert.strictEqual(v.num, 33)
     assert.strictEqual(v.last, 5)
     assert.strictEqual(v.url, 'https://mangakakalot.com/chapter/ql920170/chapter_33')

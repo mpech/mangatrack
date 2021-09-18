@@ -33,6 +33,7 @@
     "devDependencies": {
         "eslint": "6.6.0",
         "husky": "^5.0.9",
+        "istanbul": "^0.4.5",
         "mocha": "6.2.2",
         "standard": "16.0.3"
     },
@@ -42,9 +43,11 @@
         ]
     },
     "scripts": {
-        "test": "make custom",
+        "postinstall": "cd ../ && husky install",
+        "test": "npx mocha --recursive",
+        "test-cover": "npx istanbul cover node_modules/mocha/bin/_mocha -- --recursive test",
         "standard": "standard",
-        "postinstall": "cd ../ && husky install"
+        "start": "./start.sh"
     },
     "private": true,
     "license": "WTF"

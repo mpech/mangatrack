@@ -1,0 +1,31 @@
+{
+  "name": "mangatrack",
+  "version": "1.0.0",
+  "description": "track fav mangas",
+  "author": "mpech",
+  "dependencies": {
+    "@appnest/web-router": "^1.4.2",
+    "dayjs": "^1.10.4",
+    "debounce": "^1.2.1",
+    "hybrids": "^6.1.0"
+  },
+  "devDependencies": {
+    "eslint": "6.6.0",
+    "mocha": "^8.3.2",
+    "standard": "14.3.1",
+    "vite": "^2.5.8"
+  },
+  "standard": {
+    "globals": [
+      "it",
+      "expect",
+      "jest"
+    ]
+  },
+  "scripts": {
+    "standard": "npx standard --fix",
+    "start": "npx vite"
+  },
+  "private": true,
+  "license": "WTF"
+}
