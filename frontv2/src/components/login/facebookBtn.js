@@ -33,6 +33,7 @@ export default {
   border-radius: 0.2em;
   font-size: 16px;
   color: #FFF;
+  cursor: pointer;
 }
 .loginBtn:before {
   content: "";

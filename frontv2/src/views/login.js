@@ -28,13 +28,11 @@ export default {
   </mt-layout>
   `.style`
 .btns {
-  text-align:center;
-  margin-top:2em;
   display: flex;
-  width: 50%;
+  flex-direction: column;
+  gap: 30px;
   margin: auto;
   margin-top: 40px;
-  justify-content: space-around;
   align-items: center;
 }
   `.define(MtGoogleBtn, MtFacebookBtn, MtLayout)
