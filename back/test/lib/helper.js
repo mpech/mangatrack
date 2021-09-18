@@ -20,7 +20,7 @@ describe('lib/helper', function () {
         }
       }
       return helper.authenticate({ headers: {} }, res).then(() => {
-        assert(called)  
+        assert(called)
       })
     })
   })
@@ -48,7 +48,7 @@ describe('lib/helper', function () {
         return res
       }
     }
-    return helper.authenticate({ headers: { authorization: `Bearer ${at}`} }, res).then(() => {
+    return helper.authenticate({ headers: { authorization: `Bearer ${at}` } }, res).then(() => {
       assert(called)
     })
   }))
