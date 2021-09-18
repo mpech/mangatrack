@@ -1,5 +1,8 @@
 import { html } from 'hybrids'
 import { oauth } from '@/config.js'
+import darkNormal from '@/assets/google/btn_google_signin_dark_normal_web.png'
+import darkFocus from '@/assets/google/btn_google_signin_dark_focus_web.png'
+import darkPressed from '@/assets/google/btn_google_signin_dark_pressed_web.png'
 
 const uri = `${oauth.google_endpoint}?response_type=code&\
 client_id=${oauth.google_clientId}&\
@@ -12,9 +15,9 @@ export default {
   uri,
   render: () => html`
     <a href="${uri}" style="display:inline-block;" class="google loginBtn loginBtn--google"></a>
-    <img src="/assets/google/btn_google_signin_dark_focus_web.png"/>
-    <img src="/assets/google/btn_google_signin_dark_pressed_web.png"/>
-  `.style`
+    <img src="${darkFocus}"/>
+    <img src="${darkPressed}"/>
+  `.style(`
 /* Shared */
 .loginBtn {
   box-sizing: border-box;
@@ -49,20 +52,20 @@ export default {
 /*----*/
 
 a{
-    display:block;
-    height:46px;
-    width:191px;
-    background: url('/assets/google/btn_google_signin_dark_normal_web.png')
+  display:block;
+  height:46px;
+  width:191px;
+  background: url(${darkNormal})
 }
 a:hover{
-    background: url('/assets/google/btn_google_signin_dark_focus_web.png')
+  background: url(${darkFocus})
 }
 a:active{
-    background: url('/assets/google/btn_google_signin_dark_pressed_web.png')
+  background: url(${darkPressed})
 }
 img {
   visibility:hidden;
   position:absolute;
 }
-  `
+  `)
 }
