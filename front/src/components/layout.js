@@ -33,6 +33,12 @@ export default {
 :host > div:nth-child(2) {
   padding: 32px;
 }
+
+@media only screen and (max-width: 800px) {
+  :host > div:nth-child(2) {
+    padding: 8px;
+  }
+}
 a {
   margin-right: 32px;
   text-transform: uppercase;

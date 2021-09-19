@@ -7,16 +7,9 @@ import manganelo from '@/assets/manganelo.png'
 
 export const UNREAD = -1
 
-const _ensureTd = (host, e, fn) => {
-  if (e.target.nodeName !== 'TD') {
-    return
-  }
-  const td = e.target
-  const children = td.parentNode.children
-  if (children[children.length - 1] !== td) {
-    return
-  }
-  return fn(td)
+const _ensureDiv = (host, e, fn) => {
+  const el = e.target
+  return 'istruck' in el.dataset ? fn(el) : undefined
 }
 
 const rollback = (host, e) => {
@@ -24,15 +17,15 @@ const rollback = (host, e) => {
 }
 
 const paintSelection = (host, e) => {
-  _ensureTd(host, e, td => {
-    const num = parseFloat(td.getAttribute('data-num'))
+  _ensureDiv(host, e, el => {
+    const num = parseFloat(el.dataset.num)
     host.lastTracked = num
   })
 }
 
 const select = (host, e) => {
-  return _ensureTd(host, e, td => {
-    const num = parseFloat(td.getAttribute('data-num'))
+  return _ensureDiv(host, e, el => {
+    const num = parseFloat(el.getAttribute('data-num'))
     dispatch(host, 'trackchapter', { detail: { id: host.mangaId, num }, composed: true })
     host.oldTracked = num
   })
@@ -71,28 +64,28 @@ export default {
     </mt-a>
   `}
   ${chapters.length > 0 && html`
-    <table onmouseout="${rollback}" onmouseover="${paintSelection}" onclick="${select}">
-      <thead>
-        <th title="chapter">Ch.</th>
-        <th>from</th>
-        <th>when</th>
-        <th>🚚</th>
-      </thead>
-      <tbody>
+    <div class="grid" onmouseout="${rollback}" onmouseover="${paintSelection}" onclick="${select}">
+      <div class="gridhead" title="chapter">Ch.</div>
+      <div class="gridhead">from</div>
+      <div class="gridhead">when</div>
+      <div class="gridhead">🚚</div>
       ${chapters.map(({ num, froms, at }) => html`
-        <tr id="${'chap' + num}" class="${num <= lastTracked ? 'read' : undefined}">
-          <td>c${num}</td>
-          <td>
-            ${froms.map(from => html`
-              <a href="${from.url}" class="${['from', from.klass]}"></a>
-            `.key(from.klass + '_' + num))}
-          </td>
-          <td><time updatedAt="${at}">${dayjs(at).format('YY-MM-DD')}</time></td>
-          <td title="mark as read up to there" onmouseleave="${rollback}" data-num="${num}"></td>
-        </tr>
+        <div class="${num === lastTracked ? 'read' : undefined}" >c${num}</div>
+        <div>
+          ${froms.map(from => html`
+            <a href="${from.url}" class="${['from', from.klass]}"></a>
+          `.key(from.klass + '_' + num))}
+        </div>
+        <div><time updatedAt="${at}">${dayjs(at).format('YY-MM-DD')}</time></div>
+        <div
+          id="${'chap' + num}"
+          title="mark as read up to there"
+          onmouseleave="${rollback}"
+          data-num="${num}"
+          data-istruck
+        ></div>
       `.key(num))}
-      </tbody>
-    </table>
+    </div>
   `}
   ${chapters.length === 0 && html`
     <div>
@@ -101,21 +94,29 @@ export default {
   `}
 </div>
   `).style(`
-  table {
-    border-collapse: collapse;
-    border-top: 1px solid #cbcbcb;
-    border-bottom: 1px solid #cbcbcb;
-  }
-  th {
+  .gridhead {
     background: #e0e0e0;
-    font-style: bold;
+    font-weight: bold;
   }
-  td, th {
+  .grid {
+    width: min(500px, 100%);
+    display: grid;
+    grid-template-columns: repeat(4, auto);
+  }
+  .grid div {
+    box-sizing: border-box;
+    display: flex;
+    padding: 0.5em;
     border-left: 1px solid #cbcbcb;
-    padding: 0.5em 1em;
+    justify-items: center;
+    align-items: center;
   }
-  td:last-child, th:last-child {
+  .grid div:nth-child(4n + 4) {
     border-right: 1px solid #cbcbcb;
+    cursor: pointer;
+  }
+  .grid .read ~ div, .read {
+    background: #CCCCCC;
   }
   a {
     display:block;
@@ -144,30 +145,11 @@ export default {
   .from-manganelo {
     background-image: url('${manganelo}');
   }
-  @media only screen and (max-width: 800px) {
-    table {
-      width: 100%;
-    }
-  }
-  td:last-child {
-    cursor: pointer;
-  }
   .truckKun svg {
     color: white;
     border-radius: 1em 1em;
     background-color: #209cee;
     padding: 0.3em 0.3em;
-  }
-
-  .isekaied {
-      background: #CCCCCC;
-  }
-  .read {
-      background: #CCCCCC;
-  }
-  td:last-child:hover {
-      cursor: pointer;
-      background: #CCCCCC;
   }
   mt-a {
     display: inline-block;
