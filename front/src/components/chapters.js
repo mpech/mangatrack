@@ -84,7 +84,7 @@ export default {
           <td>c${num}</td>
           <td>
             ${froms.map(from => html`
-              <mt-a to="${from.url}" class="${['from', from.klass]}"></mt-a>
+              <a href="${from.url}" class="${['from', from.klass]}"></a>
             `.key(from.klass + '_' + num))}
           </td>
           <td><time updatedAt="${at}">${dayjs(at).format('YY-MM-DD')}</time></td>
@@ -119,7 +119,6 @@ export default {
   }
   a {
     display:block;
-    margin-bottom: 1em;
   }
 
   .from {
