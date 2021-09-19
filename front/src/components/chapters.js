@@ -66,11 +66,11 @@ export default {
   render: ({ chapters, anchor, updatedAt, lastTracked }) => (html`
 
 <div class="mangaChapters">
-  ${anchor && html`<mt-a to="${'#chap' + anchor}" onclick="${handleScroll}">
+  ${anchor !== false && html`<mt-a to="${'#chap' + anchor}" onclick="${handleScroll}">
     ↓ Scroll to last read (c${anchor})
     </mt-a>
   `}
-  ${chapters.length && html`
+  ${chapters.length > 0 && html`
     <table class="table" onmouseout="${rollback}" onmouseover="${paintSelection}" onclick="${select}">
       <thead>
         <th>Chapter</th>
