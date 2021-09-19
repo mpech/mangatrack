@@ -70,7 +70,7 @@ const Me = {
     }
   },
   render: ({ upToDateMangas, newMangas, myPopulatedMangas, tabClass }) => (html`
-    <mt-layout>
+    <mt-layout with-to-top>
       <div>
         <mt-h1>Tracked mangas</mt-h1>
         <nav class="${[tabClass, 'tabs']}">

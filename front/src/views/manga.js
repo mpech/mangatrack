@@ -68,8 +68,7 @@ export default {
     return txt.value
   },
   render: ({ manga, chapters, lastRead, description }) => (html`
-
-<mt-layout>
+<mt-layout with-to-top>
   ${manga.name && html`<div class="mangaView">
     <mt-h1>${manga.name}</mt-h1>
     <div class="header">

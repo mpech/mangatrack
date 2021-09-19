@@ -63,7 +63,7 @@ export default {
     }
   },
   render: ({ mangas = [], myMangas }) => html`
-    <mt-layout>
+    <mt-layout with-to-top>
       <mt-filter-form onsearch="${search}"></mt-filter-form>
       <mt-grid
         mangas="${mangas}"
