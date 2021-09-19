@@ -1,6 +1,10 @@
 import dayjs from 'dayjs'
 import { html, dispatch } from 'hybrids'
 import MtA, { handleScroll } from '@/components/a'
+import mangakakalot from '@/assets/mangakakalot.png'
+import fanfox from '@/assets/fanfox.png'
+import manganelo from '@/assets/manganelo.png'
+
 export const UNREAD = -1
 
 const _ensureTd = (host, e, fn) => {
@@ -96,7 +100,7 @@ export default {
     </div>
   `}
 </div>
-  `).style`
+  `).style(`
   table {
     border-collapse: collapse;
     border-top: 1px solid #cbcbcb;
@@ -133,13 +137,13 @@ export default {
   margin-right: 0px;
 }
 .mangaChapters .from-mangakakalot {
-  background-image: url('/assets/mangakakalot.png');
+  background-image: url('${mangakakalot}');
 }
 .mangaChapters .from-fanfox {
-  background-image: url('/assets/fanfox.png');
+  background-image: url('${fanfox}');
 }
 .mangaChapters .from-manganelo {
-  background-image: url('/assets/manganelo.png');
+  background-image: url('${manganelo}');
 }
 @media only screen and (max-width: 1024px) {
   .mangaView table {
@@ -170,5 +174,5 @@ mt-a {
   display: inline-block;
   margin-bottom: 5px;
 }
-  `.define(MtA)
+  `).define(MtA)
 }

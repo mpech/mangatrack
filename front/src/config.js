@@ -17,6 +17,5 @@ export const oauth = {
 }
 
 export const ops = {
-  bug_tracker: 'https://github.com/mpech/mangatrack/issues',
-  url_404: '/img/404.jpg'
+  bug_tracker: 'https://github.com/mpech/mangatrack/issues'
 }
