@@ -71,9 +71,9 @@ export default {
     </mt-a>
   `}
   ${chapters.length > 0 && html`
-    <table class="table" onmouseout="${rollback}" onmouseover="${paintSelection}" onclick="${select}">
+    <table onmouseout="${rollback}" onmouseover="${paintSelection}" onclick="${select}">
       <thead>
-        <th>Chapter</th>
+        <th title="chapter">Ch.</th>
         <th>from</th>
         <th>when</th>
         <th>🚚</th>
@@ -117,62 +117,62 @@ export default {
   td:last-child, th:last-child {
     border-right: 1px solid #cbcbcb;
   }
-.mangaChapters > a {
-  display:block;
-  margin-bottom: 1em;
-}
-
-.mangaChapters .from {
-  width: 1.5em;
-  height: 1.5em;
-  display: inline-block;
-  margin-left: 0.5em;
-  margin-right: 0.5em;
-  background-size: cover;
-}
-.mangaChapters a.from:first-child {
-  margin-left: 0px;
-}
-.mangaChapters a.from:last-child {
-  margin-right: 0px;
-}
-.mangaChapters .from-mangakakalot {
-  background-image: url('${mangakakalot}');
-}
-.mangaChapters .from-fanfox {
-  background-image: url('${fanfox}');
-}
-.mangaChapters .from-manganelo {
-  background-image: url('${manganelo}');
-}
-@media only screen and (max-width: 1024px) {
-  .mangaView table {
-    width: 100%
+  a {
+    display:block;
+    margin-bottom: 1em;
   }
-}
-.mangaChapters td:last-child {
-  cursor: pointer;
-}
-.mangaChapters .truckKun svg {
-  color: white;
-  border-radius: 1em 1em;
-  background-color: #209cee;
-  padding: 0.3em 0.3em;
-}
 
-.mangaChapters .isekaied {
-    background: #CCCCCC;
-}
-.mangaChapters .read {
-    background: #CCCCCC;
-}
-.mangaChapters td:last-child:hover {
+  .from {
+    width: 1.5em;
+    height: 1.5em;
+    display: inline-block;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+    background-size: cover;
+  }
+  a.from:first-child {
+    margin-left: 0px;
+  }
+  a.from:last-child {
+    margin-right: 0px;
+  }
+  .from-mangakakalot {
+    background-image: url('${mangakakalot}');
+  }
+  .from-fanfox {
+    background-image: url('${fanfox}');
+  }
+  .from-manganelo {
+    background-image: url('${manganelo}');
+  }
+  @media only screen and (max-width: 800px) {
+    table {
+      width: 100%;
+    }
+  }
+  td:last-child {
     cursor: pointer;
-    background: #CCCCCC;
-}
-mt-a {
-  display: inline-block;
-  margin-bottom: 5px;
-}
+  }
+  .truckKun svg {
+    color: white;
+    border-radius: 1em 1em;
+    background-color: #209cee;
+    padding: 0.3em 0.3em;
+  }
+
+  .isekaied {
+      background: #CCCCCC;
+  }
+  .read {
+      background: #CCCCCC;
+  }
+  td:last-child:hover {
+      cursor: pointer;
+      background: #CCCCCC;
+  }
+  mt-a {
+    display: inline-block;
+    margin-bottom: 5px;
+  }
   `).define(MtA)
 }

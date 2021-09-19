@@ -12,6 +12,7 @@
   "devDependencies": {
     "eslint": "^7.32.0",
     "mocha": "^8.4.0",
+    "rollup-plugin-visualizer": "^5.5.2",
     "standard": "^16.0.3",
     "vite": "^2.5.8"
   },
@@ -25,7 +26,8 @@
   "scripts": {
     "standard": "npx standard --fix",
     "start": "npx vite",
-    "build": "NODE_ENV=production npx vite build"
+    "build": "NODE_ENV=production npx vite build --emptyOutDir",
+    "build-stats": "NODE_ENV=production STATS=1 npm run build"
   },
   "private": true,
   "license": "WTF"
