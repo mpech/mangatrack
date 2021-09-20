@@ -2,9 +2,23 @@ import { html } from 'hybrids'
 import MtChapters, { UNREAD } from '@/components/chapters'
 import MtLayout from '@/components/layout'
 import MtH1 from '@/components/h1'
-import { follow, fetchMyMangas, refreshManga } from '@/services/manga'
+import MtFollow from '@/components/follow'
+import { follow, unfollow, fetchMyMangas, refreshManga } from '@/services/manga'
 import { fetchMangaDetail } from '@/api'
 import safe from '@/utils/safe'
+
+const handleUnfollow = (host, e) => {
+  const { id, lastChap: { num }, name } = e.composedPath()[0].followData
+  return unfollow({
+    host,
+    id,
+    num,
+    name,
+    onSuccess: () => {
+      host.myMangas = host.myMangas.filter(m => m.mangaId !== id)
+    }
+  })
+}
 
 const trackchapter = (host, e) => {
   const onSuccess = (myManga) => {
@@ -49,8 +63,9 @@ export default {
   myMangas: [],
   lastRead: ({ myMangas, manga }) => {
     const myManga = myMangas.filter(m => m.state !== 'deleted').find(my => my.mangaId === manga.id)
-    return myManga?.num || UNREAD
+    return myManga?.num !== undefined ? myManga?.num : UNREAD
   },
+  followed: ({ lastRead }) => lastRead !== UNREAD,
   load: {
     connect (host) {
       const nameId = window.location.pathname.match(/mangas\/(.*)/)[1]
@@ -67,14 +82,24 @@ export default {
     txt.innerHTML = str
     return txt.value
   },
-  render: ({ manga, chapters, lastRead, description }) => (html`
+  render: ({ manga, followed, chapters, lastRead, description }) => (html`
 <mt-layout with-to-top>
   ${manga.name && html`<div class="mangaView">
     <mt-h1>${manga.name}</mt-h1>
-    <div class="header">
-      <figure>
-        <img src="${manga.thumbUrl}" onerror="${refreshPicture}"/>
-      </figure>
+    <div class="${['header', followed && 'followed']}">
+      <div class="card">
+        <figure>
+          <img src="${manga.thumbUrl}" onerror="${refreshPicture}"/>
+        </figure>
+        ${followed && html`
+          <mt-follow
+            followData="${manga}"
+            followed="${followed}"
+            name="${manga.name}"
+            onunfollow=${handleUnfollow}
+          ></mt-follow>
+        `}
+      </div>
       <div class="description">
         <blockquote>
           ${description}
@@ -100,17 +125,26 @@ export default {
   justify-content: center;
   gap: 20px;
 }
+.card {
+  border-radius: 20px;
+  overflow: hidden;
+  flex-shrink: 0;
+  flex-grow: 0;
+  text-align: center;
+  box-shadow: 0 2px 4px rgb(0 0 0 / 25%);
+}
+.followed .card {
+  box-shadow: 0 2px 4px rgba(255, 0, 0, 0.45);
+}
+mt-follow {
+  display: inline-block;
+  margin: 5px;
+}
 figure {
   width: 230px;
   height: 300px;
-  flex-shrink: 0;
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 2px 4px rgb(0 0 0 / 25%);
-
   padding:0;
   margin:0;
-  flex-grow: 0;
 }
 .description {
   flex-basis: 400px;
@@ -130,5 +164,5 @@ blockquote {
 blockquote footer:before {
   content: "— ";
 }
-  `.define(MtChapters, MtLayout, MtH1)
+  `.define(MtChapters, MtLayout, MtH1, MtFollow)
 }

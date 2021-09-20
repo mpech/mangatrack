@@ -18,15 +18,13 @@ export default {
   lastChap: ({ item }) => item.lastChap || {},
   link: ({ item: { nameId } }) => 'mangas/' + nameId,
   lastHumanDate: ({ lastChap: { at } }) => humanDate(at),
-  footerClasses: ({ item: { followed } }) => ['footer', followed ? 'followed' : ''].filter(Boolean),
   render: ({
     item,
     lastChap,
     lastHumanDate,
-    link,
-    footerClasses
+    link
   }) => html`
-<div class="card">
+<div class="${item.followed ? 'followed' : undefined}">
   <mt-a to="${link}">
     <figure>
       <img src="${item.thumbUrl}"/>
@@ -42,74 +40,58 @@ export default {
         <time updatedAt="${lastChap.at}">${lastHumanDate}</time>
       </div>
     </div>
-    <hr/>
-    <div class="${footerClasses}">
-      <mt-follow followData="${item}" followed="${item.followed}" name="${item.name}"></mt-follow>
-      <span class="stats">${item.followedNum}/${lastChap.num}</span>
-    </div>
   </div>
 </div>
   `.style`
-.card {
-    text-align:left;
-    border-radius: 20px;
-    overflow: hidden;
-    box-shadow: 0 2px 4px rgb(0 0 0 / 25%);
+:host > div {
+  text-align:left;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
 }
-.card:hover {
-    box-shadow: 0 3px 8px rgb(0 0 0 / 25%);
+:host > div:hover {
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
 }
-.card .content {
+:host > div.followed {
+  box-shadow: 0 2px 4px rgba(255, 0, 0, 0.45);
+}
+:host > div.followed:hover {
+  box-shadow: 0 3px 8px rgba(255, 0, 0, 0.45);
+}
+.content {
   padding: 10px;
 }
-.card img {
-    height:100%;
-    width:100%;
-    object-fit: cover;
+img {
+  height:100%;
+  width:100%;
+  object-fit: cover;
 }
-.card time {
+time {
   color: grey;
   font-style: italic;
 }
-.card h4 {
-    color:#1976d2;/*for ellipsis color*/
-    margin-top:0.2em;
-    margin-bottom:0.2em;
-    text-align: center;
+h4 {
+  color:#1976d2;/*for ellipsis color*/
+  margin-top:0.2em;
+  margin-bottom:0.2em;
+  text-align: center;
 }
-.card h4>span {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display:block;
+h4 > span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display:block;
 }
-.card figure {
-    padding:0;
-    margin:0;
-    width:100%;
-    height: 250px;
+figure {
+  padding:0;
+  margin:0;
+  width:100%;
+  height: 250px;
 }
-.card .chapter {
-    display: flex;
-    justify-content: space-between;
-}
-.card hr {
-  border-top: 1px solid gainsboro;
-}
-.footer {
+.chapter {
   display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.footer.followed {
   justify-content: space-between;
 }
-.footer .stats {
-  display: none;
-  font-size: 0.8em;
-}
-.footer.followed .stats {
-  display: block;
-}
+
   `.define(MtFollow, MtA)
 }

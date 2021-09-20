@@ -4,30 +4,7 @@ import MtFilterForm from '@/components/filterForm'
 import MtGrid from '@/components/grid'
 import { fetchMangas, get } from '@/api'
 import safe from '@/utils/safe'
-import { follow, unfollow, fetchMyMangas } from '@/services/manga'
-const handleFollow = (host, e) => {
-  const { id, lastChap: { num } } = e.composedPath()[0].followData
-  return follow({
-    host,
-    id,
-    num,
-    onSuccess: res => {
-      host.myMangas = host.myMangas.concat(res)
-    }
-  })
-}
-const handleUnfollow = (host, e) => {
-  const { id, lastChap: { num }, name } = e.composedPath()[0].followData
-  return unfollow({
-    host,
-    id,
-    num,
-    name,
-    onSuccess: () => {
-      host.myMangas = host.myMangas.filter(m => m.mangaId !== id)
-    }
-  })
-}
+import { fetchMyMangas } from '@/services/manga'
 const setMangas = host => res => {
   host.mangas = res.items
   host.nextLink = res.links.next
@@ -68,8 +45,6 @@ export default {
       <mt-grid
         mangas="${mangas}"
         myMangas="${myMangas}"
-        onfollow="${handleFollow}"
-        onunfollow="${handleUnfollow}"
       ></mt-grid>
       <button onclick="${handleMore}">Moarrr</button>
     </mt-layout>
