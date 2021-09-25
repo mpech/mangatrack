@@ -18,13 +18,15 @@ export default {
   lastChap: ({ item }) => item.lastChap || {},
   link: ({ item: { nameId } }) => 'mangas/' + nameId,
   lastHumanDate: ({ lastChap: { at } }) => humanDate(at),
+  upToDate: ({ lastChap: { num }, item: { followedNum } }) => typeof(followedNum) !== 'undefined' && followedNum === num,
   render: ({
     item,
     lastChap,
     lastHumanDate,
+    upToDate,
     link
   }) => html`
-<div class="${item.followed ? 'followed' : undefined}">
+<div class="${[item.followed ? 'followed' : undefined, upToDate ? 'up-to-date': undefined]}">
   <mt-a to="${link}">
     <figure>
       <img src="${item.thumbUrl}"/>
@@ -57,6 +59,12 @@ export default {
 }
 :host > div.followed:hover {
   box-shadow: 0 3px 8px rgba(255, 0, 0, 0.45);
+}
+:host > div.followed.up-to-date {
+  box-shadow: 0 2px 4px rgba(0, 255, 0, 0.45);
+}
+:host > div.followed.up-to-date:hover {
+  box-shadow: 0 3px 8px rgba(0, 255, 0, 0.45);
 }
 .content {
   padding: 10px;
