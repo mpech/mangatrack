@@ -1,10 +1,5 @@
 'use strict'
-const mongoose = require('mongoose')
 const path = require('path')
-mongoose.set('useNewUrlParser', true)
-mongoose.set('useFindAndModify', false)
-mongoose.set('useCreateIndex', true)
-mongoose.set('useUnifiedTopology', true)
 exports.port = 4020
 exports.phase = 'usr'
 exports.dbUrl = 'mongodb://localhost:27017/mangatrack'
