@@ -57,3 +57,4 @@ export const refreshToken = ({ refreshToken }) => {
     { method: 'POST', headers, body: params.toString() }
   ).then(throwOnKo)
 }
+export const fetchMe = () => get('/me')

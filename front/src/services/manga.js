@@ -1,27 +1,6 @@
-import { trackManga, untrackManga, fetchMyMangas as apiFetchMyMangas, refreshManga as apiRefreshManga } from '@/api'
+import { trackManga, untrackManga, fetchMyMangas as apiFetchMyMangas, refreshManga as apiRefreshManga, fetchMangaDetail } from '@/api'
 import { notify, notifyError } from '@/components/notification'
-import safe from '@/utils/safe'
-import { refreshToken, logout } from '@/services/oauth'
-
-const retry = fn => async (...args) => {
-  if (!window.localStorage.getItem('accessToken') && !window.localStorage.getItem('refreshToken')) {
-    throw new Error('no token')
-  }
-  return await fn(...args).catch(async e => {
-    if (e.error === 'invalid_token') {
-      await refreshToken()
-      return fn(...args).catch(async e => {
-        if (e.error === 'invalid_token') {
-          await logout()
-          return e
-        }
-      })
-    } else {
-      return e
-    }
-  })
-}
-const safeRetry = fn => safe(retry(fn))
+import safe, { safeRetry } from '@/utils/safe'
 
 const safeTrackManga = safeRetry(trackManga)
 export const follow = async ({ host, onSuccess, id, num }) => {
@@ -44,4 +23,15 @@ export const unfollow = async ({ host, onSuccess, id, num, name }) => {
 }
 
 export const fetchMyMangas = safeRetry(apiFetchMyMangas)
-export const refreshManga = safeRetry(apiRefreshManga)
+export const refreshManga = safeRetry(async ({ host, id, refreshThumb, onSuccess }) => {
+  const batch = await apiRefreshManga({ id, refreshThumb })
+  if (batch.status === 'OK') {
+    safe(fetchMangaDetail)({ nameId: host.manga.nameId }).then(res => {
+      if (res.error || res instanceof Error) {
+        return notifyError(host, `failed to update ${host.manga.name} (${res.message})`)
+      }
+      notify(host, `${host.manga.name} updated`)
+      onSuccess(res)
+    })
+  }
+})

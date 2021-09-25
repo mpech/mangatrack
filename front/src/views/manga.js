@@ -3,10 +3,11 @@ import MtChapters, { UNREAD } from '@/components/chapters'
 import MtLayout from '@/components/layout'
 import MtH1 from '@/components/h1'
 import MtFollow from '@/components/follow'
+import MtRefresh from '@/components/refresh'
 import MtCard from '@/components/card'
 import { follow, unfollow, fetchMyMangas, refreshManga } from '@/services/manga'
-import { fetchMangaDetail } from '@/api'
-import safe from '@/utils/safe'
+import { fetchMangaDetail, fetchMe } from '@/api'
+import safe, { safeRetry } from '@/utils/safe'
 
 const handleUnfollow = (host, e) => {
   const { id, lastChap: { num }, name } = e.composedPath()[0].followData
@@ -45,14 +46,10 @@ const setMangaDetail = host => ({ chapters, ...manga }) => {
   })
   host.chapters = Object.values(numToMetaChapter).sort((a, b) => b.num - a.num)
 }
-
-const refreshPicture = safe(async (host) => {
-  if (!host.manga.thumbUrl) return
-  const batch = await refreshManga({ id: host.manga.id, refreshThumb: true })
-  if (batch.status === 'OK') {
-    safe(fetchMangaDetail)({ nameId: host.manga.nameId }).then(setMangaDetail(host))
-  }
-})
+const refreshChapters = host => refreshManga({ id: host.manga.id, host, onSuccess: setMangaDetail(host) })
+const refreshPicture = host => {
+  host.manga.thumbUrl && refreshManga({ id: host.manga.id, refreshThumb: true, host, onSuccess: setMangaDetail(host) })
+}
 
 export default {
   tag: 'MtManga',
@@ -61,6 +58,7 @@ export default {
     get: (host, last) => last || { description: {} },
     set: (host, v) => v
   },
+  user: {},
   myMangas: [],
   myManga: ({ myMangas, manga }) => myMangas.find(({ state, mangaId }) => state !== 'deleted' && mangaId === manga.id),
   lastRead: ({ myManga }) => myManga?.num !== undefined ? myManga?.num : UNREAD,
@@ -72,6 +70,12 @@ export default {
         res.items && (host.myMangas = res.items)
       })
       safe(fetchMangaDetail)({ nameId }).then(setMangaDetail(host))
+
+      safeRetry(fetchMe)().then(res => {
+        if (res.displayName) {
+          host.user = res
+        }
+      })
     }
   },
   description ({ manga }) {
@@ -81,7 +85,7 @@ export default {
     txt.innerHTML = str
     return txt.value
   },
-  render: ({ manga, myManga, followed, chapters, lastRead, description }) => (html`
+  render: ({ manga, myManga, followed, chapters, lastRead, description, user }) => (html`
 <mt-layout with-to-top>
   ${manga.name && html`<div class="mangaView">
     <mt-h1>${manga.name}</mt-h1>
@@ -89,13 +93,16 @@ export default {
       <mt-card item="${manga}" followedNum="${myManga?.num}" onimageerror="${refreshPicture}">
         ${followed
           ? html`
-            <mt-follow
-              slot="content"
-              followData="${manga}"
-              followed="${followed}"
-              name="${manga.name}"
-              onunfollow="${handleUnfollow}"
-            ></mt-follow>`
+            <div slot="content">
+              <mt-follow
+                followData="${manga}"
+                followed="${followed}"
+                name="${manga.name}"
+                onunfollow="${handleUnfollow}"
+              ></mt-follow>
+              ${user?.admin && html`<mt-refresh onclick="${refreshChapters}"></mt-refresh>`}
+            </div>
+          `
           : html`<span slot="content"></span>`
         }
       </mt-card>
@@ -132,10 +139,11 @@ figure {
   width: 230px;
   height: 300px;
 }
-mt-follow {
+[slot="content"] {
   display: block;
   margin: auto;
   padding: 5px;
+  text-align: center;
 }
 
 .description {
@@ -151,5 +159,5 @@ blockquote {
 blockquote footer:before {
   content: "— ";
 }
-  `.define(MtChapters, MtLayout, MtH1, MtFollow, MtCard)
+  `.define(MtChapters, MtLayout, MtH1, MtFollow, MtCard, MtRefresh)
 }
