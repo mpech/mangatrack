@@ -1,6 +1,5 @@
-const validate = require('express-validation')
+const { validate, Joi } = require('express-validation')
 const mongoose = require('mongoose')
-const Joi = require('joi')
 const MangaModel = require('../models/mangaModel')
 const ChapterModel = require('../models/chapterModel')
 const config = require('../config')
@@ -11,17 +10,17 @@ const rules = require('../lib/rules')
 function load (app) {
   this.formatter = new Formatter()
   app.get('/mangas', validate({
-    query: {
+    query: Joi.object({
       q: Joi.string().min(3),
       minChapters: Joi.number().min(0),
       id: Joi.alternatives().try(Joi.array().items(rules.objId), rules.objId),
       type: Joi.string().valid(...MangaModel.schema.tree.type.enum),
       offset: Joi.number().min(0),
       limit: Joi.number().min(1).max(config.pagination_limit)
-    }
+    })
   }), prom(async function (req, res) {
     const offset = parseInt(req.query.offset || 0)
-    const limit = req.query.limit || config.pagination_limit
+    const limit = parseInt(req.query.limit || config.pagination_limit)
     const crit = {}
     if (req.query.id) {
       let ids = []
@@ -51,9 +50,9 @@ function load (app) {
   }))
 
   app.get('/mangas/:nameId', validate({
-    params: {
+    params: Joi.object({
       nameId: rules.nameId
-    }
+    })
   }), prom(async function (req, res) {
     const pred = req.params.nameId.match(/^[0-9a-f]{24}$/)
       ? ({ _id: mongoose.Types.ObjectId(req.params.nameId) })

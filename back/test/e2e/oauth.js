@@ -73,7 +73,6 @@ describe('e2e/oauth', function () {
         'content-type': 'application/x-www-form-urlencoded'
       }).send({
         grant_type: 'refresh_token',
-        client_id: 'mangatrack',
         refresh_token: rt.token
       })
       .expect(200)

@@ -47,7 +47,6 @@ export const fetchMangaDetail = ({ nameId }) => get('/mangas/' + nameId)
 export const refreshToken = ({ refreshToken }) => {
   const params = new URLSearchParams()
   params.append('grant_type', 'refresh_token')
-  params.append('client_id', 'mangatrack')
   params.append('refresh_token', refreshToken)
   const headers = {
     'content-type': 'application/x-www-form-urlencoded'

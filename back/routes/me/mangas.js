@@ -1,6 +1,5 @@
-const validate = require('express-validation')
+const { validate, Joi } = require('express-validation')
 const mongoose = require('mongoose')
-const Joi = require('joi')
 const MangaModel = require('../../models/mangaModel')
 const ChapterModel = require('../../models/chapterModel')
 const prom = require('../../lib/prom')
@@ -11,12 +10,12 @@ const formatter = require('../../formatters/me/mangaFormatter')
 
 function load (app) {
   app.put('/me/mangas/:mangaId', helper.authenticate, validate({
-    params: {
+    params: Joi.object({
       mangaId: rules.objId
-    },
-    body: {
+    }),
+    body: Joi.object({
       num: rules.chapterNum
-    }
+    })
   }), prom(async function (req, res) {
     const mangaId = req.params.mangaId
     const num = req.body.num
@@ -28,22 +27,22 @@ function load (app) {
   }))
 
   app.delete('/me/mangas/:mangaId', helper.authenticate, validate({
-    params: {
+    params: Joi.object({
       mangaId: rules.objId
-    }
+    })
   }), prom(function (req, res) {
     const mangaId = req.params.mangaId
     return req.user.removeManga({ mangaId, updatedAt: Date.now() }).then(formatter.format).catch(e => console.log('e : ', e))
   }))
 
   app.patch('/me/mangas', helper.authenticate, validate({
-    body: {
+    body: Joi.object({
       items: Joi.array().min(1).items(Joi.object({
         mangaId: rules.objId,
         num: rules.chapterNum,
         updatedAt: rules.timestamp
       })).required()
-    }
+    })
   }), prom(async function (req, res) {
     const items = req.body.items
     { // check manga existence
@@ -97,9 +96,9 @@ function load (app) {
   }))
 
   app.get('/me/mangas', validate({
-    query: {
+    query: Joi.object({
       populated: Joi.boolean()
-    }
+    })
   }), helper.authenticate, prom(async (req, res) => {
     let map = req.user.mangas
     if (req.query.populated) {

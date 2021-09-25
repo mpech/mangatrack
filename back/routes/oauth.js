@@ -1,6 +1,5 @@
 const config = require('../config')
-const Joi = require('joi')
-const validate = require('express-validation')
+const { validate, Joi } = require('express-validation')
 const UserModel = require('../models/userModel')
 const OauthService = require('../services/oauth')
 const GoogleStrategy = require('passport-google-oauth20').Strategy
@@ -81,10 +80,10 @@ function load (app) {
   })
 
   app.post('/oauth/token', validate({
-    body: {
+    body: Joi.object({
       grant_type: Joi.string().valid('refresh_token').required(),
       refresh_token: Joi.string().max(100).required()
-    }
+    })
   }), prom(async req => {
     const { refresh_token: token } = req.body
     const rt = await OauthService.getRefreshToken(token)

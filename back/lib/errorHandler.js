@@ -1,8 +1,14 @@
 const config = require('../config')
+const { ValidationError } = require('express-validation')
 const express = function (err, req, res, next) {
+  if (err instanceof ValidationError) {
+    return res.status(err.statusCode).json(err)
+  }
+
   if (res.headersSent) {
     return next(err)
   }
+
   if (err.status) {
     try {
       return res.status(err.status).json(err)

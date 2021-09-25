@@ -5,21 +5,20 @@ const helper = require('../../lib/helper')
 const batchProcess = require('../../process/batchProcess')
 const config = require('../../config')
 const rules = require('../../lib/rules')
-const validate = require('express-validation')
-const Joi = require('joi')
+const { validate, Joi } = require('express-validation')
 const mongoose = require('mongoose')
 
 function load (app) {
   module.exports.formatter = new Formatter()
   app.get('/admin/batches', helper.authenticate, helper.ensureAdmin, validate({
-    query: {
+    query: Joi.object({
       id: Joi.alternatives().try(Joi.array().items(rules.objId), rules.objId),
       offset: Joi.number().min(0),
       limit: Joi.number().min(1).max(config.pagination_limit)
-    }
+    })
   }), prom(async function (req, res) {
     const offset = parseInt(req.query.offset || 0)
-    const limit = req.query.limit || config.pagination_limit
+    const limit = parseInt(req.query.limit || config.pagination_limit)
     const crit = {}
     if (req.query.id) {
       let ids = []
