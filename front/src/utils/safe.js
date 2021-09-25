@@ -1,6 +1,5 @@
 import { refreshToken, logout } from '@/services/oauth'
 
-
 const safe = (fn, opts = {}) => async (...args) => {
   try {
     return fn(...args).catch(e => {
