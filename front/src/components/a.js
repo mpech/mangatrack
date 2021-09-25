@@ -1,4 +1,4 @@
-import { html } from 'hybrids'
+import { html, dispatch } from 'hybrids'
 
 export default {
   tag: 'MtA',
@@ -28,7 +28,10 @@ export const handleScroll = (host, e) => {
   if (!hasAnchor) return
   e.preventDefault()
   const el = host.shadowRoot.getElementById(a.to.replace('#', ''))
-  el && el.scrollIntoView(false)
+  if (el) {
+    dispatch(el, 'scroll-into-view', { composed: true, bubbles: true })
+    el.scrollIntoView(false)
+  }
   e.preventDefault()
   return false
 }

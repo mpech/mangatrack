@@ -1,10 +1,12 @@
 import { html } from 'hybrids'
+const TRIGGER_TO_TOP_OFFSET = 100
 const handleClick = (host, e) => {
   window.scrollTo({
     top: 0
   })
   e.preventDefault()
 }
+
 export default {
   tag: 'MtToTop',
   scrolled: {
@@ -31,11 +33,19 @@ export default {
           }
         })
       }
+
+      const checkScroll = (e) => {
+        const top = e.composedPath()[0].getBoundingClientRect().top
+        host.scrolled = top > window.screen.height + TRIGGER_TO_TOP_OFFSET
+      }
       const observer = new window.IntersectionObserver(callback, options)
       observer.observe(inPx)
       observer.observe(outPx)
+
+      window.addEventListener('scroll-into-view', checkScroll)
       return () => {
         observer.disconnect()
+        window.removeEventListener('scroll-into-view', checkScroll)
       }
     }
   },
@@ -85,7 +95,7 @@ a:hover {
 }
 #outviewport {
   position: relative;
-  top: calc(100vh + 100px);
+  top: calc(100vh + ${TRIGGER_TO_TOP_OFFSET}px);
 }
   `)
 }
