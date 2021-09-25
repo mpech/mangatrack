@@ -1,4 +1,4 @@
-import { html } from 'hybrids'
+import { html, dispatch } from 'hybrids'
 import MtFollow from '@/components/follow'
 import MtA from '@/components/a'
 import relativeTime from 'dayjs/plugin/relativeTime'
@@ -12,28 +12,32 @@ const humanDate = at => {
   sinceDate = sinceDate.replace('seconds', 'sec')
   return sinceDate
 }
+
+const handleError = (host, e) => dispatch(e.target, 'imageerror', { composed: true, bubbles: true })
 export default {
   tag: 'MtCard',
   item: {},
+  followedNum: {},
   lastChap: ({ item }) => item.lastChap || {},
   link: ({ item: { nameId } }) => 'mangas/' + nameId,
   lastHumanDate: ({ lastChap: { at } }) => humanDate(at),
-  upToDate: ({ lastChap: { num }, item: { followedNum } }) => typeof(followedNum) !== 'undefined' && followedNum === num,
+  upToDate: ({ followedNum, lastChap: { num } }) => typeof (followedNum) !== 'undefined' && followedNum === num,
   render: ({
     item,
     lastChap,
     lastHumanDate,
     upToDate,
-    link
+    link,
+    followedNum
   }) => html`
-<div class="${[item.followed ? 'followed' : undefined, upToDate ? 'up-to-date': undefined]}">
+<div class="${[typeof (followedNum) !== 'undefined' ? 'followed' : undefined, upToDate ? 'up-to-date' : undefined]}">
   <mt-a to="${link}">
     <figure>
-      <img src="${item.thumbUrl}"/>
+      <img src="${item.thumbUrl}" onerror="${handleError}"/>
     </figure>
   </mt-a>
-  <div class="content">
-    <div>
+  <slot name="content">
+    <div class="content">
       <h4 title="${item.name}"><span><mt-a to="${link}">${item.name}</mt-a></span></h4>
       <div class="chapter">
         <span>
@@ -42,7 +46,7 @@ export default {
         <time updatedAt="${lastChap.at}">${lastHumanDate}</time>
       </div>
     </div>
-  </div>
+  </slot>
 </div>
   `.style`
 :host > div {

@@ -22,11 +22,14 @@ export default {
       <mt-a href="#">♥</mt-a>
     </span>
   `.style(`
-      mt-a:hover {
-        --a-hover-color: pink;
-      }
-      .followed mt-a {
-        --a-color: red;
-      }
+:host {
+  text-align: center;
+}
+mt-a:hover {
+  --a-hover-color: pink;
+}
+.followed mt-a {
+  --a-color: red;
+}
   `).define(MtA)
 }

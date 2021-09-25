@@ -7,14 +7,14 @@ export default {
   myMangas: [],
   followedMangas: ({ mangas, myMangas }) => {
     const bag = new Map(myMangas.filter(m => m.state !== 'deleted').map(m => [m.mangaId, m]))
-    return mangas.map(m => {
-      const myManga = bag.get(m.id)
-      return Object.assign({ followed: !!myManga, followedNum: myManga && myManga.num }, m)
+    return mangas.map(manga => {
+      const myManga = bag.get(manga.id)
+      return ({ manga, followedNum: myManga && myManga.num })
     })
   },
   render: ({ followedMangas }) => (html`
   <div>
-    ${followedMangas.map(manga => (html`<mt-card item="${manga}"></mt-card>`))}
+    ${followedMangas.map(({ manga, followedNum }) => (html`<mt-card item="${manga}" followedNum="${followedNum}"></mt-card>`.key(manga.id)))}
   </div>
 `).style`
   :host > div {
