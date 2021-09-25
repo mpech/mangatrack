@@ -35,16 +35,28 @@ describe('lib/bulker', function () {
   }))
 
   it('throttles', Mocker.mockIt(mokr => {
-    const ref = Date.now()
+    const init = Date.now()
+    let base = init
     const arr = []
+    const delays = []
     return bulker.throttle([1, 2, 3, 4, 5, 6], 2, 7, x => {
+      if (x === 1 || x === 3 || x === 5) {
+        delays.push(Date.now() - base)
+        base = Date.now()
+      }
       arr.push(x)
       return x
     }).then(_ => {
-      assert.strictEqual(arr.join(','), '1,2,3,4,5,6')
       const now = Date.now()
-      assert(now - ref >= 14, `${now}-${ref}`)
-      assert(now - ref <= 18, `${now}-${ref}`)
+      assert.strictEqual(arr.join(','), '1,2,3,4,5,6')
+      assert.strictEqual(delays.length, 3)
+      const [a, b, c] = delays
+      assert(a < 4, `does not wait for first bulk ${a}`)
+      assert(b >= 7, `must wait at least 7s between bulks b(${b})`)
+      assert(b <= 11, 'more than 4ms error for setTimeout??')
+      assert(c >= 7, `must wait at least 7s between bulks c(${c})`)
+      assert(c <= 11, 'more than 4ms error for setTimeout??')
+      assert(now - init < a + b + c + 4, 'does not wait after last bulk')
     })
   }))
 })

@@ -22,7 +22,8 @@ bulker.debounce = function (arr, delay, fn) {
   return bulker.throttle(arr, 1, delay, fn)
 }
 
-bulker.throttle = function (arr, n, delay, fn) {
+bulker.throttle = function (arr, n, iDelay, fn) {
+  const delay = iDelay + 2 // because round stuff
   let base = Date.now()
   return bulker.bulk(arr, n, fn, {
     onBulkEnd: function (finished) {
