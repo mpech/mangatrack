@@ -17,10 +17,10 @@ export default {
   classes: ({ activeClass, loggedClass }) => [activeClass, loggedClass].filter(Boolean),
   render: ({ classes, withToTop }) => (html`
     <div class="${classes}" onclick="${onclick}">
-      <a data-name="home" href="/">MangaTrack</a>
-      <a data-name="me" href="/me" title="my space">Me</a>
-      <a data-name="login" href="/login" title="Mainly sync your tracked stuff">Login</a>
-      <a data-name="logout" href="/logout">Logout</a>
+      <mt-a data-name="home" to="/">MangaTrack</mt-a>
+      <mt-a data-name="me" to="/me" title="my space">Me</mt-a>
+      <mt-a data-name="login" to="/login" title="Mainly sync your tracked stuff">Login</mt-a>
+      <mt-a data-name="logout" to="/logout">Logout</mt-a>
     </div>
     <div>
       <slot/>
@@ -39,15 +39,12 @@ export default {
     padding: 8px;
   }
 }
-a {
+mt-a {
   margin-right: 32px;
   text-transform: uppercase;
   color: grey;
-  text-decoration: none;
   font-family: sans-serif;
-}
-a:hover {
-  text-decoration: underline;
+  --a-color: grey;
 }
 .logged [data-name="login"], .unlogged [data-name="logout"], .unlogged [data-name="me"] {
   display: none;

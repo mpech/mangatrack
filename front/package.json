@@ -4,7 +4,6 @@
   "description": "track fav mangas",
   "author": "mpech",
   "dependencies": {
-    "@appnest/web-router": "^1.4.2",
     "dayjs": "^1.10.7",
     "debounce": "^1.2.1",
     "hybrids": "^6.1.0"

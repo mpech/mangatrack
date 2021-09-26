@@ -3,8 +3,14 @@ import { html, dispatch } from 'hybrids'
 export default {
   tag: 'MtA',
   to: '',
-  render: ({ to }) => (html`
-<a href="${to}">
+  toSharped: {
+    get ({ to }) {
+      if (/^(\.|http|\/#)/.test(to)) { return to }
+      return '/#' + (to.startsWith('/') ? '' : '/') + to
+    }
+  },
+  render: ({ toSharped }) => (html`
+<a href="${toSharped}">
   <slot></slot>
 </a>
   `).style(`

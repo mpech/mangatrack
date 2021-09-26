@@ -1,5 +1,4 @@
-import '@appnest/web-router'
-import { define } from 'hybrids'
+import { html, define } from 'hybrids'
 import MtViewsHome from '@/views/home'
 import MtViewsMe from '@/views/me'
 import MtViewsManga from '@/views/manga'
@@ -16,24 +15,35 @@ define(
 )
 
 const routes = [
-  ['/me', document.createElement('mt-me')],
-  ['/mangas/:mangaId', document.createElement('mt-manga')],
-  ['/login', document.createElement('mt-login')],
-  ['/logout', document.createElement('mt-logout')],
-  ['/[^\\w]', document.createElement('mt-home')],
-  ['**', document.createElement('mt-not-found')]
-].map(([path, component]) => ({ path, component, fuzzy: false }))
+  [/^\/(?:#\/)?me/, 'mt-me'],
+  [/^\/(?:#\/)?mangas\/[^/]+/, 'mt-manga'],
+  [/^\/(?:#\/)?login/, 'mt-login'],
+  [/^\/(?:#\/)?logout/, 'mt-logout'],
+  [/^\/(?:#\/)?$/, 'mt-home'],
+  [/.*/, 'mt-not-found']
+]
 
 const Router = {
   tag: 'mt-router',
   routes,
-  render: () => (host, target) => {
-    // https://github.com/hybridsjs/hybrids/issues/78
-    target.innerHTML = ''
-    const router = document.createElement('router-slot')
-    target.appendChild(router)
-    router.add(host.routes)
-  }
+  path: {
+    connect (host) {
+      const fn = () => {
+        host.path = window.location.href.replace(window.location.origin, '')
+      }
+      fn()
+      window.addEventListener('hashchange', fn)
+      return () => {
+        window.removeEventListener('hashchange', fn)
+      }
+    }
+  },
+  tagName: {
+    get: ({ path, routes }) => {
+      return routes.find(([reg, tagName]) => reg.test(path))[1]
+    }
+  },
+  render: ({ tagName }) => html`<div innerHTML="${`<${tagName}></${tagName}>`}"></div>`
 }
 
 export default Router

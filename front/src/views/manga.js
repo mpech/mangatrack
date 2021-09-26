@@ -65,7 +65,7 @@ export default {
   followed: ({ lastRead }) => lastRead !== UNREAD,
   load: {
     connect (host) {
-      const nameId = window.location.pathname.match(/mangas\/(.*)/)[1]
+      const nameId = window.location.href.match(/mangas\/(.*)/)[1]
       fetchMyMangas().then(res => {
         res.items && (host.myMangas = res.items)
       })
