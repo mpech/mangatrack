@@ -140,10 +140,11 @@ figure {
   height: 300px;
 }
 [slot="content"] {
-  display: block;
-  margin: auto;
-  padding: 5px;
   text-align: center;
+}
+mt-follow {
+  display: inline-block;
+  margin: 5px;
 }
 
 .description {
