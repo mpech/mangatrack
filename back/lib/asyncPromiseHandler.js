@@ -1,6 +1,8 @@
 function AsyncPromiseHandler (config) {
   this.stack = []
   this.stackContext = []
+  this.stackEnabled = false
+  this.DANGLING = Symbol('aphDangling')
 }
 AsyncPromiseHandler.prototype.set = function (k, v) {
   if (k !== 'stackEnabled') { throw new Error('expect key stackEnabled') }
@@ -15,7 +17,6 @@ AsyncPromiseHandler.prototype.clear = function () {
   // see https://stackoverflow.com/questions/29478751/how-to-cancel-an-emcascript6-vanilla-javascript-promise-chain
   this.stack = []
   this.stackContext = []
-  this.DANGLING = Symbol('aphDangling')
   return true
 }
 /**
@@ -27,33 +28,19 @@ AsyncPromiseHandler.prototype.all = function () {
   const dequeue = _ => {
     const n = this.stack.length
     return Promise.all(this.stack).then(x => {
-      if (this.stack.length !== n) {
-        return dequeue()
-      }
-      return x
+      return this.stack.length !== n
+        ? dequeue()
+        : x
     })
   }
   return dequeue()
-}
-
-AsyncPromiseHandler.prototype.hasResolved = function () {
-  return Promise.resolve(this.stackContext.every(pCtx => {
-    return pCtx.state !== this.DANGLING
-  }))
-}
-AsyncPromiseHandler.prototype.getStacks = function () {
-  return this.stackContext.filter(x => x.state === this.DANGLING).map(x => {
-    return x.location
-  })
 }
 
 const ap = new AsyncPromiseHandler()
 module.exports = ap
 
 Object.defineProperty(ap, 'tail', {
-  get: function () {
-    return this.stack[this.stack.length - 1]
-  },
+  get: () => ap.stack,
   set: function (p) {
     if (!(p instanceof Promise) && !p.then && !p.catch) {
       if (this.stackEnabled) {
@@ -79,7 +66,7 @@ Object.defineProperty(ap, 'tail', {
     const q = p.then((x) => {
       o.state = 'ok'
       return x
-    }).catch((e) => {
+    }).catch(e => {
       o.state = 'ko'
       throw e
     })

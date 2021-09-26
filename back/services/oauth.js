@@ -1,5 +1,4 @@
 const errorHandler = require('../lib/errorHandler')
-const config = require('../config')
 const AtModel = require('../models/oauth/atModel')
 const RtModel = require('../models/oauth/rtModel')
 const randomstring = require('randomstring')
@@ -20,56 +19,12 @@ module.exports.getRefreshToken = async function (token) {
   }
 }
 
-module.exports.saveToken = async function (token, client, user) {
-  const dfds = []
-  dfds.push(
-    AtModel.create({
-      token: token.accessToken,
-      userId: user.id,
-      expiresAt: token.accessTokenExpiresAt
-    })
-  )
-
-  if (token.refreshToken) {
-    dfds.push(
-      RtModel.create({
-        token: token.refreshToken,
-        expiresAt: token.refreshTokenExpiresAt,
-        userId: user.id
-      })
-    )
-  }
-
-  const [at, rt] = await Promise.all(dfds)
-  return {
-    accessToken: at.token,
-    accessTokenExpiresAt: at.expiresAt,
-    refreshToken: rt.token,
-    refreshTokenExpiresAt: rt.expiresAt,
-    scope: token.scope,
-    client: client,
-    user: { id: at.userId.toString() }
-  }
-}
-
 module.exports.revokeToken = async function ({ refreshToken, client, user }) {
   const { deletedCount } = await RtModel.deleteOne({
     userId: user.id,
     token: refreshToken
   })
   return deletedCount
-}
-
-module.exports.getClient = async function (clientId, clientSecret) {
-  if (clientId !== 'mangatrack') {
-    return false
-  }
-  return {
-    id: 'mangatrack',
-    grants: ['refresh_token'],
-    accessTokenLifetime: config.oauth_accessToken_duration,
-    refreshTokenLifetime: config.oauth_refreshToken_duration
-  }
 }
 
 /*

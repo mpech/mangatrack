@@ -40,7 +40,7 @@ async function runId (id, ts, options = {}) {
     { chapters: { $first: '$chapters' } }
   )
 
-  return runLink(chapter.url, ts, options)
+  return module.exports.runLink(chapter.url, ts, options)
 }
 
 module.exports = { runLink, runId }
