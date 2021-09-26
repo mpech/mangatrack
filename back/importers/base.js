@@ -6,9 +6,7 @@ class Base {
 Base.prototype.domFetch = async function (url) {
   const { data } = await axios.get(url)
   const $ = cheerio.load(data, {
-    xml: {
-      normalizeWhitespace: true
-    },
+    xml: false,
     decodeEntities: false
   })
   return $
