@@ -1,2 +1,3 @@
 *.tar.gz
 dep
+node_modules

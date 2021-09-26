@@ -153,11 +153,11 @@ describe('importers/mangakakalot', function () {
         if (url === 'first') {
           return { data: '<html><script>window.location.assign("https://mangakakalot.com/read-tu9im158524536237");</script></html>' }
         }
-        redirected = "https://mangakakalot.com/read-tu9im158524536237"
+        redirected = 'https://mangakakalot.com/read-tu9im158524536237'
         return { data: '<html></html>' }
       })
       await importer.fetchMangaDetail('first')
-      assert.strictEqual(redirected, "https://mangakakalot.com/read-tu9im158524536237")
+      assert.strictEqual(redirected, 'https://mangakakalot.com/read-tu9im158524536237')
     }))
   })
 

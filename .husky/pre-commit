@@ -1,3 +1,1 @@
-echo 'precommit start'
-(cd front && standard --fix) && (cd back && standard --fix)
-echo 'precommit done'
+npx lint-staged
