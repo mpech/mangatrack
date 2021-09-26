@@ -42,7 +42,7 @@ exports.nameId_maxLength = 70
 
 exports.batch_duration = 3600 * 1000 * 24 // keep 1 day
 exports.excludeCdnImporter = ['mangakakalot', 'manganelo'] // cdn blocks referrer :(
-
+exports.force_app_run = 'plzGiveUsMetaParent_orSomething'
 const jsonPath = path.join(DIRNAME, 'privateConfig.json')
 Object.assign(exports, existsSync(jsonPath) ? loadJsonFileSync(jsonPath) : {})
 exports.logger = new Logger({

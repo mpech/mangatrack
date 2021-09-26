@@ -24,7 +24,7 @@ app.use(expressLog({
 ({ load }.load(app))
 app.get('/ping', (req, res) => res.send('OK'))
 app.use(errorHandler.express())
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
+if (process.argv[1] === fileURLToPath(import.meta.url) || typeof (process.env[config.force_app_run]) !== 'undefined') {
   appStarter.open(app, config)
   config.logger.inf('started', new Date())
   const onDeath = function (signal, e) {
