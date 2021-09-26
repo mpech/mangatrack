@@ -15,7 +15,6 @@
     "google-auth-library": "^7.9.2",
     "joi": "17.4.2",
     "load-json-file": "^7.0.1",
-    "mocha": "^9.1.2",
     "moment": "2.29.1",
     "moment-timezone": "0.5.33",
     "mongoose": "6.0.7",
@@ -30,6 +29,7 @@
     "yargs": "^17.2.0"
   },
   "devDependencies": {
+    "mocha": "^9.1.2",
     "randomstring": "^1.2.1",
     "supertest": "6.1.6",
     "supervisor": "^0.12.0"
