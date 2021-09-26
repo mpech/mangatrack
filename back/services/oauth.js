@@ -1,8 +1,8 @@
-const errorHandler = require('../lib/errorHandler')
-const AtModel = require('../models/oauth/atModel')
-const RtModel = require('../models/oauth/rtModel')
-const randomstring = require('randomstring')
-module.exports.getRefreshToken = async function (token) {
+import errorHandler from '../lib/errorHandler.js'
+import AtModel from '../models/oauth/atModel.js'
+import RtModel from '../models/oauth/rtModel.js'
+import * as randomstring from 'randomstring'
+export const getRefreshToken = async function (token) {
   const tok = await RtModel.findOne({ token }).lean()
   if (!tok) {
     return errorHandler.invalidTokenError()
@@ -18,19 +18,14 @@ module.exports.getRefreshToken = async function (token) {
     }
   }
 }
-
-module.exports.revokeToken = async function ({ refreshToken, client, user }) {
+export const revokeToken = async function ({ refreshToken, client, user }) {
   const { deletedCount } = await RtModel.deleteOne({
     userId: user.id,
     token: refreshToken
   })
   return deletedCount
 }
-
-/*
-Request Authentication
- */
-module.exports.getAccessToken = async function (token) {
+export const getAccessToken = async function (token) {
   const at = await AtModel.findOne({ token }).lean()
   if (!at) {
     return errorHandler.invalidTokenError()
@@ -42,8 +37,7 @@ module.exports.getAccessToken = async function (token) {
     user: { id: at.userId.toString() }
   }
 }
-
-module.exports.generateTokens = async function (user) {
+export const generateTokens = async function (user) {
   const client = { id: 'mangatrack' }
   const scope = undefined
   const [at, rt] = await Promise.all([
@@ -60,4 +54,10 @@ module.exports.generateTokens = async function (user) {
     client,
     user: { id: at.userId.toString() }
   }
+}
+export default {
+  getRefreshToken,
+  revokeToken,
+  getAccessToken,
+  generateTokens
 }

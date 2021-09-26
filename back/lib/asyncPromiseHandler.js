@@ -5,10 +5,11 @@ function AsyncPromiseHandler (config) {
   this.DANGLING = Symbol('aphDangling')
 }
 AsyncPromiseHandler.prototype.set = function (k, v) {
-  if (k !== 'stackEnabled') { throw new Error('expect key stackEnabled') }
+  if (k !== 'stackEnabled') {
+    throw new Error('expect key stackEnabled')
+  }
   this.stackEnabled = !!v
 }
-
 /**
  * does not clear unresolved promises
  * after this call those promises will be dangling promises
@@ -35,10 +36,7 @@ AsyncPromiseHandler.prototype.all = function () {
   }
   return dequeue()
 }
-
 const ap = new AsyncPromiseHandler()
-module.exports = ap
-
 Object.defineProperty(ap, 'tail', {
   get: () => ap.stack,
   set: function (p) {
@@ -54,7 +52,6 @@ Object.defineProperty(ap, 'tail', {
         console.log(new Date(), 'catch your errors..', e, e.stack)
       })
     }
-
     const o = {
       state: ap.DANGLING,
       location: (new Error())
@@ -62,7 +59,6 @@ Object.defineProperty(ap, 'tail', {
         .filter(x => !x.includes('asyncPromiseHandler') && x !== 'Error')
         .slice(0, 4)
     }
-
     const q = p.then((x) => {
       o.state = 'ok'
       return x
@@ -74,3 +70,4 @@ Object.defineProperty(ap, 'tail', {
     this.stackContext.push(o)
   }
 })
+export default ap

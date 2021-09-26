@@ -1,10 +1,10 @@
-const assert = require('assert')
-const utils = require('../utils/')
-const BatchModel = require('../../models/batchModel')
-const Mocker = require('../../lib/mocker')
+import assert from 'assert'
+import utils from '../utils/index.js'
+import BatchModel from '../../models/batchModel.js'
+import Mocker from '../../lib/mocker.js'
 
 utils.bindDb()
-describe('models/batchModel', function () {
+describe('models/batchModel.js', function () {
   beforeEach(utils.clearColls([BatchModel]))
 
   it('increments batch version', Mocker.mockIt(async function (mokr) {

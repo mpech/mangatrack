@@ -1,8 +1,7 @@
-const Base = require('./base')
-const config = require('../config')
-const errorHandler = require('../lib/errorHandler')
-const safeRegExp = require('../lib/safeRegExp')
-
+import Base from './base.js'
+import config from '../config/index.js'
+import errorHandler from '../lib/errorHandler.js'
+import safeRegExp from '../lib/safeRegExp.js'
 class Importer extends Base {
   constructor () {
     super()
@@ -10,7 +9,6 @@ class Importer extends Base {
     this.from = 'fanfox'
   }
 }
-
 /**
  * fetch all the new updates. Return a payload as
  * {
@@ -32,14 +30,12 @@ Importer.prototype.allUpdates = async function () {
     const a = $x.find('.manga-list-4-item-part a')
     const url = this.ensureAbsoluteUrl(a.attr('href'))
     const num = parseFloat(url.match(/c[0-9.]+/)[0].substring(1))
-
     let thumbUrl = $x.find('img').attr('src')
     if (thumbUrl.includes('?')) {
       thumbUrl = thumbUrl.substring(0, thumbUrl.indexOf('?'))
     }
     return { title, last, url, num, thumbUrl }
   }).toArray()
-
   return arr.reduce((acc, { title, last, url, num, thumbUrl }) => {
     if (!title || !last || !url) {
       config.logger.dbg('failed to parse', title, last, url)
@@ -51,13 +47,11 @@ Importer.prototype.allUpdates = async function () {
     return acc
   }, {})
 }
-
 Importer.prototype.linkFromChap = function (chap) {
   const uri = chap.url.split('/')
   const idx = uri.indexOf('manga')
   return uri.slice(0, idx + 2).join('/') + '/'
 }
-
 /**
  * url maps to a chapter view. e.g
  * http://fanfox.net/manga/onepunch_man/vTBD/c122/1.html
@@ -93,14 +87,12 @@ Importer.prototype.fetchMangaDetail = async function (link, chap = null) {
   if (arr.length === 0 && $('.detail-block-content').length) {
     return errorHandler.importerRequiresInteraction(link)
   }
-
   if (!chap) {
     chap = {
       name: $('.detail-info-right-title-font').text(),
       thumbUrl: $('.detail-info-cover-img').attr('src')
     }
   }
-
   if (!chap.description) {
     let txt = $('.detail-info-right-content').text()
     const a = $('.detail-info-right-content a').text()
@@ -109,8 +101,6 @@ Importer.prototype.fetchMangaDetail = async function (link, chap = null) {
       chap.description = txt.trim()
     }
   }
-
   return { chapters: arr, manga: chap }
 }
-
-module.exports = Importer
+export default Importer

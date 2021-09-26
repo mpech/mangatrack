@@ -1,7 +1,6 @@
-const Base = require('./base')
-const config = require('../config')
-const safeRegExp = require('../lib/safeRegExp')
-
+import Base from './base.js'
+import config from '../config/index.js'
+import safeRegExp from '../lib/safeRegExp.js'
 class Importer extends Base {
   constructor () {
     super()
@@ -9,7 +8,6 @@ class Importer extends Base {
     this.from = 'manganelo'
   }
 }
-
 /**
  * fetch all the new updates. Return a payload as
  * {
@@ -32,7 +30,6 @@ Importer.prototype.allUpdates = async function () {
     const thumbUrl = $x.find('img').attr('src')
     return { title, last, url, num, thumbUrl }
   }).toArray()
-
   return arr.reduce((acc, { title, last, url, num, thumbUrl }) => {
     if (!title || !last || !url) {
       config.logger.dbg('failed to parse', title, last, url)
@@ -44,10 +41,9 @@ Importer.prototype.allUpdates = async function () {
     return acc
   }, {})
 }
-
 Importer.prototype.linkFromChap = function (chap) {
   const uri = chap.url.split('/')
-  uri.pop()// chapter
+  uri.pop() // chapter
   return uri.join('/').replace('chapter', 'manga')
 }
 /**
@@ -80,14 +76,12 @@ Importer.prototype.fetchMangaDetail = async function (link, chap = null) {
     at = this.parseDateDetail(at)
     return { name, url, num, at }
   }).toArray()
-
   if (!chap) {
     chap = {
       name: $('.story-info-right h1').text(),
       thumbUrl: $('.story-info-left img').attr('src')
     }
   }
-
   if (!chap.description) {
     let txt = $('#panel-story-info-description').text()
     const h3 = $('#panel-story-info-description h3').text()
@@ -98,5 +92,4 @@ Importer.prototype.fetchMangaDetail = async function (link, chap = null) {
   }
   return { chapters, manga: chap }
 }
-
-module.exports = Importer
+export default Importer

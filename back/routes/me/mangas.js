@@ -1,13 +1,12 @@
-const { validate, Joi } = require('express-validation')
-const mongoose = require('mongoose')
-const MangaModel = require('../../models/mangaModel')
-const ChapterModel = require('../../models/chapterModel')
-const prom = require('../../lib/prom')
-const rules = require('../../lib/rules')
-const errorHandler = require('../../lib/errorHandler')
-const helper = require('../../lib/helper')
-const formatter = require('../../formatters/me/mangaFormatter')
-
+import { validate, Joi } from 'express-validation'
+import mongoose from 'mongoose'
+import MangaModel from '../../models/mangaModel.js'
+import ChapterModel from '../../models/chapterModel.js'
+import prom from '../../lib/prom.js'
+import * as rules from '../../lib/rules.js'
+import errorHandler from '../../lib/errorHandler.js'
+import helper from '../../lib/helper.js'
+import formatter from '../../formatters/me/mangaFormatter.js'
 function load (app) {
   app.put('/me/mangas/:mangaId', helper.authenticate, validate({
     params: Joi.object({
@@ -25,7 +24,6 @@ function load (app) {
     }
     return req.user.saveManga({ mangaId, num, updatedAt: Date.now() }).then(formatter.format)
   }))
-
   app.delete('/me/mangas/:mangaId', helper.authenticate, validate({
     params: Joi.object({
       mangaId: rules.objId
@@ -34,7 +32,6 @@ function load (app) {
     const mangaId = req.params.mangaId
     return req.user.removeManga({ mangaId, updatedAt: Date.now() }).then(formatter.format).catch(e => console.log('e : ', e))
   }))
-
   app.patch('/me/mangas', helper.authenticate, validate({
     body: Joi.object({
       items: Joi.array().min(1).items(Joi.object({
@@ -59,7 +56,6 @@ function load (app) {
         return errorHandler.unknownMangas(invalids)
       }
     }
-
     { // check chapter existence
       const ids = items.map(({ mangaId, num }) => {
         return {
@@ -87,14 +83,12 @@ function load (app) {
       const invalids = items
         .map(({ mangaId, num }) => ({ mangaId, num }))
         .filter(({ mangaId }) => !foundMangaIds.has(mangaId))
-
       if (invalids.length) {
         return errorHandler.unknownChapters(JSON.stringify(invalids))
       }
     }
     return req.user.updateMangas(items).then(formatter.formatCollection)
   }))
-
   app.get('/me/mangas', validate({
     query: Joi.object({
       populated: Joi.boolean()
@@ -115,7 +109,7 @@ function load (app) {
     return formatter.formatCollection(map, { populated: req.query.populated })
   }))
 }
-
-module.exports = {
+export { load }
+export default {
   load: load
 }

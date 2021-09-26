@@ -1,8 +1,8 @@
-const assert = require('assert')
-const utils = require('../utils/')
-const Mocker = require('../../lib/mocker')
-const Importer = require('../../importers/fanfox')
-const errorHandler = require('../../lib/errorHandler')
+import assert from 'assert'
+import utils from '../utils/index.js'
+import Mocker from '../../lib/mocker.js'
+import Importer from '../../importers/fanfox.js'
+import errorHandler from '../../lib/errorHandler.js'
 
 utils.bindDb()
 describe('importers/fanfox', function () {

@@ -1,10 +1,8 @@
-const asyncHooks = require('async_hooks')
+import asyncHooks from 'async_hooks'
 // const fs = require('fs')
 // const log = (str) => fs.writeSync(1, `${str}\n`)
-
 const contexts = {}
 let enabled = false
-
 const ah = asyncHooks.createHook({
   init: (asyncId, type, triggerAsyncId) => {
     // A new async resource was created
@@ -20,8 +18,7 @@ const ah = asyncHooks.createHook({
     delete contexts[asyncId]
   }
 })
-
-function initContext (fn) {
+export const initContext = fn => {
   if (!enabled) {
     console.warn('you have not called ctx.enable, context may not be tracked', enabled)
   }
@@ -35,39 +32,42 @@ function initContext (fn) {
     return fn(contexts[asyncId])
   })
 }
-
-function get () {
+export const get = () => {
   const asyncId = asyncHooks.executionAsyncId()
   // log('getContext :' + asyncId)
   // We try to get the context object linked to our current asyncId
   // if there is none, we return an empty object
   return contexts[asyncId] || {}
-};
-function set (k, v) {
+}
+export const set = (k, v) => {
   const ctx = get()
   ctx[k] = v
 }
-module.exports = {
-  enable: _ => { enabled = true; ah.enable() },
-  disable: _ => { enabled = false; ah.disable() },
+export const enable = _ => { enabled = true; ah.enable() }
+export const disable = _ => { enabled = false; ah.disable() }
+export const express = function () {
+  enable()
+  return function (req, res, next) {
+    return initContext(_ => next())
+  }
+}
+export const headers = function () {
+  return function (req, res, next) {
+    const o = get()
+    o['x-forwarded-for'] = req.headers['x-forwarded-for']
+    o.pfx = req.headers.pfx
+    o.tid = req.headers.tid
+    o.sid = req.headers.sid
+    o.url = req.protocol + '://' + req.get('host') + req.originalUrl
+    return next()
+  }
+}
+export default {
+  enable,
+  disable,
   initContext,
   get,
   set,
-  express: function () {
-    module.exports.enable()
-    return function (req, res, next) {
-      return initContext(_ => next())
-    }
-  },
-  headers: function () {
-    return function (req, res, next) {
-      const o = module.exports.get()
-      o['x-forwarded-for'] = req.headers['x-forwarded-for']
-      o.pfx = req.headers.pfx
-      o.tid = req.headers.tid
-      o.sid = req.headers.sid
-      o.url = req.protocol + '://' + req.get('host') + req.originalUrl
-      return next()
-    }
-  }
+  express,
+  headers
 }

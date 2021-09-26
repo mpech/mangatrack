@@ -1,10 +1,10 @@
-const assert = require('assert')
-const utils = require('../../utils')
-const Mocker = require('../../../lib/mocker')
-const MangaModel = require('../../../models/mangaModel')
-const ChapterModel = require('../../../models/chapterModel')
-const UserModel = require('../../../models/userModel')
-const AtModel = require('../../../models/oauth/atModel')
+import assert from 'assert'
+import utils from '../../utils/index.js'
+import Mocker from '../../../lib/mocker.js'
+import MangaModel from '../../../models/mangaModel.js'
+import ChapterModel from '../../../models/chapterModel.js'
+import UserModel from '../../../models/userModel.js'
+import AtModel from '../../../models/oauth/atModel.js'
 
 utils.bindApp()
 describe('e2e/me/mangas', function () {

@@ -1,9 +1,9 @@
-const assert = require('assert')
-const cheerio = require('cheerio')
-const utils = require('../utils/')
-const Mocker = require('../../lib/mocker')
-const Importer = require('../../importers/mangakakalot')
-const errorHandler = require('../../lib/errorHandler')
+import assert from 'assert'
+import cheerio from 'cheerio'
+import utils from '../utils/index.js'
+import Mocker from '../../lib/mocker.js'
+import Importer from '../../importers/mangakakalot.js'
+import errorHandler from '../../lib/errorHandler.js'
 
 utils.bindDb()
 describe('importers/mangakakalot', function () {

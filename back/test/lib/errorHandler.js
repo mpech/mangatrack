@@ -1,6 +1,6 @@
-const assert = require('assert')
-const errorHandler = require('../../lib/errorHandler')
-const Mocker = require('../../lib/mocker')
+import assert from 'assert'
+import errorHandler from '../../lib/errorHandler.js'
+import Mocker from '../../lib/mocker.js'
 
 describe('lib/errorHandler', function () {
   it('unknownMangas', Mocker.mockIt(mokr => {

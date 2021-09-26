@@ -1,21 +1,18 @@
-const errorHandler = require('../lib/errorHandler')
-const config = require('../config')
-const MangaModel = require('../models/mangaModel')
-const BatchModel = require('../models/batchModel')
-const safeJsonStringify = require('safe-json-stringify')
-const APH = require('../lib/asyncPromiseHandler')
-const EventEmitter = require('events')
-
+import errorHandler from '../lib/errorHandler.js'
+import config from '../config/index.js'
+import MangaModel from '../models/mangaModel.js'
+import BatchModel from '../models/batchModel.js'
+import safeJsonStringify from 'safe-json-stringify'
+import APH from '../lib/asyncPromiseHandler.js'
+import EventEmitter from 'events'
 class LinkActivity {
   constructor (importer) {
     this.imp = importer
   }
 }
-
 LinkActivity.prototype.accepts = function (url) {
   return this.imp.accepts(url)
 }
-
 LinkActivity.prototype.importChap = function (chap, options) {
   const link = this.imp.linkFromChap(chap)
   return this.importLink(link, chap, options)
@@ -30,7 +27,7 @@ LinkActivity.prototype.importLink = function (link, chap = null, options = {}) {
   APH.tail = [
     _ => BatchModel.create({ link }).then(a => { batch = a }),
     _ => ev.emit('batchstarted', batch),
-    async _ => {
+    async (_) => {
       let err = null
       try {
         config.logger.dbg('fetching', link)
@@ -46,7 +43,7 @@ LinkActivity.prototype.importLink = function (link, chap = null, options = {}) {
       }
       return err
     },
-    async err => {
+    async (err) => {
       let state
       if (err) {
         const e = this._shortError(err)
@@ -61,10 +58,8 @@ LinkActivity.prototype.importLink = function (link, chap = null, options = {}) {
     },
     _ => ev.emit('batchended', batch)
   ].reduce((acc, f) => acc.then(f), Promise.resolve())
-
   return ev
 }
-
 LinkActivity.prototype._shortError = function (e) {
   // only log one chapter error
   if (e.name === 'ValidationError') {
@@ -74,12 +69,9 @@ LinkActivity.prototype._shortError = function (e) {
       return acc
     }, {})
   }
-
   if (e instanceof errorHandler.MangaTrackError) {
     e = { reason: e.reason }
   }
-
   return e
 }
-
-module.exports = LinkActivity
+export default LinkActivity

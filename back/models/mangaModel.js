@@ -1,10 +1,9 @@
-const mongoose = require('mongoose')
+import mongoose from 'mongoose'
+import config from '../config/index.js'
+import mongooseUtil from '../lib/mongooseUtil.js'
+import ChapterModel from './chapterModel.js'
+import errorHandler from '../lib/errorHandler.js'
 const Schema = mongoose.Schema
-const config = require('../config')
-const mongooseUtil = require('../lib/mongooseUtil')
-const ChapterModel = require('./chapterModel')
-const errorHandler = require('../lib/errorHandler')
-
 const schema = new Schema({
   nameId: { type: String, required: true, unique: true, index: true },
   name: { type: String, required: true, unique: true, index: true },
@@ -17,14 +16,12 @@ const schema = new Schema({
   description_content: String,
   description_from: String
 })
-
 schema.pre('validate', function () {
   if (!this.nameId) {
     this.nameId = this.constructor.canonicalize(this.name || '')
   }
   return Promise.resolve()
 })
-
 schema.statics.canonicalize = function (s) {
   return s
     .replace(/\s+/g, '_')
@@ -32,7 +29,6 @@ schema.statics.canonicalize = function (s) {
     .substring(0, config.nameId_maxLength)
     .toLowerCase()
 }
-
 schema.statics.findChapter = async function ({ nameId, _id, num }, from) {
   const m = await this.findOne(_id ? { _id } : { nameId }).select('_id').lean()
   if (!m) {
@@ -51,7 +47,6 @@ schema.statics.findChapter = async function ({ nameId, _id, num }, from) {
   }
   return mongoose.model('Chapter').findOne(pred)
 }
-
 /**
  * @param  {nameId, name, thumbUrl, chapters} manga
  * description facultative, if given, description_from will be field based on from
@@ -68,11 +63,9 @@ schema.statics.upsertManga = async function (manga, from, options = { refreshThu
       throw err
     }
   }
-
   if (!manga.chapters.length) {
     throw errorHandler.noEmptyManga(manga.nameId)
   }
-
   let lastChap = {
     lastChap_num: manga.chapters[0].num,
     lastChap_url: manga.chapters[0].url,
@@ -83,7 +76,6 @@ schema.statics.upsertManga = async function (manga, from, options = { refreshThu
     description_from: from,
     thumbUrl: manga.thumbUrl
   }
-
   manga.nameId = manga.nameId || this.canonicalize(manga.name)
   let el = await this.findOne({ nameId: manga.nameId })
   if (!el) {
@@ -105,13 +97,9 @@ schema.statics.upsertManga = async function (manga, from, options = { refreshThu
     const set = { ...lastChap, ...facultativeProps }
     if (Object.keys(set).length) {
       el = Object.assign(el, set)
-      await this.updateOne(
-        { nameId: manga.nameId },
-        { $set: set }
-      )
+      await this.updateOne({ nameId: manga.nameId }, { $set: set })
     }
   }
-
   await ChapterModel.upsertChapter({
     mangaId: el._id,
     from,
@@ -119,8 +107,5 @@ schema.statics.upsertManga = async function (manga, from, options = { refreshThu
   })
   return el
 }
-
 mongooseUtil.setStatic('findOneForSure', schema)
-
-// schema.plugin(require('@mongoosejs/async-hooks'));
-module.exports = mongoose.model('Manga', schema, 'mangas')
+export default mongoose.model('Manga', schema, 'mangas')

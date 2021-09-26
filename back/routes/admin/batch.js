@@ -1,15 +1,13 @@
-const BatchModel = require('../../models/batchModel')
-const prom = require('../../lib/prom')
-const Formatter = require('../../formatters/admin/batchFormatter')
-const helper = require('../../lib/helper')
-const batchProcess = require('../../process/batchProcess')
-const config = require('../../config')
-const rules = require('../../lib/rules')
-const { validate, Joi } = require('express-validation')
-const mongoose = require('mongoose')
-
-function load (app) {
-  module.exports.formatter = new Formatter()
+import BatchModel from '../../models/batchModel.js'
+import prom from '../../lib/prom.js'
+import Formatter from '../../formatters/admin/batchFormatter.js'
+import helper from '../../lib/helper.js'
+import batchProcess from '../../process/batchProcess.js'
+import config from '../../config/index.js'
+import * as rules from '../../lib/rules.js'
+import { validate, Joi } from 'express-validation'
+import mongoose from 'mongoose'
+export const load = function (app) {
   app.get('/admin/batches', helper.authenticate, helper.ensureAdmin, validate({
     query: Joi.object({
       id: Joi.alternatives().try(Joi.array().items(rules.objId), rules.objId),
@@ -33,9 +31,8 @@ function load (app) {
       BatchModel.countDocuments(crit),
       BatchModel.find(crit).sort({ at: -1 }).skip(offset).limit(limit).lean().exec()
     ])
-    return module.exports.formatter.formatCollection(coll, { count, offset, limit })
+    return formatter.formatCollection(coll, { count, offset, limit })
   }))
-
   app.post('/admin/batches', helper.authenticate, helper.ensureAdmin, validate({
     body: Joi.alternatives().try({
       link: Joi.string().required(),
@@ -50,15 +47,9 @@ function load (app) {
     const refreshThumb = req.body.refreshThumb
     const refreshDescription = req.body.refreshDescription
     const run = req.body.id ? batchProcess.runId : batchProcess.runLink
-    const batch = await run(
-      req.body.id || req.body.link,
-      Date.now(),
-      { refreshThumb, refreshDescription }
-    )
-    return module.exports.formatter.format(batch)
+    const batch = await run(req.body.id || req.body.link, Date.now(), { refreshThumb, refreshDescription })
+    return formatter.format(batch)
   }))
 }
-
-module.exports = {
-  load: load
-}
+export const formatter = new Formatter()
+export default { load }

@@ -1,8 +1,7 @@
-const Base = require('./base')
-const config = require('../config')
-const safeRegExp = require('../lib/safeRegExp')
-const errorHandler = require('../lib/errorHandler')
-
+import Base from './base.js'
+import config from '../config/index.js'
+import safeRegExp from '../lib/safeRegExp.js'
+import errorHandler from '../lib/errorHandler.js'
 class Importer extends Base {
   constructor () {
     super()
@@ -10,7 +9,6 @@ class Importer extends Base {
     this.from = 'mangakakalot'
   }
 }
-
 /**
  * fetch all the new updates. Return a payload as
  * {
@@ -33,7 +31,6 @@ Importer.prototype.allUpdates = async function () {
     const thumbUrl = $x.find('img').attr('src')
     return { title, last, url, num, thumbUrl }
   }).toArray()
-
   return arr.reduce((acc, { title, last, url, num, thumbUrl }) => {
     if (!title || !last || !url) {
       config.logger.dbg('failed to parse', title, last, url)
@@ -45,10 +42,9 @@ Importer.prototype.allUpdates = async function () {
     return acc
   }, {})
 }
-
 Importer.prototype.linkFromChap = function (chap) {
   const uri = chap.url.split('/')
-  uri.pop()// chapter
+  uri.pop() // chapter
   return uri.join('/').replace('chapter', 'manga')
 }
 /**
@@ -71,9 +67,10 @@ Importer.prototype.linkFromChap = function (chap) {
  * @return {[type]} [description]
  */
 Importer.prototype.fetchMangaDetail = async function (link, chap = null, seen = new Set()) {
-  if (seen.has(link)) { return errorHandler.tooManyRedirect() }
+  if (seen.has(link)) {
+    return errorHandler.tooManyRedirect()
+  }
   seen.add(link)
-
   const $ = await this.domFetch(link)
   const chapters = $('.chapter-list .row').map((i, x) => {
     const a = $(x).find('a')
@@ -91,14 +88,12 @@ Importer.prototype.fetchMangaDetail = async function (link, chap = null, seen = 
       return this.fetchMangaDetail(url[1], chap, seen)
     }
   }
-
   if (!chap) {
     chap = {
       name: $('.manga-info-text h1').text(),
       thumbUrl: $('.manga-info-pic img').attr('src')
     }
   }
-
   if (!chap.description) {
     let txt = $('#noidungm').text()
     const h2 = $('#noidungm h2').text()
@@ -109,5 +104,4 @@ Importer.prototype.fetchMangaDetail = async function (link, chap = null, seen = 
   }
   return { chapters, manga: chap }
 }
-
-module.exports = Importer
+export default Importer

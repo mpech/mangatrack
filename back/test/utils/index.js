@@ -1,24 +1,25 @@
-const mongoose = require('mongoose')
-const config = require('../../config')
-const appStarter = require('../../lib/appStarter')
-const app = require('../../app')
-const Singleton = require('../../lib/singleton')
-const requester = require('supertest')
-const fs = require('fs')
-const cheerio = require('cheerio')
-const path = require('path')
-
+import mongoose from 'mongoose'
+import config from '../../config/index.js'
+import appStarter from '../../lib/appStarter.js'
+import app from '../../app.js'
+import Singleton from '../../lib/singleton.js'
+import requester from 'supertest'
+import fs from 'fs'
+import cheerio from 'cheerio'
+import path from 'path'
+import { promisify } from 'util'
+import { fileURLToPath } from 'url'
 function dbConnect () {
   if (mongoose.connection && mongoose.connection.constructor.STATES.connected === mongoose.connection._readyState) {
     return Promise.resolve(mongoose.connection)
   }
   return mongoose.connect(config.selectedDb || config.dbTestUrl).then(conn => conn.connection)
-};
-
+}
+;
 function dbClose (conn) {
   return conn.close()
-};
-
+}
+;
 function appStarterConnect (app, out) {
   const conf = {
     port: config.port - 1,
@@ -31,25 +32,20 @@ function appStarterConnect (app, out) {
     return appStarter
   })
 }
-
 function appStarterClose (appStarter) {
   return appStarter.close()
 }
-
 const dbSingle = Singleton(dbConnect, dbClose, 'db')
 const appSingle = Singleton(appStarterConnect, appStarterClose, 'appStarter')
-
-module.exports.bindDb = function () {
+export const bindDb = function () {
   before(function () { return dbSingle.open() })
   after(function () { return dbSingle.close() })
 }
-
-module.exports.bindApp = function () {
+export const bindApp = function () {
   before(function () { return appSingle.open(app, exports) })
   after(function () { return appSingle.close() })
 }
-
-module.exports.clearColls = function (arr) {
+export const clearColls = function (arr) {
   return function () {
     return Promise.resolve().then(_ => {
       const dfds = arr.map(Model => Model.deleteMany({}))
@@ -57,18 +53,20 @@ module.exports.clearColls = function (arr) {
     })
   }
 }
-module.exports.runImport = async function (fn) {
+export const runImport = async function (fn) {
   config.selectedDb = config.dbUrl
   await dbSingle.open()
   try {
     await fn()
-  } catch (e) { console.log('runImport', e) }
+  } catch (e) {
+    console.log('runImport', e)
+  }
   return dbSingle.close()
 }
-module.exports.setTimeout = require('util').promisify(setTimeout)
-
-module.exports.loadDom = async relpath => {
-  const file = await fs.promises.readFile(path.resolve(__dirname, `../../samples/${relpath}`))
+export const setTimeout = promisify(global.setTimeout)
+export const loadDom = async (relpath) => {
+  const DIRNAME = path.dirname(fileURLToPath(import.meta.url))
+  const file = await fs.promises.readFile(path.resolve(DIRNAME, `../../samples/${relpath}`))
   return cheerio.load(file.toString(), {
     xml: {
       normalizeWhitespace: true,
@@ -76,3 +74,5 @@ module.exports.loadDom = async relpath => {
     }
   })
 }
+const exports = { bindDb, bindApp, clearColls, runImport, setTimeout, loadDom }
+export default exports

@@ -1,11 +1,11 @@
-const assert = require('assert')
-const utils = require('../utils/')
-const Mocker = require('../../lib/mocker')
-const Activity = require('../../activity/linkActivity')
-const MangaModel = require('../../models/mangaModel')
-const ChapterModel = require('../../models/chapterModel')
-const BatchModel = require('../../models/batchModel')
-const errorHandler = require('../../lib/errorHandler')
+import assert from 'assert'
+import utils from '../utils/index.js'
+import Mocker from '../../lib/mocker.js'
+import Activity from '../../activity/linkActivity.js'
+import MangaModel from '../../models/mangaModel.js'
+import ChapterModel from '../../models/chapterModel.js'
+import BatchModel from '../../models/batchModel.js'
+import errorHandler from '../../lib/errorHandler.js'
 
 utils.bindDb()
 describe('activity/refreshActivity', function () {

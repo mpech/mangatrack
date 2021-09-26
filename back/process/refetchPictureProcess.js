@@ -1,14 +1,17 @@
-const LinkActivity = require('../activity/linkActivity')
-const utils = require('../test/utils')
-const APH = require('../lib/asyncPromiseHandler')
-const MangaModel = require('../models/mangaModel')
-const ChapterModel = require('../models/chapterModel')
-const FifoModel = require('../models/fifoModel')
-const mongoose = require('mongoose')
-const importer = require('../importers')
-const config = require('../config')
+import LinkActivity from '../activity/linkActivity.js'
+import utils from '../test/utils/index.js'
+import APH from '../lib/asyncPromiseHandler.js'
+import MangaModel from '../models/mangaModel.js'
+import ChapterModel from '../models/chapterModel.js'
+import FifoModel from '../models/fifoModel.js'
+import mongoose from 'mongoose'
+import importer from '../importers/index.js'
+import config from '../config/index.js'
+import yargs from 'yargs'
+import { fileURLToPath } from 'url'
+import { hideBin } from 'yargs/helpers'
 
-async function run () {
+export const run = async function () {
   const mangas = await MangaModel.find({ thumbUrl: /avt\.mkklcdnv6temp\.com/ }, { thumbUrl: 1 }).lean()
   const mangaIds = mangas.map(m => mongoose.Types.ObjectId(m._id))
   const urls = await ChapterModel.aggregate([
@@ -52,9 +55,9 @@ async function run () {
   APH.tail = fifo.restart(fn)
 }
 
-module.exports = { run }
-if (!module.parent) {
-  const optimist = require('yargs')
+export default { run }
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  const optimist = yargs(hideBin(process.argv))
     .usage('$0: node refetchPictureProcess.js')
   const argv = optimist.argv
 

@@ -1,5 +1,16 @@
 #!/usr/bin/node
-const optimist = require('yargs')
+import yargs from 'yargs'
+import { hideBin } from 'yargs/helpers'
+
+import fs from 'fs'
+import path from 'path'
+import util from 'util'
+import mongoose from 'mongoose'
+import utils from '../test/utils/index.js'
+import config from '../config/index.js'
+import APH from '../lib/asyncPromiseHandler.js'
+import { fileURLToPath } from 'url'
+const optimist = yargs(hideBin(process.argv))
   .usage(`$0: node index.js
 Apply patches since lastPatchRun (excluded). Updates lastPatchRun on success.
 If -f xxx_name provided, only applies xxx_name.
@@ -14,18 +25,11 @@ if (argv.help) {
   optimist.showHelp()
   process.exit(0)
 }
-
-const fs = require('fs')
-const path = require('path')
-const util = require('util')
-const mongoose = require('mongoose')
-const utils = require('../test/utils')
-const config = require('../config')
-const APH = require('../lib/asyncPromiseHandler')
 const preadFile = util.promisify(fs.readFile)
 const preaddir = util.promisify(fs.readdir)
 const pwriteFile = util.promisify(fs.writeFile)
-const LAST_PATCH_RUN = path.join(__dirname, 'lastPatchRun.txt')
+const DIRNAME = path.basename(fileURLToPath(import.meta.url))
+const LAST_PATCH_RUN = path.join(DIRNAME, 'lastPatchRun.txt')
 
 function getFileIndex (fname) {
   const f = fname.substring(0, 3)
@@ -38,9 +42,9 @@ async function fetchPatchNames (lastPatchRun) {
   // file is meant to be shared bug could be lost somehow
   // if does not exist ensure it to exist instead of assuming
   // it is the first time it is being run
-  require(path.join(__dirname, fname))
+  require(path.join(DIRNAME, fname))
   const startIdx = getFileIndex(fname) + 1
-  const files = await preaddir(__dirname)
+  const files = await preaddir(DIRNAME)
   return files.reduce((arr, x) => {
     x = path.basename(x, '.js')
     if (!x.match(/^\d{3}/) || getFileIndex(x) < startIdx) {

@@ -1,10 +1,10 @@
-const assert = require('assert')
-const utils = require('../../utils')
-const Mocker = require('../../../lib/mocker')
-const UserModel = require('../../../models/userModel')
-const AtModel = require('../../../models/oauth/atModel')
-const BatchModel = require('../../../models/batchModel')
-const batchProcess = require('../../../process/batchProcess')
+import assert from 'assert'
+import utils from '../../utils/index.js'
+import Mocker from '../../../lib/mocker.js'
+import UserModel from '../../../models/userModel.js'
+import AtModel from '../../../models/oauth/atModel.js'
+import BatchModel from '../../../models/batchModel.js'
+import batchProcess from '../../../process/batchProcess.js'
 
 utils.bindApp()
 describe('e2e/admin/batch', function () {

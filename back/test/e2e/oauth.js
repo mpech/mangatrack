@@ -1,11 +1,11 @@
-const config = require('../../config')
-const utils = require('../utils')
-const assert = require('assert')
-const Mocker = require('../../lib/mocker')
-const AtModel = require('../../models/oauth/atModel')
-const RtModel = require('../../models/oauth/rtModel')
-const UserModel = require('../../models/userModel')
-const passport = require('passport')
+import config from '../../config/index.js'
+import utils from '../utils/index.js'
+import assert from 'assert'
+import Mocker from '../../lib/mocker.js'
+import AtModel from '../../models/oauth/atModel.js'
+import RtModel from '../../models/oauth/rtModel.js'
+import UserModel from '../../models/userModel.js'
+import passport from 'passport'
 
 utils.bindApp()
 describe('e2e/oauth', function () {

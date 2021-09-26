@@ -1,6 +1,6 @@
-const bulker = require('../lib/bulker')
-const config = require('../config')
-const MangaModel = require('../models/mangaModel')
+import bulker from '../lib/bulker.js'
+import config from '../config/index.js'
+import MangaModel from '../models/mangaModel.js'
 
 class RefreshActivity {
   constructor (importer, fromToLinkActivity) {
@@ -49,4 +49,4 @@ RefreshActivity.prototype.upsertChapters = async function (chapters) {
     })
   })
 }
-module.exports = RefreshActivity
+export default RefreshActivity

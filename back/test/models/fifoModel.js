@@ -1,10 +1,10 @@
-const assert = require('assert')
-const utils = require('../utils/')
-const FifoModel = require('../../models/fifoModel')
-const APH = require('../../lib/asyncPromiseHandler')
+import assert from 'assert'
+import utils from '../utils/index.js'
+import FifoModel from '../../models/fifoModel.js'
+import APH from '../../lib/asyncPromiseHandler.js'
 
 utils.bindDb()
-describe('models/fifoModel', function () {
+describe('models/fifoModel.js', function () {
   beforeEach(utils.clearColls([FifoModel]))
 
   describe('load', () => {

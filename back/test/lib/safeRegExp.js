@@ -1,6 +1,6 @@
-const assert = require('assert')
-const Mocker = require('../../lib/mocker')
-const safeRegExp = require('../../lib/safeRegExp')
+import assert from 'assert'
+import Mocker from '../../lib/mocker.js'
+import safeRegExp from '../../lib/safeRegExp.js'
 describe('lib/safeRegExp', function () {
   it('safeRegExp', Mocker.mockIt(async mokr => {
     const s = '+ Tic Neesan'

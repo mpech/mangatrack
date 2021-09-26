@@ -1,6 +1,6 @@
-const Base = require('./baseFormatter')
-class Formatter extends Base {}
-
+import Base from './baseFormatter.js'
+class Formatter extends Base {
+}
 Formatter.prototype.format = function (x) {
   return Promise.resolve({
     from: x.from,
@@ -9,9 +9,7 @@ Formatter.prototype.format = function (x) {
     })
   })
 }
-
 Formatter.prototype.paginate = function (o) {
   return o
 }
-
-module.exports = Formatter
+export default Formatter

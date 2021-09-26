@@ -21,5 +21,6 @@ function Singleton (open, close, label) {
       return close(data)
     }
   }
-};
-module.exports = Singleton
+}
+;
+export default Singleton

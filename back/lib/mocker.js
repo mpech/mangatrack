@@ -69,4 +69,4 @@ Mocker.prototype.aft = function (cbk) {
 Mocker.prototype.unpreAll = function () {
   this.afts.forEach(x => x())
 }
-module.exports = Mocker
+export default Mocker

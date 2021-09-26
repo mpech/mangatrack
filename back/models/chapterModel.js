@@ -1,7 +1,6 @@
-const mongoose = require('mongoose')
+import mongoose from 'mongoose'
+import mongooseUtil from '../lib/mongooseUtil.js'
 const Schema = mongoose.Schema
-const mongooseUtil = require('../lib/mongooseUtil')
-
 const schema = new Schema({
   mangaId: { type: mongoose.Types.ObjectId, required: true, index: true },
   from: { type: String, required: true, enum: ['mangakakalot', 'manganelo', 'fanfox'] },
@@ -19,7 +18,6 @@ const schema = new Schema({
     at: { type: Number, required: true, default: Date.now }
   }]
 })
-
 function sortWithNoDupes (chapters) {
   const dic = chapters.reduce((acc, chap) => {
     acc[chap.num] = chap
@@ -35,6 +33,5 @@ schema.statics.upsertChapter = async function ({ mangaId, from, chapters }) {
   c.chapters = sortWithNoDupes(c.chapters.concat(chapters))
   return c.save()
 }
-
 mongooseUtil.setStatic('findOneForSure', schema)
-module.exports = mongoose.model('Chapter', schema, 'chapters')
+export default mongoose.model('Chapter', schema, 'chapters')

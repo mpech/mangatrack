@@ -1,10 +1,10 @@
-const assert = require('assert')
-const utils = require('../utils/')
-const UserModel = require('../../models/userModel')
-const Mocker = require('../../lib/mocker')
+import assert from 'assert'
+import utils from '../utils/index.js'
+import UserModel from '../../models/userModel.js'
+import Mocker from '../../lib/mocker.js'
 
 utils.bindDb()
-describe('models/userModel', function () {
+describe('models/userModel.js', function () {
   beforeEach(utils.clearColls([UserModel]))
 
   it('finds a user for sure', () => {

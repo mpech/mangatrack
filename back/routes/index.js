@@ -1,12 +1,18 @@
+import oauth from './oauth.js'
+import mangas from './mangas.js'
+import mangas$0 from './me/mangas.js'
+import me from './me/me.js'
+import batch from './admin/batch.js'
 const routers = [
-  require('./oauth'),
-  require('./mangas'),
-  require('./me/mangas'),
-  require('./me/me'),
-  require('./admin/batch')
+  oauth,
+  mangas,
+  mangas$0,
+  me,
+  batch
 ]
-module.exports = {
-  load: function (app) {
-    routers.forEach(x => x.load(app))
-  }
+export const load = function (app) {
+  routers.forEach(x => x.load(app))
+}
+export default {
+  load
 }

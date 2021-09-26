@@ -1,9 +1,9 @@
-const assert = require('assert')
-const utils = require('../utils/')
-const oauth = require('../../services/oauth')
-const AtModel = require('../../models/oauth/atModel')
-const RtModel = require('../../models/oauth/rtModel')
-const errorHandler = require('../../lib/errorHandler')
+import assert from 'assert'
+import utils from '../utils/index.js'
+import oauth from '../../services/oauth.js'
+import AtModel from '../../models/oauth/atModel.js'
+import RtModel from '../../models/oauth/rtModel.js'
+import errorHandler from '../../lib/errorHandler.js'
 
 utils.bindDb()
 describe('services/oauth', function () {

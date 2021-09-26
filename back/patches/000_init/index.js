@@ -1,5 +1,1 @@
-module.exports = {
-  run () {
-    return Promise.resolve()
-  }
-}
+export default () => Promise.resolve()

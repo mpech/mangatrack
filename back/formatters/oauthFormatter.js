@@ -1,6 +1,6 @@
-const Base = require('./baseFormatter')
-class Formatter extends Base {}
-
+import Base from './baseFormatter.js'
+class Formatter extends Base {
+}
 Formatter.prototype.formatRefresh = async function ({ accessToken, refreshToken, accessTokenExpiresAt } = {}) {
   return {
     token_type: 'Bearer',
@@ -9,5 +9,4 @@ Formatter.prototype.formatRefresh = async function ({ accessToken, refreshToken,
     expires_in: accessTokenExpiresAt
   }
 }
-
-module.exports = Formatter
+export default Formatter

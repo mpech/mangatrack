@@ -1,12 +1,11 @@
-const Base = require('./baseFormatter')
-const ChapterFormatter = require('./chapterFormatter')
+import Base from './baseFormatter.js'
+import ChapterFormatter from './chapterFormatter.js'
 class Formatter extends Base {
   constructor () {
     super()
     this.chapterFormatter = new ChapterFormatter()
   }
 }
-
 Formatter.prototype.format = async function (x) {
   return {
     id: x._id,
@@ -20,7 +19,6 @@ Formatter.prototype.format = async function (x) {
     }
   }
 }
-
 Formatter.prototype.formatFull = async function (x) {
   const chapters = await Promise.all(x.chapters.map(c => this.chapterFormatter.format(c)))
   return {
@@ -40,5 +38,4 @@ Formatter.prototype.formatFull = async function (x) {
     chapters: chapters
   }
 }
-
-module.exports = Formatter
+export default Formatter

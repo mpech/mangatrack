@@ -1,4 +1,4 @@
-const Base = require('../baseFormatter')
+import Base from '../baseFormatter.js'
 class Formatter extends Base {
   async format ({ _id, displayName, admin }) {
     return {
@@ -8,5 +8,4 @@ class Formatter extends Base {
     }
   }
 }
-
-module.exports = Formatter
+export default Formatter

@@ -59,4 +59,4 @@ bulker.queryStream = function (cursor, fn) {
     cursor.on('error', reject)
   })
 }
-module.exports = bulker
+export default bulker

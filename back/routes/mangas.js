@@ -1,14 +1,13 @@
-const { validate, Joi } = require('express-validation')
-const mongoose = require('mongoose')
-const MangaModel = require('../models/mangaModel')
-const ChapterModel = require('../models/chapterModel')
-const config = require('../config')
-const Formatter = require('../formatters/mangaFormatter')
-const prom = require('../lib/prom')
-const rules = require('../lib/rules')
-
-function load (app) {
-  this.formatter = new Formatter()
+import { validate, Joi } from 'express-validation'
+import mongoose from 'mongoose'
+import MangaModel from '../models/mangaModel.js'
+import ChapterModel from '../models/chapterModel.js'
+import config from '../config/index.js'
+import Formatter from '../formatters/mangaFormatter.js'
+import prom from '../lib/prom.js'
+import * as rules from '../lib/rules.js'
+const formatter = new Formatter()
+export const load = function (app) {
   app.get('/mangas', validate({
     query: Joi.object({
       q: Joi.string().min(3),
@@ -31,24 +30,21 @@ function load (app) {
       }
       crit._id = { $in: ids }
     }
-
     if (req.query.q) {
       crit.name = new RegExp(req.query.q, 'i')
     }
-
     if (req.query.minChapters) {
       crit.lastChap_num = { $gte: parseInt(req.query.minChapters, 10) }
     }
-
-    if (req.query.type) { crit.type = req.query.type }
-
+    if (req.query.type) {
+      crit.type = req.query.type
+    }
     const [count, coll] = await Promise.all([
       MangaModel.countDocuments(crit),
       MangaModel.find(crit).sort({ lastChap_at: -1 }).skip(offset).limit(limit).lean().exec()
     ])
-    return module.exports.formatter.formatCollection(coll, { count, offset, limit })
+    return formatter.formatCollection(coll, { count, offset, limit })
   }))
-
   app.get('/mangas/:nameId', validate({
     params: Joi.object({
       nameId: rules.nameId
@@ -60,10 +56,7 @@ function load (app) {
     const m = await MangaModel.findOneForSure(pred)
     const chapters = await ChapterModel.find({ mangaId: m._id })
     m.chapters = chapters
-    return module.exports.formatter.formatFull(m)
+    return formatter.formatFull(m)
   }))
 }
-
-module.exports = {
-  load: load
-}
+export default { load }

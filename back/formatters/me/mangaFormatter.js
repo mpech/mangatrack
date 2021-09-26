@@ -1,5 +1,4 @@
-const MangaFormatter = require('../mangaFormatter')
-
+import MangaFormatter from '../mangaFormatter.js'
 const format = async function ({ num, _id: mangaId, updatedAt }) {
   return { num, mangaId: mangaId, updatedAt }
 }
@@ -15,5 +14,9 @@ const formatCollection = async function (map, { populated } = {}) {
     })))
   }
 }
-
-module.exports = { format, formatCollection }
+export { format }
+export { formatCollection }
+export default {
+  format,
+  formatCollection
+}

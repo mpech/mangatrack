@@ -1,20 +1,19 @@
-const mongoose = require('mongoose')
-const fs = require('fs')
-const Singleton = require('./singleton')
-
+import mongoose from 'mongoose'
+import fs from 'fs'
+import Singleton from './singleton.js'
 const appSingle = Singleton(function open (app, config) {
   const dfds = []
   if (config.port) {
     dfds.push(new Promise((resolve, reject) => {
       const server = app.listen(config.port, function (err) {
-        if (err) { return reject(err) }
-
+        if (err) {
+          return reject(err)
+        }
         console.info('http on ' + config.port)
         return resolve(server)
       })
     }))
   }
-
   // db
   let dfd
   if (mongoose.connection && mongoose.connection.constructor.STATES.connected === mongoose.connection._readyState) {
@@ -27,7 +26,6 @@ const appSingle = Singleton(function open (app, config) {
         config.logger.err(err)
         return console.error('connection error:', err)
       })
-
       conn.connection.on('close', function (err) {
         if (config.phase !== 'usr') {
           const now = new Date()
@@ -37,23 +35,21 @@ const appSingle = Singleton(function open (app, config) {
         }
         return err
       })
-
       return conn.connection
     })
   }
-
   dfds.push(dfd)
-
   return Promise.all(dfds).then(datas => {
     console.log('serv start ', new Date())
     fs.readFile('./REVISION', 'utf8', function (err, revision) {
-      if (err) { return config.logger.inf('APPVERSION_statup REVISION file NOT FOUND') }
+      if (err) {
+        return config.logger.inf('APPVERSION_statup REVISION file NOT FOUND')
+      }
       config.logger.inf('APPVERSION_statup', revision)
     })
-
     return datas
   })
 }, function close (closables) {
   return Promise.all(closables.map(x => x.close()))
 }, 'app')
-module.exports = appSingle
+export default appSingle

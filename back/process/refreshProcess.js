@@ -1,12 +1,15 @@
-const LinkActivity = require('../activity/linkActivity')
-const RefreshActivity = require('../activity/refreshActivity')
-const bulker = require('../lib/bulker')
-const utils = require('../test/utils')
-const ctx = require('../lib/ctx')
-const importers = require('../importers')
-const errorHandler = require('../lib/errorHandler')
+import LinkActivity from '../activity/linkActivity.js'
+import RefreshActivity from '../activity/refreshActivity.js'
+import bulker from '../lib/bulker.js'
+import utils from '../test/utils/index.js'
+import ctx from '../lib/ctx.js'
+import importers from '../importers/index.js'
+import errorHandler from '../lib/errorHandler.js'
+import { fileURLToPath } from 'url'
+import yargs from 'yargs'
+import { hideBin } from 'yargs/helpers'
 
-async function run (name, ts) {
+export const run = async function (name, ts) {
   const fromToLinkActivity = {}
   const activities = importers.all().flatMap(x => {
     const importer = Reflect.construct(x, [])
@@ -33,9 +36,9 @@ async function run (name, ts) {
   return res
 }
 
-module.exports = { run }
-if (!module.parent) {
-  const optimist = require('yargs')
+export default { run }
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  const optimist = yargs(hideBin(process.argv))
     .usage(`$0: node refreshProcess.js [-i fanfox]
   If -i provided only import from specified importer`
     ).options('i', {

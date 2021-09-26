@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+import mongoose from 'mongoose'
 const Schema = mongoose.Schema
 
 const pTimeout = async t => t <= 0 || new Promise(resolve => setTimeout(resolve, t))
@@ -37,4 +37,4 @@ schema.methods.queueAll = async function (vArgs, delay) {
   this.tasks.push(...vArgs.map(args => ({ delay, args })))
   await this.save()
 }
-module.exports = mongoose.model('Fifo', schema, 'fifos')
+export default mongoose.model('Fifo', schema, 'fifos')

@@ -1,11 +1,11 @@
-const assert = require('assert')
-const Mocker = require('../../lib/mocker')
-const batch = require('../../process/batchProcess')
-const errorHandler = require('../../lib/errorHandler')
-const LinkActivity = require('../../activity/linkActivity')
-const ChapterModel = require('../../models/chapterModel')
-const MangaModel = require('../../models/mangaModel')
-const utils = require('../utils/')
+import assert from 'assert'
+import Mocker from '../../lib/mocker.js'
+import batch from '../../process/batchProcess.js'
+import errorHandler from '../../lib/errorHandler.js'
+import LinkActivity from '../../activity/linkActivity.js'
+import ChapterModel from '../../models/chapterModel.js'
+import MangaModel from '../../models/mangaModel.js'
+import utils from '../utils/index.js'
 utils.bindDb()
 
 describe('process/batchProcess', function () {

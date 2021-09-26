@@ -1,8 +1,7 @@
-const mongoose = require('mongoose')
+import mongoose from 'mongoose'
+import config from '../config/index.js'
+import mongooseUtil from '../lib/mongooseUtil.js'
 const Schema = mongoose.Schema
-const config = require('../config')
-const mongooseUtil = require('../lib/mongooseUtil')
-
 const schema = new Schema({
   link: { type: String, required: true },
   at: { type: Number, default: Date.now },
@@ -11,7 +10,6 @@ const schema = new Schema({
   reason: { type: String },
   mangaId: { type: String }
 })
-
 mongooseUtil.setStatic('findOneForSure', schema)
 schema.pre('save', function (next) {
   this.increment()
@@ -19,4 +17,4 @@ schema.pre('save', function (next) {
 })
 schema.index({ at: 1 })
 schema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 })
-module.exports = mongoose.model('Batch', schema, 'batches')
+export default mongoose.model('Batch', schema, 'batches')

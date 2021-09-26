@@ -1,7 +1,8 @@
-const assert = require('assert')
-const APH = require('../../lib/asyncPromiseHandler')
-const Mocker = require('../../lib/mocker')
-const nextTick = require('util').promisify(process.nextTick)
+import assert from 'assert'
+import APH from '../../lib/asyncPromiseHandler.js'
+import Mocker from '../../lib/mocker.js'
+import { promisify } from 'util'
+const nextTick = promisify(process.nextTick)
 describe('lib/asyncPromiseHandler', function () {
   afterEach(() => APH.clear())
   describe('set', () => {

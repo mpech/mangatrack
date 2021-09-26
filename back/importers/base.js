@@ -1,8 +1,8 @@
-const axios = require('axios')
-const moment = require('moment')
-const cheerio = require('cheerio')
-class Base {}
-
+import axios from 'axios'
+import moment from 'moment'
+import cheerio from 'cheerio'
+class Base {
+}
 Base.prototype.domFetch = async function (url) {
   const { data } = await axios.get(url)
   const $ = cheerio.load(data, {
@@ -13,22 +13,21 @@ Base.prototype.domFetch = async function (url) {
   })
   return $
 }
-
 Base.prototype.parseDate = function (s, now) {
   now = now || Date.now()
   /*
-  attempt to reverse any date
-  check for human stuff:
-    ago,
-    yesterday, today,
-    last week/month/year
-  check for halt numeric stuff
-    Nov xx DELIM 2019
-  check for numeric stuff
-    11/05 hh-md
-  default for gmt stuff
-    2019-12-04T08:54:15
-   */
+    attempt to reverse any date
+    check for human stuff:
+      ago,
+      yesterday, today,
+      last week/month/year
+    check for halt numeric stuff
+      Nov xx DELIM 2019
+    check for numeric stuff
+      11/05 hh-md
+    default for gmt stuff
+      2019-12-04T08:54:15
+     */
   if (s.includes('ago')) {
     s = s.replace('ago', '')
     const num = parseInt(s.match(/\d+/))
@@ -55,11 +54,9 @@ Base.prototype.parseDate = function (s, now) {
   }
   return new Date(s).getTime()
 }
-
 Base.prototype.parseDateDetail = function (s, now) {
   return this.parseDate(s, now)
 }
-
 Base.prototype.ensureAbsoluteUrl = function (url) {
   url = url.trim()
   if (url.startsWith('/')) {
@@ -67,16 +64,13 @@ Base.prototype.ensureAbsoluteUrl = function (url) {
   }
   return url
 }
-
 Base.prototype.accepts = function (link) {
   const url = new URL(this.allUrl)
   return link.startsWith(url.origin)
 }
-
 Base.prototype.isLinkValid = function (link) {
   const url = new URL(this.allUrl)
   const r = new RegExp('^' + url.origin + '/manga/[^/]+/?$', 'i')
   return r.test(link)
 }
-
-module.exports = Base
+export default Base

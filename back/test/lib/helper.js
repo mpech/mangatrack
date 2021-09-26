@@ -1,8 +1,8 @@
-const assert = require('assert')
-const helper = require('../../lib/helper')
-const Mocker = require('../../lib/mocker')
-const OauthService = require('../../services/oauth')
-const UserModel = require('../../models/userModel')
+import assert from 'assert'
+import helper from '../../lib/helper.js'
+import Mocker from '../../lib/mocker.js'
+import OauthService from '../../services/oauth.js'
+import UserModel from '../../models/userModel.js'
 
 describe('lib/helper', function () {
   describe('authenticate', () => {

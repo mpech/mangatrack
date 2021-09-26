@@ -1,13 +1,13 @@
-const assert = require('assert')
-const utils = require('../utils/')
-const MangaModel = require('../../models/mangaModel')
-const ChapterModel = require('../../models/chapterModel')
-const Mocker = require('../../lib/mocker')
-const ctx = require('../../lib/ctx')
-const errorHandler = require('../../lib/errorHandler')
+import assert from 'assert'
+import utils from '../utils/index.js'
+import MangaModel from '../../models/mangaModel.js'
+import ChapterModel from '../../models/chapterModel.js'
+import Mocker from '../../lib/mocker.js'
+import ctx from '../../lib/ctx.js'
+import errorHandler from '../../lib/errorHandler.js'
 
 utils.bindDb()
-describe('models/mangaModel', function () {
+describe('models/mangaModel.js', function () {
   beforeEach(utils.clearColls([MangaModel, ChapterModel]))
 
   it('keeps domain while using mongoose', Mocker.mockIt(function (mokr) {

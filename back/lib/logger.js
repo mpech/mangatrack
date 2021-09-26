@@ -1,16 +1,11 @@
-/*
-just convenient to log stuff in a rotated fashion
- */
-const util = require('util')
-const winston = require('winston')
-require('winston-daily-rotate-file')
-const path = require('path')
-const ctx = require('./ctx')
-
+import util from 'util'
+import winston from 'winston'
+import 'winston-daily-rotate-file'
+import path from 'path'
+import ctx from './ctx.js'
 const myFormat = winston.format.printf(({ sLevel, message, label, ts, sid, tid, uid }) => {
   return `[${sLevel}]${ts}|sid:${sid}|tid:${tid}|uid:${uid}>${message}`
 })
-
 class Logger {
   constructor ({ fname, maxsize, loglvl }) {
     const auditFile = fname.replace(path.basename(fname), '.dailyrotate_conf.json')
@@ -35,7 +30,6 @@ class Logger {
         level: 'debug'
       })
     }
-
     this.logger = winston.createLogger({
       format: myFormat,
       transports: [
@@ -76,4 +70,4 @@ Logger.prototype.err = function () {
 Logger.prototype.sta = function () {
   this._log('info', { sLevel: 'STA', args: arguments })
 }
-module.exports = Logger
+export default Logger

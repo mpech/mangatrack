@@ -1,6 +1,6 @@
-const assert = require('assert')
-const bulker = require('../../lib/bulker')
-const Mocker = require('../../lib/mocker')
+import assert from 'assert'
+import bulker from '../../lib/bulker.js'
+import Mocker from '../../lib/mocker.js'
 
 describe('lib/bulker', function () {
   it('bulk', Mocker.mockIt(mokr => {

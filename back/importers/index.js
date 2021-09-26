@@ -1,8 +1,12 @@
+import mangakakalot from './mangakakalot.js'
+import fanfox from './fanfox.js'
+import manganelo from './manganelo.js'
 const importers = [
-  require('../importers/mangakakalot'),
-  require('../importers/fanfox'),
-  require('../importers/manganelo')
+  mangakakalot,
+  fanfox,
+  manganelo
 ]
-module.exports = {
-  all () { return importers }
+export function all () { return importers }
+export default {
+  all
 }

@@ -1,12 +1,14 @@
-const express = require('express')
-const bodyParser = require('body-parser')
-const cors = require('cors')
-
-const config = require('./config')
-const appStarter = require('./lib/appStarter')
-const ctx = require('./lib/ctx')
-const reqLogger = require('./lib/reqlogger')
-const errorHandler = require('./lib/errorHandler')
+import express from 'express'
+import bodyParser from 'body-parser'
+import cors from 'cors'
+import config from './config/index.js'
+import appStarter from './lib/appStarter.js'
+import ctx from './lib/ctx.js'
+import { express as expressLog } from './lib/reqlogger.js'
+import errorHandler from './lib/errorHandler.js'
+import { load } from './routes/index.js'
+import death from 'death'
+import { fileURLToPath } from 'url'
 
 const app = express()
 app.enable('trust proxy')
@@ -15,16 +17,14 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(ctx.express())
 app.use(ctx.headers())
 app.use(cors())
-app.use(reqLogger.express({
+app.use(expressLog({
   maxRequestTime: config.reqlogger_maxRequestTime,
   logger: config.logger
-}))
-
-require('./routes').load(app)
+}));
+({ load }.load(app))
 app.get('/ping', (req, res) => res.send('OK'))
 app.use(errorHandler.express())
-
-if (!module.parent) {
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
   appStarter.open(app, config)
   config.logger.inf('started', new Date())
   const onDeath = function (signal, e) {
@@ -35,6 +35,6 @@ if (!module.parent) {
     return process.exit(1)
   }
   process.on('exit', onDeath.bind(null, 'exit'))
-  require('death')({ debug: true, uncaughtException: true })(onDeath)
+  death({ debug: true, uncaughtException: true })(onDeath)
 }
-module.exports = app
+export default app

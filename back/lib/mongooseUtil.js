@@ -1,5 +1,4 @@
-const errorHandler = require('./errorHandler')
-
+import errorHandler from './errorHandler.js'
 const base = {
   findOneForSure: function (pred, proj) {
     return this.findOne(pred, proj).then(x => {
@@ -10,17 +9,16 @@ const base = {
     })
   }
 }
-
 function setStatic (k, schema) {
   if (!base[k]) {
     throw new Error(`unknown method ${k}`)
   }
-
   if (schema.statics[k] && schema.statics[k] !== base[k]) {
     throw new Error(`${k} already present on schema`)
   }
-
   schema.statics[k] = base[k]
 }
-
-module.exports = { setStatic }
+export { setStatic }
+export default {
+  setStatic
+}
