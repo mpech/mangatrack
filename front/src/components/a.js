@@ -5,7 +5,7 @@ export default {
   to: '',
   toSharped: {
     get ({ to }) {
-      if (/^(\.|http|\/#)/.test(to)) { return to }
+      if (/^(\.|http|\/?#)/.test(to)) { return to }
       return '/#' + (to.startsWith('/') ? '' : '/') + to
     }
   },
