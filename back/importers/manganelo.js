@@ -71,7 +71,7 @@ Importer.prototype.fetchMangaDetail = async function (link, chap = null) {
     const a = $(x).find('a')
     const name = a.attr('title')
     const url = this.ensureAbsoluteUrl(a.attr('href'))
-    const num = parseFloat(url.match(/_([^_]+)$/)[1])
+    const num = parseFloat(url.match(/[_-]([^_-]+)$/)[1])
     let at = $(x).find('span[title]').eq(0).attr('title')
     at = this.parseDateDetail(at)
     return { name, url, num, at }

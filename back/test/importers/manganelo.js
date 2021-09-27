@@ -46,6 +46,20 @@ describe('importers/manganelo', function () {
     assert.strictEqual(date.getDate(), 8)
   }))
 
+  it('fetchMangaDetail failing chap', Mocker.mockIt(async mokr => {
+    const importer = new Importer()
+    let called = false
+    mokr.mock(Importer.prototype, 'domFetch', async _ => {
+      called = true
+      return utils.loadDom('manganelo/rn918211')
+    })
+    const { chapters: [c] } = await importer.fetchMangaDetail(null, { keptChapt: true })
+    assert(called)
+    assert.strictEqual(c.name, 'Leviathan (Lee Gyuntak) chapter Chapter 172')
+    assert.strictEqual(c.num, 172)
+    assert.strictEqual(c.url, 'https://readmanganato.com/manga-dx980680/chapter-172')
+  }))
+
   it('get linkFromChap', function () {
     const imp = new Importer()
     const link = imp.linkFromChap({ url: 'https://manganelo.com/chapter/qg918612/chapter_5.3' })

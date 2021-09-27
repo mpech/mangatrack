@@ -34,7 +34,10 @@ export const runLink = async function (link, ts, options = {}) {
   })
 }
 export const runId = async function (id, ts, options = {}) {
-  const { chapters: [chapter] } = await ChapterModel.findOneForSure({ mangaId: id, from: { $nin: config.excludeCdnImporter } }, { chapters: { $first: '$chapters' } })
+  const from = options.refreshThumb
+    ? { from: { $nin: config.excludeCdnImporter } }
+    : {}
+  const { chapters: [chapter] } = await ChapterModel.findOneForSure({ mangaId: id, ...from }, { chapters: { $first: '$chapters' } })
   return exports.runLink(chapter.url, ts, options)
 }
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

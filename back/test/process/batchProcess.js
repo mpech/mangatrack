@@ -67,6 +67,22 @@ describe('process/batchProcess', function () {
       assert.strictEqual(calledUrl, chapterUrl)
     }))
 
+    it('does refresh mangakakalot as long as not picture', Mocker.mockIt(async mokr => {
+      const mangaId = '0'.repeat(24)
+      const chapterId = '1'.repeat(24)
+      const chapterUrl = 'https://fanfox.net/manga/the_golden_age_park_hui_jin/c033/1.html#ipg1'
+      await Promise.all([
+        ChapterModel.create({ _id: chapterId, mangaId, chapters: [{ num: 2, url: chapterUrl }], from: 'mangakakalot' }),
+        MangaModel.create({ _id: mangaId, name: 'r' })
+      ])
+      let calledUrl = ''
+      mokr.mock(batch, 'runLink', async url => {
+        calledUrl = url
+      })
+      await batch.runId(mangaId, null, { refreshDescription: true })
+      assert.strictEqual(calledUrl, chapterUrl)
+    }))
+
     it('ignores mangakakalot for refresh', Mocker.mockIt(async mokr => {
       const mangaId = '0'.repeat(24)
       const chapterId = '1'.repeat(24)
@@ -75,7 +91,7 @@ describe('process/batchProcess', function () {
         ChapterModel.create({ _id: chapterId, mangaId, chapters: [{ num: 2, url: chapterUrl }], from: 'mangakakalot' }),
         MangaModel.create({ _id: mangaId, name: 'r' })
       ])
-      await assert.rejects(() => batch.runId(mangaId), { id: errorHandler.notFound.id })
+      await assert.rejects(() => batch.runId(mangaId, null, { refreshThumb: true }), { id: errorHandler.notFound.id })
     }))
   })
 })
