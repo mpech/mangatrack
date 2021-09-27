@@ -39,14 +39,14 @@ export default {
       })
     }
   },
-  render: ({ mangas = [], myMangas }) => html`
+  render: ({ mangas = [], myMangas, nextLink }) => html`
     <mt-layout with-to-top>
       <mt-filter-form onsearch="${search}"></mt-filter-form>
       <mt-grid
         mangas="${mangas}"
         myMangas="${myMangas}"
       ></mt-grid>
-      <button onclick="${handleMore}">Moarrr</button>
+      <button onclick="${handleMore}" data-next="${Number(!!nextLink)}">${nextLink ? 'Moarrr !' : 'no moar :('}</button>
     </mt-layout>
 `.style(`
   :host mt-filter-form {
@@ -63,6 +63,10 @@ export default {
     border: 1px solid #999;
     background-color: #e6e6e6;
     border-radius: 2px;
+  }
+  button[data-next="0"] {
+    pointer-events: none;
+    opacity: 0.5;
   }
   button:hover {
       background-image: linear-gradient(transparent,rgba(0,0,0,.05) 40%,rgba(0,0,0,.1));
