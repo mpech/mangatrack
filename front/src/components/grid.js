@@ -19,15 +19,14 @@ export default {
 `).style`
   :host > div {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    grid-template-rows: repeat(auto-fit, minmax(250px, 1fr));
+    justify-content: space-around;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 300px));
     gap: 2em;
   }
 
   @media only screen and (max-width: 800px) {
     :host > div {
-      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-      grid-template-rows: repeat(auto-fit, minmax(100px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(100px, 300px));
       gap: 1em;
     }
   }
