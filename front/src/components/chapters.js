@@ -115,6 +115,18 @@ export default {
     border-right: 1px solid #cbcbcb;
     cursor: pointer;
   }
+  .grid div:nth-child(1),
+  .grid div:nth-child(2),
+  .grid div:nth-child(3),
+  .grid div:nth-child(4) {
+    border-top: 1px solid #cbcbcb;
+  }
+  .grid div:nth-last-child(1),
+  .grid div:nth-last-child(2),
+  .grid div:nth-last-child(3),
+  .grid div:nth-last-child(4) {
+    border-bottom: 1px solid #cbcbcb;
+  }
   .grid .read ~ div, .read {
     background: #CCCCCC;
   }
