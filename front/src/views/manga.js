@@ -8,6 +8,7 @@ import MtCard from '@/components/card'
 import { follow, unfollow, fetchMyMangas, refreshManga } from '@/services/manga'
 import { fetchMangaDetail, fetchMe } from '@/api'
 import safe, { safeRetry } from '@/utils/safe'
+import thumbUrl404 from '@/assets/thumburl_404.png'
 
 const handleUnfollow = (host, e) => {
   const { id, lastChap: { num }, name } = e.composedPath()[0].followData
@@ -48,7 +49,22 @@ const setMangaDetail = host => ({ chapters, ...manga }) => {
 }
 const refreshChapters = host => refreshManga({ id: host.manga.id, host, onSuccess: setMangaDetail(host) })
 const refreshPicture = host => {
-  host.manga.thumbUrl && refreshManga({ id: host.manga.id, refreshThumb: true, host, onSuccess: setMangaDetail(host) })
+  const oldThumbUrl = host.manga.thumbUrl
+  refreshManga({
+    id: host.manga.id,
+    refreshThumb: true,
+    host,
+    onSuccess: manga => {
+      if (manga.thumbUrl === oldThumbUrl && oldThumbUrl !== thumbUrl404) {
+      // this is an error image, set it our thumb
+        host.manga = { ...host.manga, thumbUrl: thumbUrl404 }
+      }
+      setMangaDetail(host)(manga)
+    },
+    onFailure: () => {
+      host.manga = { ...host.manga, thumbUrl: thumbUrl404 }
+    }
+  })
 }
 
 export default {
@@ -90,7 +106,7 @@ export default {
   ${manga.name && html`<div class="mangaView">
     <mt-h1>${manga.name}</mt-h1>
     <div class="${['header', followed && 'followed']}">
-      <mt-card item="${manga}" followedNum="${myManga?.num}" onimageerror="${refreshPicture}">
+      <mt-card item="${manga}" followednum="${myManga?.num}" onimageerror="${refreshPicture}" nohover>
         ${followed
           ? html`
             <div slot="content">
@@ -134,6 +150,7 @@ export default {
 mt-card {
   flex-shrink: 0;
   flex-grow: 0;
+  --mt-a-min-width: 200px;
 }
 figure {
   width: 230px;

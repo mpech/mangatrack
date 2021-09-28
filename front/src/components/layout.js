@@ -1,5 +1,6 @@
 import { html } from 'hybrids'
 import MtToTop from '@/components/toTop'
+import MtA from '@/components/a'
 const onclick = (host, e) => {
   host.path = e.target.pathname
 }
@@ -55,5 +56,5 @@ mt-a {
 .logout [data-name="logout"] {
   color: #ff8080;
 }
-  `.define(MtToTop)
+  `.define(MtToTop, MtA)
 }

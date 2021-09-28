@@ -14,7 +14,7 @@ export default {
   },
   render: ({ followedMangas }) => (html`
   <div>
-    ${followedMangas.map(({ manga, followedNum }) => (html`<mt-card item="${manga}" followedNum="${followedNum}"></mt-card>`.key(manga.id)))}
+    ${followedMangas.map(({ manga, followedNum }) => (html`<mt-card item="${manga}" followednum="${followedNum}"></mt-card>`.key(manga.id)))}
   </div>
 `).style`
   :host > div {

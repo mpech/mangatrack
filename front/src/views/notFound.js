@@ -18,7 +18,5 @@ export default {
     <p>Thanks!</p>
   </div>
 </mt-layout>
-  `.style`
-
   `.define(MtLayout, MtH1)
 }

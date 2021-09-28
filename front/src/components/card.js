@@ -17,20 +17,26 @@ const handleError = (host, e) => dispatch(e.target, 'imageerror', { composed: tr
 export default {
   tag: 'MtCard',
   item: {},
-  followedNum: {},
+  followednum: '',
   lastChap: ({ item }) => item.lastChap || {},
   link: ({ item: { nameId } }) => 'mangas/' + nameId,
   lastHumanDate: ({ lastChap: { at } }) => humanDate(at),
-  upToDate: ({ followedNum, lastChap: { num } }) => typeof (followedNum) !== 'undefined' && followedNum === num,
+  upToDate: ({ followednum, lastChap: { num } }) => typeof (followednum) !== 'undefined' && followednum === num,
+  nohover: false,
   render: ({
     item,
+    nohover,
+    followednum,
     lastChap,
     lastHumanDate,
     upToDate,
-    link,
-    followedNum
-  }) => html`
-<div class="${[typeof (followedNum) !== 'undefined' ? 'followed' : undefined, upToDate ? 'up-to-date' : undefined]}">
+    link
+  }) => (console.log('shhh', nohover, nohover, followednum), html`
+<div class="${[
+  typeof (followednum) !== 'undefined' && 'followed',
+  upToDate && 'up-to-date',
+  nohover && 'nohover'
+  ]}">
   <mt-a to="${link}">
     <figure>
       <img src="${item.thumbUrl}" onerror="${handleError}"/>
@@ -49,26 +55,35 @@ export default {
   </slot>
 </div>
   `.style`
+:host {
+  min-width: var(--mt-a-min-width);
+}
 :host > div {
   text-align:left;
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+  --base-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--base-shadow);
 }
 :host > div:hover {
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
 }
 :host > div.followed {
-  box-shadow: 0 2px 4px rgba(255, 0, 0, 0.45);
+  --base-shadow: 0 2px 4px rgba(255, 0, 0, 0.45);
+  box-shadow: var(--base-shadow);
 }
 :host > div.followed:hover {
   box-shadow: 0 3px 8px rgba(255, 0, 0, 0.45);
 }
 :host > div.followed.up-to-date {
-  box-shadow: 0 2px 4px rgba(0, 255, 0, 0.45);
+  --base-shadow: 0 2px 4px rgba(0, 255, 0, 0.45);
+  box-shadow: var(--base-shadow);
 }
 :host > div.followed.up-to-date:hover {
   box-shadow: 0 3px 8px rgba(0, 255, 0, 0.45);
+}
+.nohover.nohover:hover:hover {
+  box-shadow: var(--base-shadow);
 }
 .content {
   padding: 10px;
@@ -105,5 +120,5 @@ figure {
   justify-content: space-between;
 }
 
-  `.define(MtFollow, MtA)
+  `).define(MtFollow, MtA)
 }

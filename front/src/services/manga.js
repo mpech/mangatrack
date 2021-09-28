@@ -23,15 +23,18 @@ export const unfollow = async ({ host, onSuccess, id, num, name }) => {
 }
 
 export const fetchMyMangas = safeRetry(apiFetchMyMangas)
-export const refreshManga = safeRetry(async ({ host, id, refreshThumb, onSuccess }) => {
-  const batch = await apiRefreshManga({ id, refreshThumb })
+export const refreshManga = safeRetry(async ({ host, id, refreshThumb, onSuccess, onFailure = () => {} }) => {
+  const batch = await safeRetry(apiRefreshManga)({ id, refreshThumb })
+
   if (batch.status === 'OK') {
-    safe(fetchMangaDetail)({ nameId: host.manga.nameId }).then(res => {
-      if (res.error || res instanceof Error) {
-        return notifyError(host, `failed to update ${host.manga.name} (${res.message})`)
-      }
-      notify(host, `${host.manga.name} updated`)
-      onSuccess(res)
-    })
+    const res = await safe(fetchMangaDetail)({ nameId: host.manga.nameId })
+    notify(host, `${host.manga.name} updated`)
+    onSuccess(res)
+  } else {
+    onFailure()
+    return notifyError(host, refreshThumb
+      ? `failed to update picture for ${host.manga.name}`
+      : `failed to update ${host.manga.name} (${batch.reason})`
+    )
   }
 })
