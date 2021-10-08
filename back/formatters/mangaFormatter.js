@@ -1,5 +1,6 @@
 import Base from './baseFormatter.js'
 import ChapterFormatter from './chapterFormatter.js'
+import { tag } from '../lib/tagger/index.js'
 class Formatter extends Base {
   constructor () {
     super()
@@ -12,6 +13,7 @@ Formatter.prototype.format = async function (x) {
     name: x.name,
     nameId: x.nameId,
     thumbUrl: x.thumbUrl,
+    tags: await tag(x.name + ' ' + x.description_content), // for now, just do it on the fly because not safe
     lastChap: {
       num: x.lastChap_num,
       url: x.lastChap_url,
@@ -30,6 +32,7 @@ Formatter.prototype.formatFull = async function (x) {
       content: x.description_content,
       from: x.description_from
     },
+    tags: await tag(x.name + ' ' + x.description_content),
     lastChap: {
       num: x.lastChap_num,
       url: x.lastChap_url,

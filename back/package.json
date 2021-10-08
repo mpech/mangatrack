@@ -32,7 +32,8 @@
     "mocha": "^9.1.2",
     "randomstring": "^1.2.1",
     "supertest": "6.1.6",
-    "supervisor": "^0.12.0"
+    "supervisor": "^0.12.0",
+    "wanakana": "^4.0.2"
   },
   "scripts": {
     "test": "npx mocha --recursive",

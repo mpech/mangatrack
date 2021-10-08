@@ -1,1 +1,1 @@
-./node_modules/supervisor/lib/cli-wrapper.js -w activity,app.js,config,formatters,importers,lib,models,process,routes,services app.js
+./node_modules/supervisor/lib/cli-wrapper.js -e js,txt,json -w activity,app.js,config,formatters,importers,lib,models,process,routes,services app.js

@@ -43,6 +43,7 @@ export const load = function (app) {
       MangaModel.countDocuments(crit),
       MangaModel.find(crit).sort({ lastChap_at: -1 }).skip(offset).limit(limit).lean().exec()
     ])
+
     return formatter.formatCollection(coll, { count, offset, limit })
   }))
   app.get('/mangas/:nameId', validate({

@@ -14,6 +14,26 @@ const humanDate = at => {
 }
 
 const handleError = (host, e) => dispatch(e.target, 'imageerror', { composed: true, bubbles: true })
+const MtTags = {
+  tag: 'MtTags',
+  tags: {},
+  render: ({ tags = [] }) => html`
+    <span class=${tags.concat('container')}>
+      <span class="jn">🇯🇵</span>
+      <span class="kr">🇰🇷</span>
+      <span class="cn">🇨🇳</span>
+    </span>
+  `.style`
+.container span {
+  display: none;
+}
+.container.jn .jn,
+.container.cn .cn,
+.container.kr .kr {
+  display: inline;
+}
+  `
+}
 export default {
   tag: 'MtCard',
   item: {},
@@ -31,7 +51,7 @@ export default {
     lastHumanDate,
     upToDate,
     link
-  }) => (console.log('shhh', nohover, nohover, followednum), html`
+  }) => (html`
 <div class="${[
   typeof (followednum) !== 'undefined' && 'followed',
   upToDate && 'up-to-date',
@@ -44,7 +64,7 @@ export default {
   </mt-a>
   <slot name="content">
     <div class="content">
-      <h4 title="${item.name}"><span><mt-a to="${link}">${item.name}</mt-a></span></h4>
+      <h4 title="${item.name}"><span><mt-tags tags="${item.tags}"></mt-tags><mt-a to="${link}">${item.name}</mt-a></span></h4>
       <div class="chapter">
         <span>
           <mt-a to="${lastChap.url}">c<span>${lastChap.num}</span>↗</mt-a>
@@ -120,5 +140,5 @@ figure {
   justify-content: space-between;
 }
 
-  `).define(MtFollow, MtA)
+  `).define(MtFollow, MtA, MtTags)
 }
