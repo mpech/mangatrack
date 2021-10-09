@@ -42,7 +42,7 @@ async function fetchPatchNames (lastPatchRun) {
   // file is meant to be shared bug could be lost somehow
   // if does not exist ensure it to exist instead of assuming
   // it is the first time it is being run
-  require(path.join(DIRNAME, fname))
+  await import(path.join(DIRNAME, fname))
   const startIdx = getFileIndex(fname) + 1
   const files = await preaddir(DIRNAME)
   return files.reduce((arr, x) => {
@@ -69,15 +69,16 @@ async function main () {
     console.log('no patch run')
     return
   }
-  for (const name of patchNames) {
+  for (const aName of patchNames) {
     try {
-      const mod = require(`./${name}`)
+      const name = aName.endsWith('.js') ? aName : aName.endsWith('index') ? aName + '.js' : path.join(aName, 'index.js')
+      const mod = await import(`./${name}`)
       console.log('> run', name)
       config.logger.inf('> run', name)
       await mod.run()
       console.log(' ok ', name)
     } catch (e) {
-      console.log('err patch', name, e, e.stack)
+      console.log('err patch', aName, e, e.stack)
       throw e
     }
   }

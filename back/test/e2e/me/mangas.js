@@ -259,7 +259,8 @@ describe('e2e/me/mangas', function () {
       id: '000000000000000000000000',
       name: 'gro',
       nameId: 'gro',
-      lastChap: { num: 6, at: 5 }
+      lastChap: { num: 6, at: 5 },
+      tags: []
     })
   }))
 })

@@ -11,7 +11,7 @@ let krNames = null
 let krChars = null
 let state = null
 const punctuations = ['?', '!', '“', '"']
-const stopWords = new Set(['me', 'on', 'you', 'make', 'take', 'in', 'man', 'You', 'On', 'son', 'en'])
+const stopWords = new Set(['me', 'on', 'you', 'make', 'take', 'in', 'man', 'You', 'On', 'son', 'en', 'go'])
 const toSet = x => {
   const v = Array.isArray(x)
     ? x
@@ -98,6 +98,7 @@ export const tag = async (txt = '') => {
     }
   })
 
+  // console.log('dic : ', dic)
   // TODO: CN: maybe Chang* should always match
   const r = new RegExp(`[${punctuations.join('')}]`, 'g')
   const countPunctuation = [...txt.matchAll(r)].length

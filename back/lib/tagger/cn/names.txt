@@ -60,6 +60,7 @@ Geming
 Gen
 Genghis
 Genji
+Gu
 Guang
 Guangli
 Gui
@@ -151,6 +152,7 @@ Mingxia
 Mingyu
 Minsheng
 Minzhe
+Nian
 Ning
 Ninghong
 Nuo
@@ -200,6 +202,7 @@ Suyin
 Sying
 Taiwan
 Tao
+Tang
 Tengfei
 Ting
 Tingzhe
@@ -246,6 +249,7 @@ Yan
 Yang
 Yanlin
 Yanyu
+Yansheng
 Yaochuan
 Yaozu
 Ye

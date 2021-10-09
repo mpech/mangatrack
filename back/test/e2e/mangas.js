@@ -195,4 +195,40 @@ describe('e2e/mangas', function () {
 
     assert.strictEqual(body.name, 'abc')
   }))
+
+  describe('list by tags', () => {
+    it('filter if only one tag', async () => {
+      const [a] = await Promise.all([
+        MangaModel.create({ name: 'abc', tags: ['kr'] }),
+        MangaModel.create({ name: 'def', tags: ['jn'] })
+      ])
+      const { body: { items } } = await utils.requester
+        .get('/mangas?tags=kr')
+        .expect(200)
+
+      assert.strictEqual(items.length, 1)
+      assert.strictEqual(items[0].name, a.name)
+    })
+
+    it('filter if several tags', async () => {
+      const [a, b] = await Promise.all([
+        MangaModel.create({ name: 'abc', tags: ['kr'], lastChap_at: 0 }),
+        MangaModel.create({ name: 'def', tags: ['cn'], lastChap_at: 1 }),
+        MangaModel.create({ name: 'ghi', tags: ['jn'] })
+      ])
+      const { body: { items } } = await utils.requester
+        .get('/mangas?tags=kr&tags=cn')
+        .expect(200)
+
+      assert.strictEqual(items.length, 2)
+      assert.strictEqual(items[0].name, b.name)
+      assert.strictEqual(items[1].name, a.name)
+    })
+
+    it('rejects if invalid tag', () => {
+      return utils.requester
+        .get('/mangas?tags=tt')
+        .expect(400)
+    })
+  })
 })

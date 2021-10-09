@@ -14,7 +14,8 @@ const schema = new Schema({
   lastChap_num: { type: Number, default: -1 },
   lastChap_url: { type: String },
   description_content: String,
-  description_from: String
+  description_from: String,
+  tags: { type: [{ type: String, enum: ['jn', 'cn', 'kr'] }], index: true }
 })
 schema.pre('validate', function () {
   if (!this.nameId) {

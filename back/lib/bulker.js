@@ -44,8 +44,8 @@ bulker.throttle = function (arr, n, iDelay, fn) {
   })
 }
 
-bulker.queryStream = function (cursor, fn) {
-  const APH = require('../lib/asyncPromiseHandler')
+bulker.queryStream = async function (cursor, fn) {
+  const { default: APH } = await import('../lib/asyncPromiseHandler.js')
   APH.set('stackEnabled', true)
   return new Promise((resolve, reject) => {
     cursor.on('data', async function (doc) {
