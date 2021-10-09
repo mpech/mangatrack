@@ -27,7 +27,9 @@ export default {
   render: ({ kr, cn, jn }) => html`
     <input placeholder="manga name" type="text" name="q" onkeyup=${onKeyUp}></input>
     <input placeholder="min chapters" type="text" name="minChapters" pattern="[0-9]*" onkeyup=${onKeyUp}></input>
+    <span>
     ${['jn', 'kr', 'cn'].map(tag => html`<input type="checkbox" onchange="${onCheck}" checked="${tag}" name="${tag}"/><label for="${tag}">${tag}</label>`)}
+    </span>
   `.style(`
 input[type="text"] {
   border: none;
@@ -51,6 +53,8 @@ input[type="checkbox"]:nth-child(n+1) {
 :host {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
 }
     `)
 }

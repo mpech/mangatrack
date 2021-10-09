@@ -26,7 +26,7 @@ export default {
 
   @media only screen and (max-width: 800px) {
     :host > div {
-      grid-template-columns: repeat(auto-fit, minmax(100px, 300px));
+      grid-template-columns: repeat(auto-fit, minmax(100px, 150px));
       gap: 1em;
     }
   }
