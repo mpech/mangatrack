@@ -10,11 +10,19 @@ const headers = () => {
 }
 
 const throwOnKo = async res => {
-  const json = await res.json()
   if (!res.ok) {
+    const txt = await res.text()
+    let json
+    try {
+      json = JSON.parse(txt)
+    } catch (e) {
+      const err = new Error(txt)
+      err.error = txt
+      throw err
+    }
     throw json
   }
-  return json
+  return res.json()
 }
 export const get = (url, query = {}) => {
   const queryStr = Object.keys(query).length

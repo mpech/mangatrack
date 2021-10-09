@@ -17,10 +17,10 @@ const retry = fn => async (...args) => {
     throw new Error('no token')
   }
   return await fn(...args).catch(async e => {
-    if (e.error === 'invalid_token') {
+    if (e.error === 'invalid_token' || e.error === 'unauthorized_client') {
       await refreshToken()
       return fn(...args).catch(async e => {
-        if (e.error === 'invalid_token') {
+        if (e.error === 'invalid_token' || e.error === 'unauthorized_client') {
           await logout()
           return e
         }
