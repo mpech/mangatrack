@@ -1,33 +1,35 @@
 import { html, dispatch } from 'hybrids'
 import debounce from 'debounce'
 
-const myDebounce = debounce(({ q, minChapters, name, cb }) => {
-  name === 'q' && (q.length === 0 || q.length >= 3) && cb()
-  name === 'minChapters' && cb()
+const myDebounce = debounce(host => {
+  const { q, minChapters, jn, cn, kr } = host
+  if (q.length > 0 && q.length < 3) { return }
+  dispatch(host, 'search', { detail: { q, minChapters, jn, cn, kr } })
 }, 1000)
 
 const onKeyUp = (host, { target: { name, value } }) => {
-  const { q, minChapters } = host
-  const cb = () => {
-    host[name] = value
-    dispatch(host, 'search', { detail: { q, minChapters, [name]: value } })
-  }
-  myDebounce({ name, q, minChapters, [name]: value, cb })
+  host[name] = value
+  myDebounce(host)
+}
+
+const onCheck = (host, { target: { checked, name } }) => {
+  host[name] = checked
+  myDebounce(host)
 }
 
 export default {
   tag: 'MtFilterForm',
-  q: { set: (host, val) => val },
-  minChapters: { set: (host, val) => val },
-  render: () => html`
-    <div id="filterForm">
-      <div>
-        <input placeholder="manga name" type="text" name="q" onkeyup=${onKeyUp}></input>
-        <input placeholder="min chapters" type="text" name="minChapters" pattern="[0-9]*" onkeyup=${onKeyUp}></input>
-      </div>
-    </div>
+  q: { get: (host, val = '') => val, set: (host, val) => val },
+  kr: { get: (host, val = true) => val, set: (host, val) => val },
+  cn: { get: (host, val = true) => val, set: (host, val) => val },
+  jn: { get: (host, val = true) => val, set: (host, val) => val },
+  minChapters: { get: (host, val = 0) => val, set: (host, val) => val },
+  render: ({ kr, cn, jn }) => html`
+    <input placeholder="manga name" type="text" name="q" onkeyup=${onKeyUp}></input>
+    <input placeholder="min chapters" type="text" name="minChapters" pattern="[0-9]*" onkeyup=${onKeyUp}></input>
+    ${['jn', 'kr', 'cn'].map(tag => html`<input type="checkbox" onchange="${onCheck}" checked="${tag}" name="${tag}"/><label for="${tag}">${tag}</label>`)}
   `.style(`
-#filterForm input {
+input[type="text"] {
   border: none;
   padding:12px 12px 12px 48px;
   box-sizing: border-box;
@@ -40,8 +42,15 @@ export default {
   border-radius: 8px;
   margin-right: 20px;
 }
+input[type="checkbox"] {
+  cursor: pointer;
+}
+input[type="checkbox"]:nth-child(n+1) {
+  margin-left: 10px;
+}
 :host {
-  display: block;
+  display: flex;
+  align-items: center;
 }
     `)
 }

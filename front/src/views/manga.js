@@ -5,6 +5,7 @@ import MtH1 from '@/components/h1'
 import MtFollow from '@/components/follow'
 import MtRefresh from '@/components/refresh'
 import MtCard from '@/components/card'
+import MtTags from '@/components/tags'
 import { follow, unfollow, fetchMyMangas, refreshManga } from '@/services/manga'
 import { fetchMangaDetail, fetchMe } from '@/api'
 import safe, { safeRetry } from '@/utils/safe'
@@ -104,7 +105,7 @@ export default {
   render: ({ manga, myManga, followed, chapters, lastRead, description, user }) => (html`
 <mt-layout with-to-top>
   ${manga.name && html`<div class="mangaView">
-    <mt-h1>${manga.name}</mt-h1>
+    <mt-h1><mt-tags tags="${manga.tags}"></mt-tags>${manga.name}</mt-h1>
     <div class="${['header', followed && 'followed']}">
       <mt-card item="${manga}" followednum="${myManga?.num}" onimageerror="${refreshPicture}" nohover>
         ${followed
@@ -177,5 +178,8 @@ blockquote {
 blockquote footer:before {
   content: "— ";
 }
-  `.define(MtChapters, MtLayout, MtH1, MtFollow, MtCard, MtRefresh)
+mt-tags {
+  --font-size: 16px;
+}
+  `.define(MtChapters, MtLayout, MtH1, MtFollow, MtCard, MtRefresh, MtTags)
 }

@@ -18,9 +18,10 @@ const throwOnKo = async res => {
 }
 export const get = (url, query = {}) => {
   const queryStr = Object.keys(query).length
-    ? '?' + Object.entries(query).filter(([k, v]) => k && v).map(([k, v]) => `${k}=${v}`).join('&')
+    ? '?' + Object.entries(query).filter(([k, v]) => k && v).flatMap(([k, v]) => {
+        return Array.isArray(v) ? v.map(vx => `${k}=${vx}`) : `${k}=${v}`
+      }).join('&')
     : ''
-
   url = url.startsWith('http') ? url : apiHost + url
   return window.fetch(url + queryStr, { headers: headers() }).then(throwOnKo)
 }
@@ -38,7 +39,7 @@ const put = makeBodyVerb('PUT')
 const del = makeBodyVerb('DELETE')
 const post = makeBodyVerb('POST')
 
-export const fetchMangas = ({ q, minChapters } = {}) => get('/mangas', { q, minChapters, limit: 18 })
+export const fetchMangas = ({ q, minChapters, tags } = {}) => get('/mangas', { q, minChapters, tags, limit: 18 })
 export const fetchMyMangas = ({ populated } = {}) => get('/me/mangas', { populated })
 export const trackManga = ({ id, num = 1 }) => put('/me/mangas/' + id, { num })
 export const untrackManga = ({ id }) => del('/me/mangas/' + id)

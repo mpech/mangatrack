@@ -1,6 +1,7 @@
 import { html, dispatch } from 'hybrids'
 import MtFollow from '@/components/follow'
 import MtA from '@/components/a'
+import MtTags from '@/components/tags'
 import relativeTime from 'dayjs/plugin/relativeTime'
 // remove dayjs: no need expect fromNow
 import dayjs from 'dayjs'
@@ -14,26 +15,7 @@ const humanDate = at => {
 }
 
 const handleError = (host, e) => dispatch(e.target, 'imageerror', { composed: true, bubbles: true })
-const MtTags = {
-  tag: 'MtTags',
-  tags: {},
-  render: ({ tags = [] }) => html`
-    <span class=${tags.concat('container')}>
-      <span class="jn">🇯🇵</span>
-      <span class="kr">🇰🇷</span>
-      <span class="cn">🇨🇳</span>
-    </span>
-  `.style`
-.container span {
-  display: none;
-}
-.container.jn .jn,
-.container.cn .cn,
-.container.kr .kr {
-  display: inline;
-}
-  `
-}
+
 export default {
   tag: 'MtCard',
   item: {},
