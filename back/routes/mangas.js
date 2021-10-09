@@ -8,7 +8,6 @@ import prom from '../lib/prom.js'
 import * as rules from '../lib/rules.js'
 const formatter = new Formatter()
 export const load = function (app) {
-  const joiTagEnum = Joi.string().valid(...MangaModel.schema.tree.tags.type[0].enum)
   app.get('/mangas', validate({
     query: Joi.object({
       q: Joi.string().min(3),
@@ -17,7 +16,7 @@ export const load = function (app) {
       type: Joi.string().valid(...MangaModel.schema.tree.type.enum),
       offset: Joi.number().min(0),
       limit: Joi.number().min(1).max(config.pagination_limit),
-      tags: Joi.alternatives().try(Joi.array().items(joiTagEnum), joiTagEnum)
+      tags: Joi.alternatives().try(Joi.array().items(rules.tagEnum), rules.tagEnum)
     })
   }), prom(async function (req, res) {
     const offset = parseInt(req.query.offset || 0)

@@ -17,12 +17,18 @@ const schema = new Schema({
   description_from: String,
   tags: { type: [{ type: String, enum: ['jn', 'cn', 'kr'] }], index: true }
 })
+
 schema.pre('validate', function () {
   if (!this.nameId) {
     this.nameId = this.constructor.canonicalize(this.name || '')
   }
   return Promise.resolve()
 })
+
+schema.methods.getTaggableText = function () {
+  return this.name + ' ' + this.description_content
+}
+
 schema.statics.canonicalize = function (s) {
   return s
     .replace(/\s+/g, '_')
@@ -30,6 +36,7 @@ schema.statics.canonicalize = function (s) {
     .substring(0, config.nameId_maxLength)
     .toLowerCase()
 }
+
 schema.statics.findChapter = async function ({ nameId, _id, num }, from) {
   const m = await this.findOne(_id ? { _id } : { nameId }).select('_id').lean()
   if (!m) {

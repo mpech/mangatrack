@@ -226,4 +226,10 @@ describe('models/mangaModel.js', function () {
       assert.strictEqual(x.thumbUrl, 'b')
     }))
   })
+  describe('getTaggableText', () => {
+    it('returns contatenation of name and description_content', () => {
+      const m = new MangaModel({ name: 'abc', description_content: 'def' })
+      assert.strictEqual(m.getTaggableText(), 'abc def')
+    })
+  })
 })

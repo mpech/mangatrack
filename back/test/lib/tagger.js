@@ -57,5 +57,13 @@ describe('lib/tagger', function () {
       const s = 'Lee Gyuntak And who in the world is Kana'
       assert.deepStrictEqual(await tag(s), ['kr'])
     })
+    it('tags jn via additionalTags from names', async () => {
+      const s = 'Lee Gyuntak vs Groo Tagg'
+      assert.deepStrictEqual(await tag(s, { jn: new Set(['Groo', 'Tagg']) }), ['jn'])
+    })
+    it('tags jn via additionalTags from words', async () => {
+      const s = 'Lee Gyuntak vs groo tagg'
+      assert.deepStrictEqual(await tag(s, { jn: new Set(['groo', 'tagg']) }), ['jn'])
+    })
   })
 })

@@ -28,6 +28,11 @@
     "winston-daily-rotate-file": "^4.5.5",
     "yargs": "^17.2.1"
   },
+  "standard": {
+    "env": [
+      "mocha"
+    ]
+  },
   "devDependencies": {
     "mocha": "^9.1.2",
     "randomstring": "^1.2.1",

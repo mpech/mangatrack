@@ -7,8 +7,10 @@ let jnNames = null
 let jnWords = null
 let jnChars = null
 let cnNames = null
+const cnWords = null
 let krNames = null
 let krChars = null
+const krWords = null
 let state = null
 const punctuations = ['?', '!', '“', '"']
 const stopWords = new Set(['me', 'on', 'you', 'make', 'take', 'in', 'man', 'You', 'On', 'son', 'en', 'go'])
@@ -72,7 +74,17 @@ const _tagIt = (dic, { countPunctuation, len }) => {
   return [tag]
 }
 
-export const tag = async (txt = '') => {
+const buildDic = (dic, arr, tok) => {
+  return arr.map(([tag, tags, additionalTags]) => {
+    if ((tags && tags.has(tok)) || (additionalTags && additionalTags.has(tok))) {
+      dic[tag].bag.add(tok)
+      return true
+    }
+    return false
+  }).some(Boolean)
+}
+
+export const tag = async (txt = '', tags = {}) => {
   await load()
   const [jn, cn, kr] = [0, 0, 0].map(() => ({ bag: new Set(), nChars: 0 }))
   const dic = { [jnTag]: jn, [cnTag]: cn, [krTag]: kr }
@@ -82,20 +94,13 @@ export const tag = async (txt = '') => {
   kr.nChars = [...txt.matchAll(new RegExp(`[${[...krChars].join('')}]`, 'g'))].length
   jn.nChars = [...txt.matchAll(new RegExp(`[${[...jnChars].join('')}]`, 'g'))].length
   tokens.forEach(aTok => {
-    const tokNames = aTok.split('-')
-    const isName = [[cnTag, cnNames], [krTag, krNames], [jnTag, jnNames]].map(([tag, names]) => {
-      if (tokNames.some(x => names.has(x))) {
-        dic[tag].bag.add(aTok)
-        return true
-      }
-      return false
-    }).some(Boolean)
-
+    const isName = aTok.split('-').some(tok => {
+      return buildDic(dic, [[cnTag, cnNames, tags.cn], [krTag, krNames, tags.kr], [jnTag, jnNames, tags.jn]], tok)
+    })
     if (isName) { return }
+
     const tok = aTok.toLowerCase()
-    if (jnWords.has(tok)) {
-      jn.bag.add(tok)
-    }
+    buildDic(dic, [[cnTag, cnWords, tags.cn], [krTag, krWords, tags.kr], [jnTag, jnWords, tags.jn]], tok)
   })
 
   // console.log('dic : ', dic)
