@@ -4,7 +4,21 @@ import TagModel from '../models/tagModel.js'
 import { tag } from '../lib/tagger/index.js'
 
 class TagActivity {}
-TagActivity.prototype.tag = async ({ word, tags, nameId }) => {
+TagActivity.prototype.getTagSets = () => {
+  return TagModel.find().lean().then(tags => {
+    const additionalTags = { kr: new Set(), cn: new Set(), jn: new Set() }
+    const stopTags = new Set()
+    tags.forEach(tagModel => {
+      if (tagModel.tags.length === 0) {
+        stopTags.add(tagModel.word)
+      } else {
+        tagModel.tags.forEach(tag => additionalTags[tag].add(tagModel.word))
+      }
+    })
+    return { additionalTags, stopTags }
+  })
+}
+TagActivity.prototype.tag = async function ({ word, tags, nameId }) {
   const backTag = word ? await TagModel.findOneAndUpdate({ word }, { word, tags }, { new: true, upsert: true }) : {}
 
   const wordRegex = new RegExp(word)
@@ -16,18 +30,7 @@ TagActivity.prototype.tag = async ({ word, tags, nameId }) => {
       ],
       ...(nameId ? { nameId } : {})
     }),
-    TagModel.find().lean().then(tags => {
-      const additionalTags = { kr: new Set(), cn: new Set(), jn: new Set() }
-      const stopTags = new Set()
-      tags.forEach(tagModel => {
-        if (tagModel.tags.length === 0) {
-          stopTags.add(tagModel.word)
-        } else {
-          tagModel.tags.forEach(tag => additionalTags[tag].add(tagModel.word))
-        }
-      })
-      return { additionalTags, stopTags }
-    })
+    this.getTagSets()
   ])
   await bulker.bulk(mangas, 20, async m => {
     const out = { taggedWords: new Map() }

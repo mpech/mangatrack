@@ -14,10 +14,10 @@ const onKeyUp = (host, { target: { name, value } }) => {
 
 const onCheck = (host, { target: { checked, name } }) => {
   host[name] = checked
-  myDebounce(host)
   const radio = host.shadowRoot.querySelector('[name="tag"][value="tag"]')
   radio.checked = 'checked'
   host.untagged = false
+  myDebounce(host)
 }
 
 const handleUntagged = (host) => {

@@ -45,7 +45,7 @@ export default {
   render: ({ mangas = [], myMangas, nextLink, count }) => html`
     <mt-layout with-to-top>
       <mt-filter-form onsearch="${search}"></mt-filter-form>
-      ${typeof (count) !== 'undefined' ? html`<div>${count} results</div>` : ''}
+      ${typeof (count) !== 'undefined' ? html`<div class="stats">${count} results</div>` : ''}
       <mt-grid
         mangas="${mangas}"
         myMangas="${myMangas}"
@@ -57,6 +57,7 @@ export default {
     margin-top: 20px;
     margin-bottom: 40px;
   }
+  .stats { margin-bottom: 20px; color: var(--title-color);}
   
   button {
     display: block;
