@@ -16,7 +16,7 @@ export const load = function (app) {
       type: Joi.string().valid(...MangaModel.schema.tree.type.enum),
       offset: Joi.number().min(0),
       limit: Joi.number().min(1).max(config.pagination_limit),
-      tags: Joi.alternatives().try(Joi.array().items(rules.tagEnum), rules.tagEnum)
+      tags: Joi.alternatives().try(Joi.array().items(rules.tagEnum), rules.tagEnum, Joi.string().valid('untagged'))
     })
   }), prom(async function (req, res) {
     const offset = parseInt(req.query.offset || 0)
@@ -41,7 +41,11 @@ export const load = function (app) {
       crit.type = req.query.type
     }
     if (req.query.tags) {
-      crit.tags = Array.isArray(req.query.tags) ? { $in: req.query.tags } : req.query.tags
+      crit.tags = Array.isArray(req.query.tags)
+        ? { $in: req.query.tags }
+        : req.query.tags === 'untagged'
+          ? { $size: 0 }
+          : req.query.tags
     }
     const [count, coll] = await Promise.all([
       MangaModel.countDocuments(crit),

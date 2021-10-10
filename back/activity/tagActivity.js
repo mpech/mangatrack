@@ -33,6 +33,7 @@ TagActivity.prototype.tag = async ({ word, tags, nameId }) => {
     const out = { taggedWords: new Map() }
     m.tags = await tag(m.getTaggableText(), { tags: additionalTags, stopTags }, out)
     m.taggedWords = out.taggedWords
+    // console.log('ff', m.tags, m.taggedWords)
     return m.save()
   })
 

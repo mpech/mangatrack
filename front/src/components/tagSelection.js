@@ -49,7 +49,8 @@ const MtTagSelection = {
     get: (host, val = '') => val,
     set: (host, val) => val,
     observe: (host, val) => {
-      host.tags = host.taggedwords[host.word]
+      // back may have matched from lowercase... better show it even if false positive
+      host.tags = host.taggedwords[host.word] || host.taggedwords[host.word.toLowerCase()]
     }
   },
   text: { get: (host, val = '') => val, set: (host, val) => val },

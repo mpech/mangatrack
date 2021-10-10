@@ -8,6 +8,7 @@ import { fetchMyMangas } from '@/services/manga'
 const setMangas = host => res => {
   host.mangas = res.items
   host.nextLink = res.links.next
+  host.count = res.count
 }
 const concatMangas = host => res => {
   host.mangas = host.mangas.concat(res.items)
@@ -15,8 +16,8 @@ const concatMangas = host => res => {
 }
 
 const search = safe((host, e) => {
-  const { detail: { q, minChapters, jn, cn, kr } } = e
-  const tags = jn && cn && kr ? [] : [jn && 'jn', cn && 'cn', kr && 'kr'].filter(Boolean)
+  const { detail: { q, minChapters, jn, cn, kr, untagged } } = e
+  const tags = untagged ? 'untagged' : jn && cn && kr ? [] : [jn && 'jn', cn && 'cn', kr && 'kr'].filter(Boolean)
   return fetchMangas({ q, minChapters, tags }).then(setMangas(host))
 })
 
@@ -28,6 +29,7 @@ export default {
   tag: 'mtHome',
   mangas: { set: (h, v) => v },
   nextLink: { set: (host, v) => v },
+  count: { get: (host, val) => val, set: (host, v) => v },
   myMangas: [],
   hasMore: false,
   load: {
@@ -40,9 +42,10 @@ export default {
       })
     }
   },
-  render: ({ mangas = [], myMangas, nextLink }) => html`
+  render: ({ mangas = [], myMangas, nextLink, count }) => html`
     <mt-layout with-to-top>
       <mt-filter-form onsearch="${search}"></mt-filter-form>
+      ${typeof (count) !== 'undefined' ? html`<div>${count} results</div>` : ''}
       <mt-grid
         mangas="${mangas}"
         myMangas="${myMangas}"

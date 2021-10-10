@@ -230,5 +230,20 @@ describe('e2e/mangas', function () {
         .get('/mangas?tags=tt')
         .expect(400)
     })
+
+    it('lists only manga having no tags', async () => {
+      const [a, b] = await Promise.all([
+        MangaModel.create({ name: 'abc', tags: [], lastChap_at: 0 }),
+        MangaModel.create({ name: 'def', tags: [], lastChap_at: 1 }),
+        MangaModel.create({ name: 'ghi', tags: ['jn'] })
+      ])
+      const { body: { items } } = await utils.requester
+        .get('/mangas?tags=untagged')
+        .expect(200)
+
+      assert.strictEqual(items.length, 2)
+      assert.strictEqual(items[0].name, b.name)
+      assert.strictEqual(items[1].name, a.name)
+    })
   })
 })

@@ -2,9 +2,9 @@ import { html, dispatch } from 'hybrids'
 import debounce from 'debounce'
 
 const myDebounce = debounce(host => {
-  const { q, minChapters, jn, cn, kr } = host
+  const { q, minChapters, jn, cn, kr, untagged } = host
   if (q.length > 0 && q.length < 3) { return }
-  dispatch(host, 'search', { detail: { q, minChapters, jn, cn, kr } })
+  dispatch(host, 'search', { detail: { q, minChapters, jn, cn, kr, untagged } })
 }, 1000)
 
 const onKeyUp = (host, { target: { name, value } }) => {
@@ -15,20 +15,34 @@ const onKeyUp = (host, { target: { name, value } }) => {
 const onCheck = (host, { target: { checked, name } }) => {
   host[name] = checked
   myDebounce(host)
+  const radio = host.shadowRoot.querySelector('[name="tag"][value="tag"]')
+  radio.checked = 'checked'
+  host.untagged = false
 }
 
+const handleUntagged = (host) => {
+  host.untagged = true
+  ;[...host.shadowRoot.querySelectorAll('[type="checkbox"]')].forEach(x => {
+    x.checked = false
+  })
+  myDebounce(host)
+}
 export default {
   tag: 'MtFilterForm',
   q: { get: (host, val = '') => val, set: (host, val) => val },
   kr: { get: (host, val = true) => val, set: (host, val) => val },
   cn: { get: (host, val = true) => val, set: (host, val) => val },
   jn: { get: (host, val = true) => val, set: (host, val) => val },
+  untagged: { get: (host, val = false) => val, set: (host, val) => val },
   minChapters: { get: (host, val = 0) => val, set: (host, val) => val },
-  render: ({ kr, cn, jn }) => html`
+  render: ({ kr, cn, jn, untagged }) => html`
     <input placeholder="manga name" type="text" name="q" onkeyup=${onKeyUp}></input>
     <input placeholder="min chapters" type="text" name="minChapters" pattern="[0-9]*" onkeyup=${onKeyUp}></input>
     <span>
+    <input type="radio" name="tag" value="tag"/>
     ${['jn', 'kr', 'cn'].map(tag => html`<input type="checkbox" onchange="${onCheck}" checked="${tag}" name="${tag}"/><label for="${tag}">${tag}</label>`)}
+    | <label for="untagged">Untagged only</label>
+    <input type="radio" name="tag" value="untagged" onchange="${handleUntagged}" checked="${untagged}"/>
     </span>
   `.style(`
 input[type="text"] {
@@ -49,6 +63,9 @@ input[type="checkbox"] {
 }
 input[type="checkbox"]:nth-child(n+1) {
   margin-left: 10px;
+}
+[name="tag"][value="tag"] {
+  display: none;
 }
 :host {
   display: flex;
