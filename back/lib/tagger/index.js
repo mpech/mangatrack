@@ -13,7 +13,7 @@ let krChars = null
 const krWords = null
 let state = null
 const punctuations = ['?', '!', '“', '"']
-const stopWords = new Set(['me', 'on', 'you', 'make', 'take', 'in', 'man', 'You', 'On', 'son', 'en', 'go'])
+const stopWords = new Set(['me', 'men', 'on', 'you', 'make', 'take', 'in', 'man', 'You', 'On', 'son', 'en', 'go'])
 const toSet = x => {
   const v = Array.isArray(x)
     ? x

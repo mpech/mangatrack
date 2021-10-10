@@ -4,8 +4,8 @@ import TagModel from '../models/tagModel.js'
 import { tag } from '../lib/tagger/index.js'
 
 class TagActivity {}
-TagActivity.prototype.tag = async ({ word, tags }) => {
-  const backTag = await TagModel.findOneAndUpdate({ word }, { word, tags }, { new: true, upsert: true })
+TagActivity.prototype.tag = async ({ word, tags, nameId }) => {
+  const backTag = word ? await TagModel.findOneAndUpdate({ word }, { word, tags }, { new: true, upsert: true }) : {}
 
   const wordRegex = new RegExp(word)
   const [mangas, { additionalTags, stopTags }] = await Promise.all([
@@ -13,7 +13,8 @@ TagActivity.prototype.tag = async ({ word, tags }) => {
       $or: [
         { description_content: wordRegex },
         { name: wordRegex }
-      ]
+      ],
+      ...(nameId ? { nameId } : {})
     }),
     TagModel.find().lean().then(tags => {
       const additionalTags = { kr: new Set(), cn: new Set(), jn: new Set() }
