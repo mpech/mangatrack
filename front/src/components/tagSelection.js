@@ -32,6 +32,9 @@ const handleTagSelect = (host, { detail: { tag } }) => {
   myDebounce(host)
 }
 
+const handleClose = (host) => {
+  host.word = ''
+}
 const MtTagSelection = {
   tag: 'mtTagSelection',
   user: { get: (host, val = {}) => val, set: (host, val) => val },
@@ -61,7 +64,7 @@ const MtTagSelection = {
       ? html`
         <span style="--posy:${wordPosition.x - 10}px; --posx:${wordPosition.y + 15}px;">
           <mt-tags interactive tags="${tags}" ontagselect="${handleTagSelect}"></mt-tags>
-        </span>`
+        </span><div class="overlay" onclick="${handleClose}"></div>`
       : ''}
   `).style(`
 :host { position: relative; display: inline-block;}
@@ -74,10 +77,20 @@ const MtTagSelection = {
   padding: 5px;
   border-radius: 10%;
   opacity: 0.9;
+  box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.45);
+  z-index: 1;
 }
 .tagged {
   text-decoration: underline;
   color: blue;
+}
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  opacity: 0;
 }
 `).define(MtTags)
 }
