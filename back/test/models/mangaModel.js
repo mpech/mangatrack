@@ -225,11 +225,32 @@ describe('models/mangaModel.js', function () {
       assert.strictEqual(x.description_from, 'mangakakalot')
       assert.strictEqual(x.thumbUrl, 'b')
     }))
+
+    it('sets author', Mocker.mockIt(async function (mokr) {
+      await MangaModel.create({ name: 'test', author: 'a' })
+      await MangaModel.upsertManga({
+        name: 'test',
+        chapters: [{ num: 2, url: 'b', at: 10 }],
+        author: 'roger'
+      }, 'mangakakalot')
+      const x = await MangaModel.findOne({ name: 'test' })
+      assert.strictEqual(x.author, 'roger')
+    }))
+
+    it('let author untouched if not given', Mocker.mockIt(async function (mokr) {
+      await MangaModel.create({ name: 'test', author: 'a' })
+      await MangaModel.upsertManga({
+        name: 'test',
+        chapters: [{ num: 2, url: 'b', at: 10 }]
+      }, 'mangakakalot')
+      const x = await MangaModel.findOne({ name: 'test' })
+      assert.strictEqual(x.author, 'a')
+    }))
   })
   describe('getTaggableText', () => {
-    it('returns contatenation of name and description_content', () => {
-      const m = new MangaModel({ name: 'abc', description_content: 'def' })
-      assert.strictEqual(m.getTaggableText(), 'abc def')
+    it('returns contatenation of author, name, description_content', () => {
+      const m = new MangaModel({ author: 'Seongdae', name: 'abc', description_content: 'def' })
+      assert.strictEqual(m.getTaggableText(), 'Seongdae abc def')
     })
   })
 })

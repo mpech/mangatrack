@@ -8,7 +8,6 @@ const schema = new Schema({
   nameId: { type: String, required: true, unique: true, index: true },
   name: { type: String, required: true, unique: true, index: true },
   thumbUrl: String,
-  type: { type: String, enum: ['manga', 'manhwa', 'manhua'] },
   lastChap_at: { type: Number, default: Date.now, required: true },
   // simplify the update query, assuming no chap will be negative
   lastChap_num: { type: Number, default: -1 },
@@ -16,7 +15,8 @@ const schema = new Schema({
   description_content: String,
   description_from: String,
   tags: { type: [{ type: String, enum: ['jn', 'cn', 'kr'] }], index: true },
-  taggedWords: { type: Schema.Types.Map, of: [{ type: String, enum: ['jn', 'cn', 'kr'] }], default: _ => new Map() }
+  taggedWords: { type: Schema.Types.Map, of: [{ type: String, enum: ['jn', 'cn', 'kr'] }], default: _ => new Map() },
+  author: String
 })
 
 schema.pre('validate', function () {
@@ -27,7 +27,7 @@ schema.pre('validate', function () {
 })
 
 schema.methods.getTaggableText = function () {
-  return this.name + ' ' + this.description_content
+  return this.author + ' ' + this.name + ' ' + this.description_content
 }
 
 schema.statics.canonicalize = function (s) {
@@ -103,7 +103,7 @@ schema.statics.upsertManga = async function (manga, from, options = { refreshThu
     if (lastChap.lastChap_num <= el.lastChap_num) {
       lastChap = {}
     }
-    const set = { ...lastChap, ...facultativeProps }
+    const set = { ...lastChap, ...facultativeProps, ...({ author: manga.author ? manga.author : el.author }) }
     if (Object.keys(set).length) {
       el = Object.assign(el, set)
       await this.updateOne({ nameId: manga.nameId }, { $set: set })

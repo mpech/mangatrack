@@ -67,6 +67,7 @@ Importer.prototype.linkFromChap = function (chap) {
  */
 Importer.prototype.fetchMangaDetail = async function (link, chap = null) {
   const $ = await this.domFetch(link)
+  const author = $('.story-info-right .a-h[href*="author/"]').text()
   const chapters = $('.row-content-chapter li').map((i, x) => {
     const a = $(x).find('a')
     const name = a.attr('title')
@@ -90,6 +91,7 @@ Importer.prototype.fetchMangaDetail = async function (link, chap = null) {
       chap.description = txt.trim()
     }
   }
+  chap.author = author
   return { chapters, manga: chap }
 }
 export default Importer

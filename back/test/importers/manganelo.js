@@ -34,6 +34,7 @@ describe('importers/manganelo', function () {
     const { chapters, manga } = await importer.fetchMangaDetail(null, { keptChapt: true })
     assert(called)
     assert(manga.keptChapt)
+    assert.strictEqual(manga.author, 'Rui Tsukiyo')
     assert.strictEqual(chapters.length, 12)
     assert.deepStrictEqual(chapters.map(c => c.num), [1, 1.1, 1.2, 2.1, 2.2, 3.1, 3.2, 4.1, 4.2, 5.1, 5.2, 5.3].reverse())
     const c = chapters[0]
