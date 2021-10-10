@@ -57,6 +57,7 @@ describe('importers/mangakakalot', function () {
       assert(called)
       assert(manga.keptChapt)
       assert.strictEqual(manga.author, 'Ooima Yoshitoki')
+      assert.strictEqual(manga.aliasName, 'Alternative : 不滅のあなたへ (Japanese); 致不灭的你 (Chinese); Fumetsu no Anata e; To Your Eternity (English)')
       assert.strictEqual(chapters.length, 117)
       const dic = chapters.reduce((acc, x) => {
         acc[x.num] = 1

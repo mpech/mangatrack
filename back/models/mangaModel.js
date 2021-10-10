@@ -16,7 +16,8 @@ const schema = new Schema({
   description_from: String,
   tags: { type: [{ type: String, enum: ['jn', 'cn', 'kr'] }], index: true },
   taggedWords: { type: Schema.Types.Map, of: [{ type: String, enum: ['jn', 'cn', 'kr'] }], default: _ => new Map() },
-  author: String
+  authors: [String],
+  aliasName: String
 })
 
 schema.pre('validate', function () {
@@ -27,7 +28,7 @@ schema.pre('validate', function () {
 })
 
 schema.methods.getTaggableText = function () {
-  return this.author + ' ' + this.name + ' ' + this.description_content
+  return [Array.isArray(this.authors) ? this.authors.join(' ') : '', this.name, this.aliasName, this.description_content].filter(Boolean).join(' ')
 }
 
 schema.statics.canonicalize = function (s) {
@@ -103,7 +104,14 @@ schema.statics.upsertManga = async function (manga, from, options = { refreshThu
     if (lastChap.lastChap_num <= el.lastChap_num) {
       lastChap = {}
     }
-    const set = { ...lastChap, ...facultativeProps, ...({ author: manga.author ? manga.author : el.author }) }
+    const set = {
+      ...lastChap,
+      ...facultativeProps,
+      ...({
+        authors: manga.authors ? manga.authors : el.authors,
+        aliasName: manga.aliasName ? manga.aliasName : el.aliasName
+      })
+    }
     if (Object.keys(set).length) {
       el = Object.assign(el, set)
       await this.updateOne({ nameId: manga.nameId }, { $set: set })

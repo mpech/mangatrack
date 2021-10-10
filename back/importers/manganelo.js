@@ -67,7 +67,10 @@ Importer.prototype.linkFromChap = function (chap) {
  */
 Importer.prototype.fetchMangaDetail = async function (link, chap = null) {
   const $ = await this.domFetch(link)
-  const author = $('.story-info-right .a-h[href*="author/"]').text()
+  const authors = $('.story-info-right .a-h[href*="author/"]').map((_, el) => {
+    return $(el).text()
+  }).toArray()
+  const aliasName = $('.story-info-right h2:eq(0)').text()
   const chapters = $('.row-content-chapter li').map((i, x) => {
     const a = $(x).find('a')
     const name = a.attr('title')
@@ -91,7 +94,15 @@ Importer.prototype.fetchMangaDetail = async function (link, chap = null) {
       chap.description = txt.trim()
     }
   }
-  chap.author = author
+  chap.authors = authors
+  chap.aliasName = aliasName
   return { chapters, manga: chap }
+}
+
+Importer.prototype.accepts = function (link) {
+  return Base.prototype.accepts.call(this, link) || /(?:read)manganato\.com/.test(link)
+}
+Importer.prototype.isLinkValid = function (link) {
+  return Base.prototype.isLinkValid.call(this, link) || /https:\/\/(?:read)manganato\.com\/manga[^/]+\/?$/i.test(link)
 }
 export default Importer

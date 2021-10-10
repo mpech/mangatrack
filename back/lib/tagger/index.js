@@ -62,7 +62,7 @@ const _tagIt = (dic, { countPunctuation, len }) => {
   }
   const tags = [jnTag, cnTag, krTag]
   const pBag = softmax(tags.map(tag => dic[tag].bag.size))
-  const pNChars = softmax(tags.map(tag => dic[tag].nChars))
+  const pNChars = softmax(tags.map(tag => dic[tag].nChars ? 1 : 0))// count does not matter, only existence. TODO, get kanji list...
   const v = scal(pBag, pNChars)
   const imax = v.indexOf(Math.max(...v))
 

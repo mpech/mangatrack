@@ -41,7 +41,7 @@ describe('importers/fanfox', function () {
     const { chapters, manga } = await importer.fetchMangaDetail('https://fanfox.net/manga/wan_gu_shen_wang/', { ok: true })
     assert(called)
     assert(manga.ok)
-    assert.strictEqual(manga.author, 'ONE')
+    assert.deepStrictEqual(manga.authors, ['ONE'])
     assert.strictEqual(chapters.length, 197)
     const dic = chapters.reduce((acc, x) => {
       acc[Math.floor(x.num)] = 1

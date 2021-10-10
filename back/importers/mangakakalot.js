@@ -2,6 +2,7 @@ import Base from './base.js'
 import config from '../config/index.js'
 import safeRegExp from '../lib/safeRegExp.js'
 import errorHandler from '../lib/errorHandler.js'
+import ManganeloImporter from './manganelo.js'
 class Importer extends Base {
   constructor () {
     super()
@@ -72,7 +73,8 @@ Importer.prototype.fetchMangaDetail = async function (link, chap = null, seen = 
   }
   seen.add(link)
   const $ = await this.domFetch(link)
-  const author = $('.manga-info-text a[href*="/search_author"], .manga-info-text a[href*="/search/author"]').text()
+  const authors = $('.manga-info-text a[href*="/search_author"], .manga-info-text a[href*="/search/author"]').map($el => $el.text()).toArray()
+  const aliasName = $('.manga-info-text .story-alternative').text()
   const chapters = $('.chapter-list .row').map((i, x) => {
     const a = $(x).find('a')
     const name = a.attr('title')
@@ -87,6 +89,10 @@ Importer.prototype.fetchMangaDetail = async function (link, chap = null, seen = 
     const url = $.html().match(/location\.assign\(['"]([^'"]+)['"]\)/)
     if (url && this.accepts(url[1])) {
       return this.fetchMangaDetail(url[1], chap, seen)
+    }
+    const importer = new ManganeloImporter()
+    if (url && importer.accepts(url[1])) {
+      return importer.fetchMangaDetail(url[1], chap, seen)
     }
   }
   if (!chap) {
@@ -103,7 +109,8 @@ Importer.prototype.fetchMangaDetail = async function (link, chap = null, seen = 
       chap.description = txt.trim()
     }
   }
-  chap.author = author
+  chap.authors = authors
+  chap.aliasName = aliasName
   return { chapters, manga: chap }
 }
 export default Importer
