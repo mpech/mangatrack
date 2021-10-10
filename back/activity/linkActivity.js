@@ -5,9 +5,11 @@ import BatchModel from '../models/batchModel.js'
 import safeJsonStringify from 'safe-json-stringify'
 import APH from '../lib/asyncPromiseHandler.js'
 import EventEmitter from 'events'
+import TagActivity from './tagActivity.js'
 class LinkActivity {
   constructor (importer) {
     this.imp = importer
+    this.tagActivity = new TagActivity()
   }
 }
 LinkActivity.prototype.accepts = function (url) {
@@ -36,6 +38,7 @@ LinkActivity.prototype.importLink = function (link, chap = null, options = {}) {
           err = this._shortError(e)
           config.logger.inf('failed to save', chapters[0], '...', err)
         })
+        await this.tagActivity.tag({ nameId: mangaRecord.nameId })
         batch.set('mangaId', mangaRecord._id)
       } catch (e) {
         err = this._shortError(e)

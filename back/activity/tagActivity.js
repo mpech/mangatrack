@@ -3,9 +3,16 @@ import bulker from '../lib/bulker.js'
 import TagModel from '../models/tagModel.js'
 import { tag } from '../lib/tagger/index.js'
 
-class TagActivity {}
-TagActivity.prototype.getTagSets = () => {
-  return TagModel.find().lean().then(tags => {
+class TagActivity {
+  constructor () {
+    this.tagSets = false
+  }
+}
+TagActivity.prototype.getTagSets = function () {
+  if (this.tagSets) {
+    return this.tagSets
+  }
+  this.tagSets = TagModel.find().lean().then(tags => {
     const additionalTags = { kr: new Set(), cn: new Set(), jn: new Set() }
     const stopTags = new Set()
     tags.forEach(tagModel => {
@@ -17,6 +24,7 @@ TagActivity.prototype.getTagSets = () => {
     })
     return { additionalTags, stopTags }
   })
+  return this.tagSets
 }
 TagActivity.prototype.tag = async function ({ word, tags, nameId }) {
   const backTag = word ? await TagModel.findOneAndUpdate({ word }, { word, tags }, { new: true, upsert: true }) : {}
