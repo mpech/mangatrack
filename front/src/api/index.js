@@ -66,3 +66,4 @@ export const refreshToken = ({ refreshToken }) => {
   ).then(throwOnKo)
 }
 export const fetchMe = () => get('/me')
+export const putTags = ({ word, tags }) => put('/admin/tags', { word, tags })

@@ -15,7 +15,8 @@ const schema = new Schema({
   lastChap_url: { type: String },
   description_content: String,
   description_from: String,
-  tags: { type: [{ type: String, enum: ['jn', 'cn', 'kr'] }], index: true }
+  tags: { type: [{ type: String, enum: ['jn', 'cn', 'kr'] }], index: true },
+  taggedWords: { type: Schema.Types.Map, of: [{ type: String, enum: ['jn', 'cn', 'kr'] }], default: _ => new Map() }
 })
 
 schema.pre('validate', function () {

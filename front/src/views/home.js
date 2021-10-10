@@ -16,7 +16,8 @@ const concatMangas = host => res => {
 
 const search = safe((host, e) => {
   const { detail: { q, minChapters, jn, cn, kr } } = e
-  return fetchMangas({ q, minChapters, tags: [jn && 'jn', cn && 'cn', kr && 'kr'].filter(Boolean) }).then(setMangas(host))
+  const tags = jn && cn && kr ? [] : [jn && 'jn', cn && 'cn', kr && 'kr'].filter(Boolean)
+  return fetchMangas({ q, minChapters, tags }).then(setMangas(host))
 })
 
 const handleMore = safe(host => {

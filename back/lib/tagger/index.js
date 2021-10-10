@@ -84,8 +84,9 @@ const buildDic = (dic, arr, tok) => {
   }).some(Boolean)
 }
 
-export const tag = async (txt = '', tags = {}) => {
+export const tag = async (txt = '', options = {}, out) => {
   await load()
+  const { tags = {}, stopTags = new Set() } = options
   const [jn, cn, kr] = [0, 0, 0].map(() => ({ bag: new Set(), nChars: 0 }))
   const dic = { [jnTag]: jn, [cnTag]: cn, [krTag]: kr }
   const tokens = getTokens(txt)
@@ -94,6 +95,9 @@ export const tag = async (txt = '', tags = {}) => {
   kr.nChars = [...txt.matchAll(new RegExp(`[${[...krChars].join('')}]`, 'g'))].length
   jn.nChars = [...txt.matchAll(new RegExp(`[${[...jnChars].join('')}]`, 'g'))].length
   tokens.forEach(aTok => {
+    if (stopTags.has(aTok)) {
+      return
+    }
     const isName = aTok.split('-').some(tok => {
       return buildDic(dic, [[cnTag, cnNames, tags.cn], [krTag, krNames, tags.kr], [jnTag, jnNames, tags.jn]], tok)
     })
@@ -108,5 +112,13 @@ export const tag = async (txt = '', tags = {}) => {
   const r = new RegExp(`[${punctuations.join('')}]`, 'g')
   const countPunctuation = [...txt.matchAll(r)].length
   const res = await _tagIt(dic, { countPunctuation, len })
+  if (out) {
+    out.taggedWords = new Map()
+    for (const word of new Set([...jn.bag, ...kr.bag, ...cn.bag])) {
+      out.taggedWords.set(word, [jnTag, cnTag, krTag].map(tag => {
+        return dic[tag].bag.has(word) && tag
+      }).filter(Boolean))
+    }
+  }
   return res
 }

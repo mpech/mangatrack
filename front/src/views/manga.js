@@ -6,6 +6,7 @@ import MtFollow from '@/components/follow'
 import MtRefresh from '@/components/refresh'
 import MtCard from '@/components/card'
 import MtTags from '@/components/tags'
+import MtTagSelection from '@/components/tagSelection'
 import { follow, unfollow, fetchMyMangas, refreshManga } from '@/services/manga'
 import { fetchMangaDetail, fetchMe } from '@/api'
 import safe, { safeRetry } from '@/utils/safe'
@@ -68,6 +69,11 @@ const refreshPicture = host => {
   })
 }
 
+const handleTagChange = host => {
+  const nameId = host.nameId
+  safe(fetchMangaDetail)({ nameId }).then(setMangaDetail(host))
+}
+
 export default {
   tag: 'MtManga',
   chapters: [],
@@ -77,12 +83,13 @@ export default {
   },
   user: {},
   myMangas: [],
+  nameId: { get: (host, val = window.location.href.match(/mangas\/(.*)/)[1]) => val },
   myManga: ({ myMangas, manga }) => myMangas.find(({ state, mangaId }) => state !== 'deleted' && mangaId === manga.id),
   lastRead: ({ myManga }) => myManga?.num !== undefined ? myManga?.num : UNREAD,
   followed: ({ lastRead }) => lastRead !== UNREAD,
   load: {
     connect (host) {
-      const nameId = window.location.href.match(/mangas\/(.*)/)[1]
+      const nameId = host.nameId
       fetchMyMangas().then(res => {
         res.items && (host.myMangas = res.items)
       })
@@ -93,6 +100,7 @@ export default {
           host.user = res
         }
       })
+      return () => {}
     }
   },
   description ({ manga }) {
@@ -105,7 +113,10 @@ export default {
   render: ({ manga, myManga, followed, chapters, lastRead, description, user }) => (html`
 <mt-layout with-to-top>
   ${manga.name && html`<div class="mangaView">
-    <mt-h1><mt-tags tags="${manga.tags}"></mt-tags>${manga.name}</mt-h1>
+    <mt-h1>
+      <mt-tags tags="${manga.tags}"></mt-tags>
+      <mt-tag-selection text="${manga.name}" user="${user}" ontagchange="${handleTagChange}" taggedwords="${manga.taggedWords}">
+    </mt-h1>
     <div class="${['header', followed && 'followed']}">
       <mt-card item="${manga}" followednum="${myManga?.num}" onimageerror="${refreshPicture}" nohover>
         ${followed
@@ -124,12 +135,13 @@ export default {
         }
       </mt-card>
       <div class="description">
-        <blockquote>
-          ${description}
-          <footer>
-            <cite>${manga.description.from}</cite>
-          </footer>
-        </blockquote>
+          <blockquote>
+            <mt-tag-selection text="${description}" user="${user}" ontagchange="${handleTagChange}" taggedwords="${manga.taggedWords}">
+            </mt-tag-selection>
+            <footer>
+              <cite>${manga.description.from}</cite>
+            </footer>
+          </blockquote>
       </div>
     </div>
     <mt-chapters
@@ -181,5 +193,5 @@ blockquote footer:before {
 mt-tags {
   --font-size: 16px;
 }
-  `.define(MtChapters, MtLayout, MtH1, MtFollow, MtCard, MtRefresh, MtTags)
+  `.define(MtChapters, MtLayout, MtH1, MtFollow, MtCard, MtRefresh, MtTags, MtTagSelection)
 }
