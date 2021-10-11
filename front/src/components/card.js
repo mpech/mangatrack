@@ -41,7 +41,7 @@ export default {
   ]}">
   <mt-a to="${link}">
     <figure>
-      <img src="${item.thumbUrl}" onerror="${handleError}"/>
+      <img referrerpolicy="same-origin" src="${item.thumbUrl}" onerror="${handleError}"/>
     </figure>
   </mt-a>
   <slot name="content">

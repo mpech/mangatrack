@@ -4,7 +4,7 @@ import importer from '../importers/index.js'
 import errorHandler from '../lib/errorHandler.js'
 import BatchModel from '../models/batchModel.js'
 import ChapterModel from '../models/chapterModel.js'
-import config from '../config/index.js'
+import MangaModel from '../models/mangaModel.js'
 import yargs from 'yargs'
 import { fileURLToPath } from 'url'
 import { hideBin } from 'yargs/helpers'
@@ -34,10 +34,7 @@ export const runLink = async function (link, ts, options = {}) {
   })
 }
 export const runId = async function (id, ts, options = {}) {
-  const from = options.refreshThumb
-    ? { from: { $nin: config.excludeCdnImporter } }
-    : {}
-  const { chapters: [chapter] } = await ChapterModel.findOneForSure({ mangaId: id, ...from }, { chapters: { $first: '$chapters' } })
+  const { chapters: [chapter] } = await ChapterModel.findOneForSure({ mangaId: id }, { chapters: { $first: '$chapters' } })
   return exports.runLink(chapter.url, ts, options)
 }
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
@@ -45,9 +42,13 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   Import given link`).options('i', {
     alias: 'input',
     type: 'string',
-    describe: '(https://(mangakakalot.com|manganelo.com|fanfox.net)/manga/somename)|mangaId',
-    required: true
+    describe: '(https://(mangakakalot.com|manganelo.com|fanfox.net)/manga/somename)|mangaId'
   })
+    .options('n', {
+      alias: 'nameId',
+      type: 'string',
+      describe: 'nameId'
+    })
     .options('f', {
       alias: 'force',
       type: 'boolean',
@@ -58,8 +59,16 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     optimist.showHelp()
     process.exit(0)
   }
+  if (!argv.input && !argv.nameId) {
+    throw new Error('expect input link or nameId')
+  }
   utils.runImport(async (_) => {
     const options = argv.force ? { refreshThumb: true, refreshDescription: true } : ({})
+
+    if (argv.nameId) {
+      argv.input = await MangaModel.findOneForSure({ nameId: argv.nameId }).then(m => m._id.toString())
+    }
+
     const [method, field] = argv.input.includes('http') ? [runLink, 'link'] : [runId, '_id']
     await BatchModel.deleteMany({ [field]: argv.input })
     const batch = await method(argv.input, Date.now(), options)

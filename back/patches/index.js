@@ -59,7 +59,7 @@ async function main () {
   let patchNames = []
   let onSuccess = _ => 1
   if (argv.force) {
-    patchNames = [path.basename(argv.force, '.js')]
+    patchNames = [path.dirname(argv.force)]
     console.log('force > run', argv.force)
   } else {
     patchNames = await fetchPatchNames(LAST_PATCH_RUN)
@@ -72,7 +72,7 @@ async function main () {
   for (const aName of patchNames) {
     try {
       const name = aName.endsWith('.js') ? aName : aName.endsWith('index') ? aName + '.js' : path.join(aName, 'index.js')
-      const mod = await import(`./${name}`)
+      const mod = await import(`./${name.replace('patches/', '')}`)
       console.log('> run', name)
       config.logger.inf('> run', name)
       await mod.run()
