@@ -131,7 +131,7 @@ export default {
               ${user?.admin && html`<mt-refresh onclick="${refreshChapters}"></mt-refresh>`}
             </div>
           `
-          : html`<span slot="content"></span>`
+          : html`<div slot="content">${user?.admin && html`<mt-refresh onclick="${refreshChapters}"></mt-refresh>`}</div>`
         }
       </mt-card>
       <div class="description">
