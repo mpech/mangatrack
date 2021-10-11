@@ -15,7 +15,6 @@ Formatter.prototype.format = async function (x) {
     thumbUrl: x.thumbUrl,
     tags: x.tags,
     // tags: await tag(x.name + ' ' + x.description_content), // for now, just do it on the fly because not safe
-    taggedWords: x.taggedWords,
     lastChap: {
       num: x.lastChap_num,
       url: x.lastChap_url,

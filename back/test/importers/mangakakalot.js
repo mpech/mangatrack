@@ -56,7 +56,7 @@ describe('importers/mangakakalot', function () {
       const { chapters, manga } = await importer.fetchMangaDetail(null, { keptChapt: true })
       assert(called)
       assert(manga.keptChapt)
-      assert.strictEqual(manga.author, 'Ooima Yoshitoki')
+      assert.deepStrictEqual(manga.authors, ['Ooima Yoshitoki'])
       assert.strictEqual(manga.aliasName, 'Alternative : 不滅のあなたへ (Japanese); 致不灭的你 (Chinese); Fumetsu no Anata e; To Your Eternity (English)')
       assert.strictEqual(chapters.length, 117)
       const dic = chapters.reduce((acc, x) => {

@@ -57,13 +57,23 @@ describe('lib/tagger', function () {
       const s = 'Lee Gyuntak And who in the world is Kana'
       assert.deepStrictEqual(await tag(s), ['kr'])
     })
-    it('tags jn via additionalTags from names', async () => {
-      const s = 'Lee Gyuntak vs Groo Tagg'
-      assert.deepStrictEqual(await tag(s, { jn: new Set(['Groo', 'Tagg']) }), ['jn'])
-    })
-    it('tags jn via additionalTags from words', async () => {
-      const s = 'Lee Gyuntak vs groo tagg'
-      assert.deepStrictEqual(await tag(s, { jn: new Set(['groo', 'tagg']) }), ['jn'])
+    describe('options', () => {
+      it('options.tags match names', async () => {
+        const s = 'Lee Gyuntak vs Groo Tagg DDD'
+        assert.deepStrictEqual(await tag(s, { tags: { jn: new Set(['Groo', 'Tagg', 'DDD']) } }), ['jn'])
+      })
+      it('options.tags match words', async () => {
+        const s = 'Lee Gyuntak vs groo tagg ddd'
+        assert.deepStrictEqual(await tag(s, { tags: { jn: new Set(['groo', 'tagg', 'ddd']) } }), ['jn'])
+      })
+      it('options.stopTags skip names', async () => {
+        const s = 'Lee Gyuntak vs groo tagg'
+        assert.deepStrictEqual(await tag(s, { stopTags: new Set(['Lee', 'Gyuntak']) }), [])
+      })
+      it('options.stopTags skip words', async () => {
+        const s = 'Lee Gyuntak vs gyuntak groo tagg'
+        assert.deepStrictEqual(await tag(s, { stopTags: new Set(['Lee', 'Gyuntak']) }), [])
+      })
     })
   })
 })

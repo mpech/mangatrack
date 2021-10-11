@@ -62,12 +62,17 @@ const _tagIt = (dic, { countPunctuation, len }) => {
   }
   const tags = [jnTag, cnTag, krTag]
   const pBag = softmax(tags.map(tag => dic[tag].bag.size))
-  const pNChars = softmax(tags.map(tag => dic[tag].nChars ? 1 : 0))// count does not matter, only existence. TODO, get kanji list...
+  // count does not matter, only existence. However get 2 (or more?) because a character is relevant
+  const pNChars = softmax(tags.map(tag => dic[tag].nChars ? 2 : 0))
   const v = scal(pBag, pNChars)
+
   const imax = v.indexOf(Math.max(...v))
+  const v2 = [...v]
+  v2.splice(imax, 1)
+  const imax2 = v.indexOf(Math.max(...v2))
 
   // TODO: be smarter
-  if (v[imax] === v[(imax + v.length + 1) % v.length]) {
+  if (v[imax] === v[imax2]) {
     return [tagByPunctuation].filter(Boolean)
   }
   const tag = tags[imax]

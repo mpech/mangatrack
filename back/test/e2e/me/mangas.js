@@ -255,7 +255,7 @@ describe('e2e/me/mangas', function () {
       .set({ Authorization: `Bearer ${at.token}` })
       .expect(200)
 
-    assert.deepEqual(item.manga, {
+    assert.deepStrictEqual(item.manga, {
       id: '000000000000000000000000',
       name: 'gro',
       nameId: 'gro',
