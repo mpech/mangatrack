@@ -1,5 +1,12 @@
 import { html, dispatch } from 'hybrids'
 
+const handleClick = (host) => {
+  window.history.replaceState({
+    location: window.location.toString(),
+    scrollPosition: { x: window.scrollX, y: window.scrollY }
+  }, '')
+}
+
 export default {
   tag: 'MtA',
   to: '',
@@ -10,7 +17,7 @@ export default {
     }
   },
   render: ({ toSharped }) => (html`
-<a href="${toSharped}">
+<a href="${toSharped}" onclick="${handleClick}">
   <slot></slot>
 </a>
   `).style(`

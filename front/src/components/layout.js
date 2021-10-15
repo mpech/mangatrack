@@ -18,7 +18,7 @@ export default {
   classes: ({ activeClass, loggedClass }) => [activeClass, loggedClass].filter(Boolean),
   render: ({ classes, withToTop }) => (html`
     <div class="${classes}" onclick="${onclick}">
-      <mt-a data-name="home" to="/">MangaTrack</mt-a>
+      <mt-a data-name="home" to="${window.location.origin}">MangaTrack</mt-a>
       <mt-a data-name="me" to="/me" title="my space">Me</mt-a>
       <mt-a data-name="login" to="/login" title="Mainly sync your tracked stuff">Login</mt-a>
       <mt-a data-name="logout" to="/logout">Logout</mt-a>

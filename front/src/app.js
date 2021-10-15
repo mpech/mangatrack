@@ -2,6 +2,13 @@ import { html, define } from 'hybrids'
 import MtRouter from '@/components/router'
 import MtNotification from '@/components/notification'
 
+window.history.scrollRestoration = 'manual'
+const scroll = function ({ state }) {
+  const pos = state?.location === window.location.toString() && state?.scrollPosition
+  setTimeout(() => pos && window.scrollTo(pos.x, pos.y), 0)
+}
+window.addEventListener('popstate', scroll)
+
 const App = {
   tag: 'MtApp',
   render: () => html`

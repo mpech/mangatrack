@@ -43,7 +43,16 @@ const Router = {
       return routes.find(([reg, tagName]) => reg.test(path))[1]
     }
   },
-  render: ({ tagName }) => html`<div innerHTML="${`<${tagName}></${tagName}>`}"></div>`
+  render: ({ tagName }) => {
+    return html`
+      <mt-home style="--display-home: ${tagName === 'mt-home' ? '' : 'none'}"></mt-home>
+      ${tagName !== 'mt-home' && html`<div innerHTML="${`<${tagName}></${tagName}>`}"></div>`}
+    `.style`
+    mt-home {
+      display: var(--display-home);
+    }
+`
+  }
 }
 
 export default Router
