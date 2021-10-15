@@ -24,18 +24,20 @@ describe('activity/tagActivity', function () {
   it('takes into account tags since last deploy which where added (thus not in txt files)', async () => {
     const activity = new Activity()
     await Promise.all([
-      TagModel.create([{ word: 'abc', tags: ['cn'] }, { word: 'def', tags: ['kr'] }, { word: 'lep', tags: ['kr'] }]),
+      TagModel.create([{ word: 'cna', tags: ['cn'] }, { word: 'cnb', tags: ['cn'] }, { word: 'krb', tags: ['kr'] }]),
       MangaModel.create([
-        { name: 'abc Kim ', tags: ['kr'], lastChap_at: 2 },
-        { name: 'aaa', description_content: 'def lep Kim', lastChap_at: 1 },
-        { name: 'bbb', description_content: 'nope', lastChap_at: 0 }
+        { name: 'cna cnb krtag', tags: ['cn'], lastChap_at: 2 },
+        { name: 'xxx', description_content: 'cna cnb krtag', tags: ['cn'], lastChap_at: 1 },
+        { name: 'krtag', description_content: 'cna krb', lastChap_at: 0 },
+        { name: 'not matching', lastChap_at: 0 }
       ])
     ])
-    await activity.tag({ word: 'Kim', tags: ['kr'] })
-    const [a, b, c] = await MangaModel.find()
-    assert.deepStrictEqual(a.tags, [], 'cn against kr gives []')
-    assert.deepStrictEqual(b.tags, ['kr'])
-    assert.deepStrictEqual(c.tags, [])
+    await activity.tag({ word: 'krtag', tags: ['kr'] })
+    const [a, b, c, d] = await MangaModel.find().sort({ lastChap_at: -1 })
+    assert.deepStrictEqual(a.tags, ['cn'], 'simple tag from tagModel (name)')
+    assert.deepStrictEqual(b.tags, ['cn'], 'simple tag from tagModel (description_content)')
+    assert.deepStrictEqual(c.tags, ['kr'], 'two tags better than one')
+    assert.deepStrictEqual(d.tags, [], 'no tag')
   })
 
   it('tag activity only by nameId', async () => {
