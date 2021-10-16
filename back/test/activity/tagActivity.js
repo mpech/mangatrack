@@ -26,9 +26,9 @@ describe('activity/tagActivity', function () {
     await Promise.all([
       TagModel.create([{ word: 'cna', tags: ['cn'] }, { word: 'cnb', tags: ['cn'] }, { word: 'krb', tags: ['kr'] }]),
       MangaModel.create([
-        { name: 'cna cnb krtag', tags: ['cn'], lastChap_at: 2 },
-        { name: 'xxx', description_content: 'cna cnb krtag', tags: ['cn'], lastChap_at: 1 },
-        { name: 'krtag', description_content: 'cna krb', lastChap_at: 0 },
+        { name: 'cna cnb krtag', tags: ['cn'], lastChap_at: 3 },
+        { name: 'xxx', description_content: 'cna cnb krtag', tags: ['cn'], lastChap_at: 2 },
+        { name: 'krtag', description_content: 'cna krb', lastChap_at: 1 },
         { name: 'not matching', lastChap_at: 0 }
       ])
     ])
