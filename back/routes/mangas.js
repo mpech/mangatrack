@@ -1,11 +1,12 @@
 import { validate, Joi } from 'express-validation'
 import mongoose from 'mongoose'
 import MangaModel from '../models/mangaModel.js'
-import ChapterModel from '../models/chapterModel.js'
 import config from '../config/index.js'
 import Formatter from '../formatters/mangaFormatter.js'
 import prom from '../lib/prom.js'
 import * as rules from '../lib/rules.js'
+import errorHandler from '../lib/errorHandler.js'
+
 const formatter = new Formatter()
 export const load = function (app) {
   app.get('/mangas', validate({
@@ -58,11 +59,21 @@ export const load = function (app) {
     const pred = req.params.nameId.match(/^[0-9a-f]{24}$/)
       ? ({ _id: mongoose.Types.ObjectId(req.params.nameId) })
       : ({ nameId: req.params.nameId })
-    // TODO: slow
-    const m = await MangaModel.findOneForSure(pred).lean()
-    const chapters = await ChapterModel.find({ mangaId: m._id }).lean()
-    m.chapters = chapters
-    return formatter.formatFull(m)
+    const mangas = await MangaModel.aggregate([
+      { $match: pred },
+      { $limit: 1 },
+      {
+        $lookup: {
+          from: 'chapters',
+          localField: '_id',
+          foreignField: 'mangaId',
+          as: 'chapters'
+        }
+      }
+    ])
+    return mangas.length
+      ? formatter.formatFull(mangas[0])
+      : errorHandler.notFound('Manga (' + req.params.nameId + ')')
   }))
 }
 export default { load }

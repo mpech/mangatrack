@@ -3,11 +3,12 @@ import utils from '../utils/index.js'
 import oauth from '../../services/oauth.js'
 import AtModel from '../../models/oauth/atModel.js'
 import RtModel from '../../models/oauth/rtModel.js'
+import UserModel from '../../models/userModel.js'
 import errorHandler from '../../lib/errorHandler.js'
 
 utils.bindDb()
 describe('services/oauth', function () {
-  beforeEach(utils.clearColls([AtModel, RtModel]))
+  beforeEach(utils.clearColls([AtModel, RtModel, UserModel]))
   describe('getRefreshToken', () => {
     it('get one', async function () {
       const userId = '0'.repeat(24)
@@ -46,25 +47,31 @@ describe('services/oauth', function () {
     })
   })
 
-  describe('getAccessToken', () => {
-    it('getAccessToken', async function () {
-      const userId = '0'.repeat(24)
-      await AtModel.create({ userId, token: '1000' })
-      const at = await oauth.getAccessToken(1000)
-      assert.strictEqual(at.accessToken, '1000')
-      assert(at.user.id === userId)
-    })
-    it('rejects if none', async function () {
-      assert.rejects(() => oauth.getAccessToken(1000), { id: errorHandler.invalidTokenError.id })
-    })
-  })
-
   describe('generateTokens', () => {
     it('get at and rt', async function () {
       const { accessToken, refreshToken } = await oauth.generateTokens({ id: '0'.repeat(24) })
       assert(accessToken.length > 10)
       assert(refreshToken.length > 10)
       assert(accessToken !== refreshToken)
+    })
+  })
+
+  describe('getUserFromToken', () => {
+    it('gets the user', async function () {
+      const userId = '0'.repeat(24)
+      await Promise.all([
+        UserModel.create({ displayName: 'a', _id: userId }),
+        AtModel.create({ userId, token: '1000' })
+      ])
+      const user = await oauth.getUserFromToken('1000')
+      assert.strictEqual(user._id.toString(), userId)
+    })
+    it('throws if no token', async function () {
+      assert.rejects(() => oauth.getUserFromToken('1000'), { id: errorHandler.invalidTokenError.id })
+    })
+    it('throws if no user', async function () {
+      await AtModel.create({ userId: '0'.repeat(24), token: '1000' })
+      assert.rejects(() => oauth.getUserFromToken('1000'), { id: errorHandler.invalidTokenError.id })
     })
   })
 })

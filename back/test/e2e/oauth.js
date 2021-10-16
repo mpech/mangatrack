@@ -45,7 +45,7 @@ describe('e2e/oauth', function () {
     ])
   }))
 
-  it('generates token on callback', Mocker.mockIt(function (mokr) {
+  it('generates token on callback with redirect', Mocker.mockIt(function (mokr) {
     mokr.mock(passport, 'authenticate', (endpointName, _, cb) => {
       assert.strictEqual(endpointName, 'google')
       return function (req, res) {

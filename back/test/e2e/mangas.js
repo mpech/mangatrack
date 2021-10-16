@@ -139,62 +139,69 @@ describe('e2e/mangas', function () {
     assert.strictEqual(items.length, 1)
     assert.strictEqual(items[0].name, 'aaaaaa')
   }))
+  describe('/mangas/:mangaId', () => {
+    it('list one manga', async () => {
+      await Promise.all([
+        MangaModel.create({ name: 'abc' }),
+        MangaModel.upsertManga({
+          name: 'def',
+          chapters: [{ num: 0, url: 'a', at: 3 }, { num: 1, url: 'b', at: 4 }],
+          description: 'c',
+          thumbUrl: 'thumb'
+        }, 'mangakakalot')
+      ])
 
-  it('list one manga', Mocker.mockIt(async function (mokr) {
-    await Promise.all([
-      MangaModel.create({ name: 'abc' }),
-      MangaModel.upsertManga({
-        name: 'def',
-        chapters: [{ num: 0, url: 'a', at: 3 }, { num: 1, url: 'b', at: 4 }],
-        description: 'c',
-        thumbUrl: 'thumb'
-      }, 'mangakakalot')
-    ])
+      const { body } = await utils.requester
+        .get('/mangas/def')
+        .expect(200)
 
-    const { body } = await utils.requester
-      .get('/mangas/def')
-      .expect(200)
+      assert.strictEqual(body.thumbUrl, 'thumb')
+      assert.strictEqual(body.description.content, 'c')
+      assert.strictEqual(body.description.from, 'mangakakalot')
+      const items = body.chapters
+      assert.strictEqual(items.length, 1)
+      assert.strictEqual(body.name, 'def')
+      const { from, chapters } = items[0]
+      assert.strictEqual(from, 'mangakakalot')
+      assert.strictEqual(chapters.length, 2)
+      assert.strictEqual(chapters[0].url, 'b')
+      assert.strictEqual(chapters[0].num, 1)
+      assert.strictEqual(chapters[0].at, 4)
+      assert.strictEqual(chapters[1].url, 'a')
+      assert.strictEqual(chapters[1].num, 0)
+      assert.strictEqual(chapters[1].at, 3)
+    })
 
-    assert.strictEqual(body.thumbUrl, 'thumb')
-    assert.strictEqual(body.description.content, 'c')
-    assert.strictEqual(body.description.from, 'mangakakalot')
-    const items = body.chapters
-    assert.strictEqual(items.length, 1)
-    assert.strictEqual(body.name, 'def')
-    const { from, chapters } = items[0]
-    assert.strictEqual(from, 'mangakakalot')
-    assert.strictEqual(chapters.length, 2)
-    assert.strictEqual(chapters[0].url, 'b')
-    assert.strictEqual(chapters[0].num, 1)
-    assert.strictEqual(chapters[0].at, 4)
-    assert.strictEqual(chapters[1].url, 'a')
-    assert.strictEqual(chapters[1].num, 0)
-    assert.strictEqual(chapters[1].at, 3)
-  }))
+    it('filters mangas by min chapters', async () => {
+      await Promise.all([
+        MangaModel.create({ _id: '0'.repeat(24), name: 'aaaaaa', lastChap_at: 1, lastChap_num: 10 }),
+        MangaModel.create({ _id: '1'.repeat(24), name: 'abaaaa', lastChap_at: 2, lastChap_num: 5 }),
+        MangaModel.create({ _id: '2'.repeat(24), name: 'abcabc', lastChap_num: 2 })
+      ])
+      const { body: { items } } = await utils.requester
+        .get('/mangas?minChapters=5')
+        .expect(200)
 
-  it('filters mangas by min chapters', Mocker.mockIt(async function (mokr) {
-    await Promise.all([
-      MangaModel.create({ _id: '0'.repeat(24), name: 'aaaaaa', lastChap_at: 1, lastChap_num: 10 }),
-      MangaModel.create({ _id: '1'.repeat(24), name: 'abaaaa', lastChap_at: 2, lastChap_num: 5 }),
-      MangaModel.create({ _id: '2'.repeat(24), name: 'abcabc', lastChap_num: 2 })
-    ])
-    const { body: { items } } = await utils.requester
-      .get('/mangas?minChapters=5')
-      .expect(200)
+      assert.strictEqual(items.length, 2)
+      assert.strictEqual(items[0].name, 'abaaaa')
+      assert.strictEqual(items[1].name, 'aaaaaa')
+    })
 
-    assert.strictEqual(items.length, 2)
-    assert.strictEqual(items[0].name, 'abaaaa')
-    assert.strictEqual(items[1].name, 'aaaaaa')
-  }))
+    it('list one manga by id', async () => {
+      const manga = await MangaModel.create({ name: 'abc' })
+      const { body } = await utils.requester
+        .get('/mangas/' + manga.id)
+        .expect(200)
 
-  it('list one manga by id', Mocker.mockIt(async function (mokr) {
-    const manga = await MangaModel.create({ name: 'abc' })
-    const { body } = await utils.requester
-      .get('/mangas/' + manga.id)
-      .expect(200)
+      assert.strictEqual(body.name, 'abc')
+    })
 
-    assert.strictEqual(body.name, 'abc')
-  }))
+    it('rejects if not found', () => {
+      return utils.requester
+        .get('/mangas/aaa')
+        .expect(404)
+    })
+  })
 
   describe('list by tags', () => {
     it('filter if only one tag', async () => {

@@ -25,17 +25,27 @@ export const revokeToken = async function ({ refreshToken, client, user }) {
   })
   return deletedCount
 }
-export const getAccessToken = async function (token) {
-  const at = await AtModel.findOne({ token }).lean()
-  if (!at) {
-    return errorHandler.invalidTokenError()
-  }
-  return {
-    accessToken: at.token,
-    accessTokenExpiresAt: at.expiresAt,
-    client: { id: 'mangatrack' },
-    user: { id: at.userId.toString() }
-  }
+
+export const getUserFromToken = async function (token) {
+  const res = await AtModel.aggregate([
+    { $match: { token } },
+    {
+      $lookup: {
+        from: 'users',
+        localField: 'userId',
+        foreignField: '_id',
+        as: 'users'
+      }
+    },
+    {
+      $project: {
+        user: {
+          $first: '$users'
+        }
+      }
+    }
+  ])
+  return (res.length && res[0].user) ? res[0].user : errorHandler.invalidTokenError()
 }
 export const generateTokens = async function (user) {
   const client = { id: 'mangatrack' }
@@ -58,6 +68,6 @@ export const generateTokens = async function (user) {
 export default {
   getRefreshToken,
   revokeToken,
-  getAccessToken,
-  generateTokens
+  generateTokens,
+  getUserFromToken
 }

@@ -14,12 +14,9 @@ const auth = async (req, res, next, opts = {}) => {
     res.setHeader('WWW-Authenticate', 'Bearer')
     return res.status(401).send('invalid_request')
   }
-  // TODO: crit path
-  const { user: { id } } = await OauthService.getAccessToken(match[1])
-  const p = UserModel.findOneForSure({ _id: id })
   try {
-    const user = await (opts.lean ? p.lean() : p)
-    req.user = user
+    const user = await OauthService.getUserFromToken(match[1])
+    req.user = opts.lean ? user : new UserModel(user, undefined, { skipId: true, isNew: false })
     return next()
   } catch {
     return res.status(400).send('unauthorized_client')
