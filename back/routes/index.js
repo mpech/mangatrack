@@ -14,6 +14,10 @@ const routers = [
 ]
 export const load = function (app) {
   routers.forEach(x => x.load(app))
+  process.env.DEBUG && app.post('/consolelogs', (req, res, next) => {
+    console.log(...req.body.data)
+    return res.send({ ok: true })
+  })
 }
 export default {
   load

@@ -46,7 +46,7 @@ const makeBodyVerb = verb => (url, data = {}) => {
 const put = makeBodyVerb('PUT')
 const del = makeBodyVerb('DELETE')
 const post = makeBodyVerb('POST')
-
+export const log = (...args) => post('/consolelogs', { data: [...args] })
 export const fetchMangas = ({ q, minChapters, tags } = {}) => get('/mangas', { q, minChapters, tags, limit: 18 })
 export const fetchMyMangas = ({ populated } = {}) => get('/me/mangas', { populated })
 export const trackManga = ({ id, num = 1 }) => put('/me/mangas/' + id, { num })
