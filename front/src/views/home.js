@@ -32,11 +32,13 @@ export default {
   count: { get: (host, val) => val, set: (host, v) => v },
   myMangas: [],
   hasMore: false,
+  init: { get: (host, val = false) => val, set: (host, val) => val },
   load: {
     observe (host) {
       // when in /me, no need to fetch for I am hidden
       // assert: I can only browse here via refetch link or back history (meaning I was mounted)
-      if (host.load) {
+      if (host.load && !host.init) {
+        host.init = true
         host.mangas = []
         host.nextLink = ''
         safe(fetchMangas)().then(setMangas(host))
