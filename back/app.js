@@ -16,7 +16,7 @@ app.use(bodyParser.json({ limit: '1mb' }))
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(ctx.express())
 app.use(ctx.headers())
-app.use(cors())
+app.use(cors({ maxAge: config.cors_maxAge }))
 app.use(expressLog({
   maxRequestTime: config.reqlogger_maxRequestTime,
   logger: config.logger

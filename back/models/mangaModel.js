@@ -8,7 +8,7 @@ const schema = new Schema({
   nameId: { type: String, required: true, unique: true, index: true },
   name: { type: String, required: true, unique: true, index: true },
   thumbUrl: String,
-  lastChap_at: { type: Number, default: Date.now, required: true },
+  lastChap_at: { type: Number, default: Date.now, required: true, index: true },
   // simplify the update query, assuming no chap will be negative
   lastChap_num: { type: Number, default: -1 },
   lastChap_url: { type: String },

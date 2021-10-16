@@ -44,14 +44,11 @@ const Router = {
     }
   },
   render: ({ tagName }) => {
+    const isHome = tagName === 'mt-home'
     return html`
-      <mt-home style="--display-home: ${tagName === 'mt-home' ? '' : 'none'}"></mt-home>
+      <mt-home load="${isHome}" style="display:${isHome ? 'block' : 'none'}"></mt-home>
       ${tagName !== 'mt-home' && html`<div innerHTML="${`<${tagName}></${tagName}>`}"></div>`}
-    `.style`
-    mt-home {
-      display: var(--display-home);
-    }
-`
+    `
   }
 }
 

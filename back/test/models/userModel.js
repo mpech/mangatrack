@@ -7,23 +7,34 @@ utils.bindDb()
 describe('models/userModel.js', function () {
   beforeEach(utils.clearColls([UserModel]))
 
-  it('finds a user for sure', () => {
-    return UserModel.create({ displayName: 'a' }).then(u => {
-      return UserModel.findOneForSure({ displayName: 'a' })
-    }).then(u => {
-      assert(u)
+  describe('findOneForSure', () => {
+    it('finds a user for sure', () => {
+      return UserModel.create({ displayName: 'a' }).then(u => {
+        return UserModel.findOneForSure({ displayName: 'a' })
+      }).then(u => {
+        assert(u)
+      })
     })
-  })
 
-  it('throws if not found', () => {
-    let thrown = false
-    return UserModel.create({ displayName: 'a' }).then(u => {
-      return UserModel.findOneForSure({ googleId: 2 })
-    }).catch(e => {
-      thrown = true
-      assert.strictEqual(e.status, 404)
-    }).then(_ => {
-      assert(thrown)
+    it('finds a lean user for sure', () => {
+      return UserModel.create({ displayName: 'a' }).then(u => {
+        return UserModel.findOneForSure({ displayName: 'a' }).lean()
+      }).then(u => {
+        assert(u)
+        assert(!(u instanceof UserModel))
+      })
+    })
+
+    it('throws if not found', () => {
+      let thrown = false
+      return UserModel.create({ displayName: 'a' }).then(async u => {
+        return UserModel.findOneForSure({ googleId: 2 })
+      }).catch(e => {
+        thrown = true
+        assert.strictEqual(e.status, 404)
+      }).then(x => {
+        assert(thrown)
+      })
     })
   })
 

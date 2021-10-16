@@ -45,7 +45,7 @@ export const load = function (app) {
     }
     const [count, coll] = await Promise.all([
       MangaModel.countDocuments(crit),
-      MangaModel.find(crit).sort({ lastChap_at: -1 }).skip(offset).limit(limit).lean().exec()
+      MangaModel.find(crit).sort({ lastChap_at: -1 }).skip(offset).limit(limit).lean()
     ])
 
     return formatter.formatCollection(coll, { count, offset, limit })
@@ -58,8 +58,9 @@ export const load = function (app) {
     const pred = req.params.nameId.match(/^[0-9a-f]{24}$/)
       ? ({ _id: mongoose.Types.ObjectId(req.params.nameId) })
       : ({ nameId: req.params.nameId })
-    const m = await MangaModel.findOneForSure(pred)
-    const chapters = await ChapterModel.find({ mangaId: m._id })
+    // TODO: slow
+    const m = await MangaModel.findOneForSure(pred).lean()
+    const chapters = await ChapterModel.find({ mangaId: m._id }).lean()
     m.chapters = chapters
     return formatter.formatFull(m)
   }))

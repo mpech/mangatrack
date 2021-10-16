@@ -8,7 +8,7 @@ import * as rules from '../../lib/rules.js'
 import { validate, Joi } from 'express-validation'
 import mongoose from 'mongoose'
 export const load = function (app) {
-  app.get('/admin/batches', helper.authenticate, helper.ensureAdmin, validate({
+  app.get('/admin/batches', helper.authenticateLean, helper.ensureAdmin, validate({
     query: Joi.object({
       id: Joi.alternatives().try(Joi.array().items(rules.objId), rules.objId),
       offset: Joi.number().min(0),

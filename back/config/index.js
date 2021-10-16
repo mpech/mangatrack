@@ -8,7 +8,7 @@ const DIRNAME = path.dirname(fileURLToPath(import.meta.url))
 const exports = {}
 exports.port = 4020
 exports.phase = 'usr'
-exports.dbUrl = 'mongodb://localhost:27017/mangatrack'
+exports.dbUrl = 'mongodb://localhost:27017/mangatrack?maxPoolSize=100'
 exports.dbTestUrl = 'mongodb://localhost:27017/tests'
 exports.log_fname = path.resolve(DIRNAME, '../log/%DATE%_mt.log')
 exports.log_maxsize = 1e5
@@ -43,6 +43,7 @@ exports.nameId_maxLength = 70
 exports.batch_duration = 3600 * 1000 * 24 // keep 1 day
 exports.excludeCdnImporter = ['mangakakalot', 'manganelo'] // cdn blocks referrer :(
 exports.force_app_run = 'plzGiveUsMetaParent_orSomething'
+exports.cors_maxAge = 24 * 3600
 const jsonPath = path.join(DIRNAME, 'privateConfig.json')
 Object.assign(exports, existsSync(jsonPath) ? loadJsonFileSync(jsonPath) : {})
 exports.logger = new Logger({

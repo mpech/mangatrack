@@ -1,12 +1,22 @@
-import errorHandler from './errorHandler.js'
+import { notFound } from './errorHandler.js'
 const base = {
   findOneForSure: function (pred, proj) {
-    return this.findOne(pred, proj).then(x => {
-      if (!x) {
-        throw errorHandler.notFound(this.modelName)
+    const modelName = this.modelName
+    const p = this.findOne(pred, proj)
+    const handler = {
+      get (target, prop) {
+        if (prop === 'then' && !target._monkeyForSure) {
+          target._monkeyForSure = true
+          return (resolve, reject) => {
+            return target.then(x => {
+              return x ? resolve(x) : Promise.resolve().then(() => notFound(modelName)).catch(reject)
+            }, reject)
+          }
+        }
+        return target[prop]
       }
-      return x
-    })
+    }
+    return new Proxy(p, handler)
   }
 }
 function setStatic (k, schema) {

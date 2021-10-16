@@ -7,6 +7,7 @@ import * as rules from '../../lib/rules.js'
 import errorHandler from '../../lib/errorHandler.js'
 import helper from '../../lib/helper.js'
 import formatter from '../../formatters/me/mangaFormatter.js'
+
 function load (app) {
   app.put('/me/mangas/:mangaId', helper.authenticate, validate({
     params: Joi.object({
@@ -30,7 +31,7 @@ function load (app) {
     })
   }), prom(function (req, res) {
     const mangaId = req.params.mangaId
-    return req.user.removeManga({ mangaId, updatedAt: Date.now() }).then(formatter.format).catch(e => console.log('e : ', e))
+    return req.user.removeManga({ mangaId, updatedAt: Date.now() }).then(formatter.format)
   }))
   app.patch('/me/mangas', helper.authenticate, validate({
     body: Joi.object({
@@ -89,23 +90,23 @@ function load (app) {
     }
     return req.user.updateMangas(items).then(formatter.formatCollection)
   }))
+
   app.get('/me/mangas', validate({
     query: Joi.object({
       populated: Joi.boolean()
     })
-  }), helper.authenticate, prom(async (req, res) => {
-    let map = req.user.mangas
-    if (req.query.populated) {
-      map = await MangaModel
-        .find({ _id: { $in: [...map.keys()].map(k => mongoose.Types.ObjectId(k)) } })
-        .lean()
-        .then(mangas => {
-          const mangaMap = new Map(mangas.map(m => [m._id.toString(), m]))
-          return new Map([...map.entries()].map(([id, myManga]) => {
-            return [id, { ...myManga.toJSON(), manga: mangaMap.get(id) }]
-          }))
-        })
-    }
+  }), helper.authenticateLean, prom(async (req, res) => {
+    const userMap = req.user.mangas
+    const mangaMap = req.query.populated
+      ? await MangaModel
+          .find({ _id: { $in: [...Object.keys(userMap)].map(k => mongoose.Types.ObjectId(k)) } })
+          .lean()
+          .then(mangas => new Map(mangas.map(m => [m._id.toString(), m])))
+      : new Map()
+
+    const map = new Map(Object.entries(userMap).map(([id, myManga]) => {
+      return [id, { ...myManga, manga: mangaMap.get(id) }]
+    }))
     return formatter.formatCollection(map, { populated: req.query.populated })
   }))
 }

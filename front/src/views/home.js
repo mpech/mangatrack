@@ -33,13 +33,17 @@ export default {
   myMangas: [],
   hasMore: false,
   load: {
-    connect (host) {
-      host.mangas = []
-      host.nextLink = ''
-      safe(fetchMangas)().then(setMangas(host))
-      fetchMyMangas().then(({ items = [] }) => {
-        host.myMangas = items
-      })
+    observe (host) {
+      // when in /me, no need to fetch for I am hidden
+      // assert: I can only browse here via refetch link or back history (meaning I was mounted)
+      if (host.load) {
+        host.mangas = []
+        host.nextLink = ''
+        safe(fetchMangas)().then(setMangas(host))
+        fetchMyMangas().then(({ items = [] }) => {
+          host.myMangas = items
+        })
+      }
     }
   },
   render: ({ mangas = [], myMangas, nextLink, count }) => html`
