@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 import config from '../../config/index.js'
 const Schema = mongoose.Schema
 const ModelSchema = new Schema({
-  token: { type: String, required: true },
+  token: { type: String, required: true, index: true, unique: true },
   userId: { type: Schema.Types.ObjectId, required: true },
   expiresAt: { type: Date, default: _ => new Date(Date.now() + config.oauth_accessToken_duration) }
 })
