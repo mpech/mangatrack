@@ -11,18 +11,6 @@ const _ensureDiv = (host, e, fn) => {
   const el = e.target
   return 'istruck' in el.dataset ? fn(el) : undefined
 }
-
-const rollback = (host, e) => {
-  host.lastTracked = host.lastRead
-}
-
-const paintSelection = (host, e) => {
-  _ensureDiv(host, e, el => {
-    const num = parseFloat(el.dataset.num)
-    host.lastTracked = num
-  })
-}
-
 const select = (host, e) => {
   return _ensureDiv(host, e, el => {
     const num = parseFloat(el.getAttribute('data-num'))
@@ -64,7 +52,7 @@ export default {
     </mt-a>
   `}
   ${chapters.length > 0 && html`
-    <div class="grid" onmouseout="${rollback}" onmouseover="${paintSelection}" onclick="${select}">
+    <div class="grid grid" onclick="${select}">
       <div class="gridhead" title="chapter">Ch.</div>
       <div class="gridhead">from</div>
       <div class="gridhead">when</div>
@@ -80,7 +68,6 @@ export default {
         <div
           id="${'chap' + num}"
           title="mark as read up to there"
-          onmouseleave="${rollback}"
           data-num="${num}"
           data-istruck
         ></div>
@@ -127,8 +114,22 @@ export default {
   .grid div:nth-last-child(4) {
     border-bottom: 1px solid #cbcbcb;
   }
-  .grid .read ~ div, .read {
-    background: #CCCCCC;
+  div:nth-child(4n+4) {
+    text-align: center;
+  }
+  /* if read is given, mark from read to bottom */
+  .read, .read ~div {
+    background: #ccc;
+  }
+  /* when hover, remove any read stuff and mark from hover to bottom */
+  .grid:hover div:not(.gridhead) {
+    background: inherit;
+  }
+  .grid div:nth-child(4n+4):hover:not(.gridhead)::before {
+    content: '🚚';
+  }
+  .grid div:nth-child(4n+4):hover:not(.gridhead) ~div {
+    background: #ccc;
   }
   a {
     display:block;
