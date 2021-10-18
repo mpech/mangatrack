@@ -128,6 +128,9 @@ export default {
   .grid div:nth-child(4n+4):hover:not(.gridhead)::before {
     content: '🚚';
   }
+  .grid div:nth-child(4n+4):hover:not(.gridhead) {
+    background: conic-gradient(from 20deg at 0% 100%, #eee, #ccc 70deg, #eee);
+  }
   .grid div:nth-child(4n+4):hover:not(.gridhead) ~div {
     background: #ccc;
   }
