@@ -108,14 +108,17 @@ export default {
     width: min(500px, 100%);
     display: grid;
     grid-template-columns: repeat(4, auto);
+    border: 1px solid #cbcbcb;
   }
   .col {
     display: flex;
     flex-direction: column;
-    border: 1px solid #cbcbcb;
-    border-right: none;
   }
-  .col:last-child {border-right: 1px solid #cbcbcb;}
+  .col:nth-child(2) {
+    border-left: 1px solid #cbcbcb;
+    border-right: 1px solid #cbcbcb;
+  }
+  .col:nth-child(3) { border-right: 1px solid #cbcbcb; }
   .col > div {
     height: 40px;
   }
