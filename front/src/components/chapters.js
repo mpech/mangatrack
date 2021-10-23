@@ -18,7 +18,6 @@ const select = (host, e) => {
     host.oldTracked = num
   })
 }
-
 export default {
   tag: 'MtChapters',
   mangaId: '',
@@ -52,26 +51,46 @@ export default {
     </mt-a>
   `}
   ${chapters.length > 0 && html`
-    <div class="grid grid" onclick="${select}">
-      <div class="gridhead" title="chapter">Ch.</div>
-      <div class="gridhead">from</div>
-      <div class="gridhead">when</div>
-      <div class="gridhead">🚚</div>
-      ${chapters.map(({ num, froms, at }) => html`
-        <div class="${num === lastTracked ? 'read' : undefined}" >c${num}</div>
-        <div>
-          ${froms.map(from => html`
-            <a href="${from.url}" class="${['from', from.klass]}"></a>
-          `.key(from.klass + '_' + num))}
+    <div class="grid"><!-- waiting for subgrid... -->
+      <div class="col">
+        <div class="gridhead" title="chapter">Ch.
         </div>
-        <div><time updatedAt="${at}">${dayjs(at).format('YY-MM-DD')}</time></div>
-        <div
-          id="${'chap' + num}"
-          title="mark as read up to there"
-          data-num="${num}"
-          data-istruck
-        ></div>
-      `.key(num))}
+        ${chapters.map(({ num, froms, at }) => html`
+          <div>c${num}</div>
+        `.key(num))}
+      </div>
+
+      <div class="col">
+        <div class="gridhead" title="from">From
+        </div>
+        ${chapters.map(({ num, froms, at }) => html`
+          <div>
+            ${froms.map(from => html`
+              <a href="${from.url}" class="${['from', from.klass]}"></a>
+            `.key(from.klass + '_' + num))}
+          </div>
+        `.key(num))}
+      </div>
+      <div class="col">
+        <div class="gridhead" title="at">At
+        </div>
+        ${chapters.map(({ num, froms, at }) => html`
+          <div><time updatedAt="${at}">${dayjs(at).format('YY-MM-DD')}</time></div>
+        `.key(num))}
+      </div>
+
+      <div class="col tracker" onclick="${select}">
+        <div class="gridhead">🚚
+        </div>
+        ${chapters.map(({ num, froms, at }) => html`
+          <div class="${num === lastTracked ? 'read' : undefined}"
+            id="${'chap' + num}"
+            title="mark as read up to there"
+            data-num="${num}"
+            data-istruck
+          ></div>
+        `.key(num))}
+      </div>
     </div>
   `}
   ${chapters.length === 0 && html`
@@ -90,54 +109,44 @@ export default {
     display: grid;
     grid-template-columns: repeat(4, auto);
   }
-  .grid div {
+  .col {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #cbcbcb;
+    border-right: none;
+  }
+  .col:last-child {border-right: 1px solid #cbcbcb;}
+  .col > div {
+    height: 40px;
+  }
+  .col > div {
     box-sizing: border-box;
     display: flex;
     padding: 0.5em;
-    border-left: 1px solid #cbcbcb;
     justify-items: center;
     align-items: center;
   }
-  .grid div:nth-child(4n + 4) {
-    border-right: 1px solid #cbcbcb;
+  .tracker > :not(.gridhead) {
     cursor: pointer;
   }
-  .grid div:nth-child(1),
-  .grid div:nth-child(2),
-  .grid div:nth-child(3),
-  .grid div:nth-child(4) {
-    border-top: 1px solid #cbcbcb;
-  }
-  .grid div:nth-last-child(1),
-  .grid div:nth-last-child(2),
-  .grid div:nth-last-child(3),
-  .grid div:nth-last-child(4) {
-    border-bottom: 1px solid #cbcbcb;
-  }
-  div:nth-child(4n+4) {
-    text-align: center;
-  }
   /* if read is given, mark from read to bottom */
-  .read, .read ~div {
+  .tracker:not(:hover) .read ~ *,
+  .tracker:not(:hover) .read,
+  .gridhead:hover ~ .read ~ *,
+  .gridhead:hover ~ .read
+  {
     background: #ccc;
   }
   /* when hover, remove any read stuff and mark from hover to bottom */
-  .grid:hover div:not(.gridhead) {
-    background: inherit;
-  }
-  .grid div:nth-child(4n+4):hover:not(.gridhead)::before {
+  .tracker > :hover:not(.gridhead)::before {
     content: '🚚';
   }
-  .grid div:nth-child(4n+4):hover:not(.gridhead) {
+  .tracker > :hover:not(.gridhead) {
     background: conic-gradient(from 20deg at 0% 100%, #eee, #ccc 70deg, #eee);
   }
-  .grid div:nth-child(4n+4):hover:not(.gridhead) ~div {
+  .tracker > :hover:not(.gridhead) ~ * {
     background: #ccc;
   }
-  a {
-    display:block;
-  }
-
   .from {
     width: 1.5em;
     height: 1.5em;
