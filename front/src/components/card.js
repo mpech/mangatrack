@@ -15,15 +15,15 @@ const humanDate = at => {
 }
 
 const handleError = (host, e) => dispatch(e.target, 'imageerror', { composed: true, bubbles: true })
-
+const UNDEFINED_NUM = -1000
 export default {
   tag: 'MtCard',
   item: {},
-  followednum: '',
+  followednum: UNDEFINED_NUM,
   lastChap: ({ item }) => item.lastChap || {},
   link: ({ item: { nameId } }) => 'mangas/' + nameId,
   lastHumanDate: ({ lastChap: { at } }) => humanDate(at),
-  upToDate: ({ followednum, lastChap: { num } }) => typeof (followednum) !== 'undefined' && followednum === num,
+  upToDate: ({ followednum, lastChap: { num } }) => followednum === num,
   nohover: false,
   render: ({
     item,
@@ -35,7 +35,7 @@ export default {
     link
   }) => (html`
 <div class="${[
-  typeof (followednum) !== 'undefined' && 'followed',
+  !isNaN(followednum) && 'followed',
   upToDate && 'up-to-date',
   nohover && 'nohover'
   ]}">
