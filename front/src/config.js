@@ -1,5 +1,5 @@
 export const apiHost = window.location.host.includes('.com')
-  ? 'https://mangatrackapi.nodekoko.com/api'
+  ? 'https://mangatrack.nodekoko.com/api'
   : `http://${window.location.host.replace(/:.*$/g, '')}:4020/api`
 
 export const oauth = {
