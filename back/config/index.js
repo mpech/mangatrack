@@ -17,13 +17,15 @@ exports.reqlogger_maxRequestTime = 1e6// ms
 exports.pagination_limit = 50
 exports.oauth2_google_clientId = '936593177518-0spv3m56a0a9nslh6lq669glos9c55na.apps.googleusercontent.com'
 exports.oauth2_google_secret = 'private'
+// when not using a subdomain but a vpath, incoming url holds ^/api (no need to proxy rewrite)
+exports.mountpath = false // '/api'
 // this is the redirect callback upon google authorization
-exports.apiHost = `http://localhost:${exports.port}` // replace in privateConfig.json with your public endpoint
-exports.oauth2_google_redirect_uri = `${exports.apiHost}/oauth/google/callback`
+exports.apiEndpoint = `http://localhost:${exports.port}${exports.mountpath ? exports.mountpath : ''}` // replace in privateConfig.json with your public endpoint
+exports.oauth2_google_redirect_uri = `${exports.apiEndpoint}/oauth/google/callback`
 
 exports.oauth2_facebook_clientId = '2145773262189943'
 exports.oauth2_facebook_secret = 'private'
-exports.oauth2_facebook_redirect_uri = `${exports.apiHost}/oauth/facebook/callback`
+exports.oauth2_facebook_redirect_uri = `${exports.apiEndpoint}/oauth/facebook/callback`
 exports.front_login_success = 'https://mangatrack/?access_token={{access_token}}&refresh_token={{refresh_token}}'
 
 exports.oauth_accessToken_duration = 7 * 24 * 3600 * 1000// 7days

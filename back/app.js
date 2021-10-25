@@ -20,8 +20,10 @@ app.use(cors({ maxAge: config.cors_maxAge }))
 app.use(expressLog({
   maxRequestTime: config.reqlogger_maxRequestTime,
   logger: config.logger
-}));
-({ load }.load(app))
+}))
+const router = config.mountpath ? express() : app
+router !== app && app.use(config.mountpath, router)
+load(router)
 app.get('/ping', (req, res) => res.send('OK'))
 app.use(errorHandler.express())
 if (process.argv[1] === fileURLToPath(import.meta.url) || typeof (process.env[config.force_app_run]) !== 'undefined') {
