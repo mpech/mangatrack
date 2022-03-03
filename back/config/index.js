@@ -8,8 +8,8 @@ const DIRNAME = path.dirname(fileURLToPath(import.meta.url))
 const exports = {}
 exports.port = 4020
 exports.phase = 'usr'
-exports.dbUrl = 'mongodb://localhost:27017/mangatrack?maxPoolSize=100'
-exports.dbTestUrl = 'mongodb://localhost:27017/tests'
+exports.dbUrl = 'mongodb://127.0.0.1:27017/mangatrack?maxPoolSize=100'
+exports.dbTestUrl = 'mongodb://127.0.0.1:27017/tests'
 exports.log_fname = path.resolve(DIRNAME, '../log/%DATE%_mt.log')
 exports.log_maxsize = 1e5
 exports.log_lvl = 'usr'

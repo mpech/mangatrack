@@ -1,6 +1,6 @@
 export const apiHost = window.location.host.includes('.com')
   ? 'https://mangatrack.nodekoko.com/api'
-  : `http://${window.location.host.replace(/:.*$/g, '')}:4020/api`
+  : `http://${window.location.host.replace(/:.*$/g, '')}:4020`
 
 export const oauth = {
   google_clientId: '936593177518-0spv3m56a0a9nslh6lq669glos9c55na.apps.googleusercontent.com',
