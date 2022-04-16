@@ -16,8 +16,9 @@ Two folders, back and front.
 
 You need
 
-* node.js >= 14
+* node.js >= 16
 * mongodb >= 4.4.8
+* pnpm >= 6.32
 
 ### Installing
 
@@ -25,8 +26,8 @@ You need
 ```
 git clone https://github.com/mpech/mangatrack.git
 cd mangatrack/back
-npm install
-npm start
+pnpm install
+pnpm start
 ```
 Api should now be accessible via ```http://127.0.0.1:4020```
 
@@ -34,8 +35,8 @@ Api should now be accessible via ```http://127.0.0.1:4020```
 
 ```
 cd front
-npm install
-npm run start
+pnpm install
+pnpm run start
 ```
 
 For more specific instructions, check [back](./back/README.md) and [front](./front/README.md)
