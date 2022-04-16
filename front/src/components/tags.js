@@ -5,7 +5,7 @@ const handleClick = (host, { target }) => {
   dispatch(host, 'tagselect', { composed: true, detail: { tag } })
 }
 const MtTags = {
-  tag: 'MtTags',
+  tag: 'mt-tags',
   tags: { get: (host, val = []) => val, set: (host, val) => val },
   interactive: false,
   render: ({ tags, interactive }) => (html`

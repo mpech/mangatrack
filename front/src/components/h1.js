@@ -1,7 +1,7 @@
 import { html } from 'hybrids'
 
 export default {
-  tag: 'MtH1',
+  tag: 'mt-h1',
   render: () => (html`
 <h1>
   <slot></slot>

@@ -3,7 +3,7 @@ lockfileVersion: 5.3
 specifiers:
   dayjs: ^1.10.7
   debounce: ^1.2.1
-  hybrids: ^6.1.0
+  hybrids: ^7.0.6
   rollup: ^2.0.0
   rollup-plugin-visualizer: ^5.5.2
   vite: ^2.5.10
@@ -11,7 +11,7 @@ specifiers:
 dependencies:
   dayjs: 1.11.1
   debounce: 1.2.1
-  hybrids: 6.1.0
+  hybrids: 7.0.6
 
 devDependencies:
   rollup: 2.70.2
@@ -305,8 +305,8 @@ packages:
       function-bind: 1.1.1
     dev: true
 
-  /hybrids/6.1.0:
-    resolution: {integrity: sha512-y95TmbRy08XjY95Y2y1ZhNmhq1nmCLH6DM2fg47/FidIkuxK9l6OOnOiUiOBF9jeeO+luR+5oG1S2wddywiGyQ==}
+  /hybrids/7.0.6:
+    resolution: {integrity: sha512-W6AupNTYv8Itbb+SVqzWnXgw5PGc5jzaI4BHTcG/v8mogk912e+kb00/5AOQs2sQ928OjQNDj8VOPst6En/d8w==}
     dev: false
 
   /is-core-module/2.8.1:

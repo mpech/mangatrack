@@ -1,6 +1,7 @@
 import { html, define } from 'hybrids'
 import MtRouter from '@/components/router'
 import MtNotification from '@/components/notification'
+import { defineAll } from '@/utils/hybrids'
 
 const retry = async (delays, fn) => {
   const timeout = t => new Promise(resolve => setTimeout(resolve, t))
@@ -19,9 +20,11 @@ const restoreScroll = function ({ state }) {
   })
 }
 
+defineAll(MtRouter, MtNotification)
 const App = {
-  tag: 'MtApp',
+  tag: 'mt-app',
   load: {
+    value: undefined,
     connect () {
       window.history.scrollRestoration = 'manual'
       window.addEventListener('popstate', restoreScroll)
@@ -38,7 +41,7 @@ const App = {
   --title-font-family: sans-serif;
   --title-color: #4c4e55;
 }
-  `.define(MtRouter, MtNotification)
+  `
 }
 
 define(App)

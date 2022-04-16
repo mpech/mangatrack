@@ -1,9 +1,10 @@
 import dayjs from 'dayjs'
-import { html, dispatch } from 'hybrids'
+import { html, dispatch, define } from 'hybrids'
 import MtA, { handleScroll } from '@/components/a'
 import mangakakalot from '@/assets/mangakakalot.png'
 import fanfox from '@/assets/fanfox.png'
 import manganelo from '@/assets/manganelo.png'
+import { prop } from '@/utils/hybrids'
 
 export const UNREAD = -1
 
@@ -18,10 +19,12 @@ const select = (host, e) => {
     host.oldTracked = num
   })
 }
+
+define(MtA)
 export default {
-  tag: 'MtChapters',
+  tag: 'mt-chapters',
   mangaId: '',
-  chapters: [],
+  chapters: prop([]),
   lastRead: {
     get: (host, old) => old || UNREAD,
     set: (host, v) => v,
@@ -34,6 +37,7 @@ export default {
     set: (host, v) => v
   },
   oldTracked: {
+    value: undefined,
     connect (host) {
       host.lastTracked = host.lastRead
     }
@@ -183,5 +187,5 @@ export default {
     display: inline-block;
     margin-bottom: 5px;
   }
-  `).define(MtA)
+  `)
 }

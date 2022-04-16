@@ -1,10 +1,11 @@
-import { html, dispatch } from 'hybrids'
+import { html, dispatch, define } from 'hybrids'
 
 const MtNotificationItem = {
   tag: 'mt-notification-item',
   duration: 2000,
   status: '',
   msg: {
+    value: '',
     set: (h, v) => v,
     connect (host) {
       const t = setTimeout(() => {
@@ -44,9 +45,10 @@ const handleDone = (host, e) => {
   const detailId = e.detail.id
   host.notifications = host.notifications.filter(n => n.id !== detailId)
 }
-// just trying some notif
+
+define(MtNotificationItem)
 export default {
-  tag: 'MtNotification',
+  tag: 'mt-notification',
   duration: 4000,
   notifications: {
     set: (h, v) => v,
@@ -76,7 +78,7 @@ export default {
     text-align: center;
     box-sizing: border-box;
   }
-`)).define(MtNotificationItem)
+`))
 }
 export const notify = (host, msg) => {
   dispatch(host, 'notify', { composed: true, bubbles: true, detail: { status: 'success', msg } })

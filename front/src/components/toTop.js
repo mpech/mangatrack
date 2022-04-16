@@ -8,8 +8,9 @@ const handleClick = (host, e) => {
 }
 
 export default {
-  tag: 'MtToTop',
+  tag: 'mt-to-top',
   scrolled: {
+    value: false,
     connect: (host) => {
       const options = {
         root: null,

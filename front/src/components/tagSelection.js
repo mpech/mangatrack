@@ -1,4 +1,4 @@
-import { html, dispatch } from 'hybrids'
+import { html, dispatch, define } from 'hybrids'
 import MtTags from '@/components/tags'
 import debounce from 'debounce'
 import { putTags } from '@/services/tag'
@@ -35,8 +35,10 @@ const handleTagSelect = (host, { detail: { tag } }) => {
 const handleClose = (host) => {
   host.word = ''
 }
+
+define(MtTags)
 const MtTagSelection = {
-  tag: 'mtTagSelection',
+  tag: 'mt-tag-selection',
   user: { get: (host, val = {}) => val, set: (host, val) => val },
   taggedwords: { get: (host, val = {}) => val, set: (host, val) => val },
   regWords: {
@@ -93,6 +95,6 @@ const MtTagSelection = {
   height: 100vh;
   opacity: 0;
 }
-`).define(MtTags)
+`)
 }
 export default MtTagSelection

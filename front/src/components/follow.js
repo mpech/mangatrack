@@ -1,5 +1,6 @@
-import { html, property, dispatch } from 'hybrids'
+import { html, dispatch, define } from 'hybrids'
 import MtA from '@/components/a'
+import { prop } from '@/utils/hybrids'
 
 const onclick = (host, e) => {
   e.preventDefault()
@@ -10,10 +11,11 @@ const onclick = (host, e) => {
   )
 }
 
+define(MtA)
 export default {
-  tag: 'MtFollow',
+  tag: 'mt-follow',
   followed: false,
-  followData: property({}),
+  followData: prop({}),
   name: '',
   title: ({ followed, name }) => `${followed ? 'Untrack' : 'Track'} ${name}`,
   classes: ({ followed }) => [followed && 'followed', 'mt-follow'].filter(Boolean),
@@ -31,5 +33,5 @@ mt-a:hover {
 .followed mt-a {
   --a-color: red;
 }
-  `).define(MtA)
+  `)
 }

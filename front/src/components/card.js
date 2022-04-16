@@ -3,6 +3,8 @@ import MtFollow from '@/components/follow'
 import MtA from '@/components/a'
 import MtTags from '@/components/tags'
 import relativeTime from 'dayjs/plugin/relativeTime'
+import { prop, defineAll } from '@/utils/hybrids'
+
 // remove dayjs: no need expect fromNow
 import dayjs from 'dayjs'
 dayjs.extend(relativeTime)
@@ -16,9 +18,11 @@ const humanDate = at => {
 
 const handleError = (host, e) => dispatch(e.target, 'imageerror', { composed: true, bubbles: true })
 const UNDEFINED_NUM = -1000
+
+defineAll(MtFollow, MtA, MtTags)
 export default {
-  tag: 'MtCard',
-  item: {},
+  tag: 'mt-card',
+  item: prop({}),
   followednum: UNDEFINED_NUM,
   lastChap: ({ item }) => item.lastChap || {},
   link: ({ item: { nameId } }) => 'mangas/' + nameId,
@@ -122,5 +126,5 @@ figure {
   justify-content: space-between;
 }
 
-  `).define(MtFollow, MtA, MtTags)
+  `)
 }

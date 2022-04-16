@@ -3,7 +3,7 @@ import MtLayout from '@/components/layout'
 import MtGrid from '@/components/grid'
 import MtH1 from '@/components/h1'
 import { follow, unfollow, fetchMyMangas } from '@/services/manga'
-
+import { prop, defineAll } from '@/utils/hybrids'
 const handleClick = (host, e) => {
   host.tabClass = e.target.name
 }
@@ -33,11 +33,10 @@ const handleUnfollow = (host, e) => {
   })
 }
 
+defineAll(MtLayout, MtGrid, MtH1)
 const Me = {
-  tag: 'mtMe',
-  myPopulatedMangas: {
-    set: (h, v) => v
-  },
+  tag: 'mt-me',
+  myPopulatedMangas: prop([]),
   newMangas: {
     get ({ myPopulatedMangas }) {
       return myPopulatedMangas
@@ -57,11 +56,9 @@ const Me = {
     },
     set: (h, v) => v
   },
-  tabClass: {
-    get: (h, v = 'new-mangas') => v,
-    set: (h, v) => v
-  },
+  tabClass: prop('new-mangas'),
   load: {
+    value: undefined,
     connect (host) {
       host.myPopulatedMangas = []
       fetchMyMangas({ populated: true }).then(({ items }) => {
@@ -120,6 +117,6 @@ const Me = {
 .new-mangas [data-name="uptodate-mangas"], .uptodate-mangas [data-name="new-mangas"] {
   display: none;
 }
-  `.define(MtLayout, MtGrid, MtH1)
+  `
 }
 export default Me

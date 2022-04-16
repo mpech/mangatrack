@@ -1,18 +1,22 @@
-import { html } from 'hybrids'
+import { html, define } from 'hybrids'
 import MtCard from '@/components/card'
+import { prop } from '@/utils/hybrids'
 
+define(MtCard)
 export default {
-  tag: 'MtGrid',
-  mangas: [],
-  myMangas: [],
-  followedMangas: ({ mangas, myMangas }) => {
-    const bag = new Map(myMangas.filter(m => m.state !== 'deleted').map(m => [m.mangaId, m]))
-    return mangas.map(manga => {
-      const myManga = bag.get(manga.id)
-      return ({ manga, followedNum: myManga && myManga.num })
-    })
+  tag: 'mt-grid',
+  mangas: prop([]),
+  myMangas: prop([]),
+  followedMangas: {
+    get ({ mangas, myMangas }) {
+      const bag = new Map(myMangas.filter(m => m.state !== 'deleted').map(m => [m.mangaId, m]))
+      return mangas.map(manga => {
+        const myManga = bag.get(manga.id)
+        return ({ manga, followedNum: myManga && myManga.num })
+      })
+    }
   },
-  render: ({ followedMangas }) => (html`
+  render: ({ followedMangas, mangas }) => (html`
   <div>
     ${followedMangas.map(({ manga, followedNum }) => (html`<mt-card item="${manga}" followednum="${followedNum}"></mt-card>`.key(manga.id)))}
   </div>
@@ -31,5 +35,4 @@ export default {
     }
   }
 `
-    .define(MtCard)
 }

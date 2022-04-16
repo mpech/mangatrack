@@ -11,7 +11,7 @@ scope=${oauth.google_scope}&\
 state=${oauth.self_callback}`
 
 export default {
-  tag: 'MtGoogleBtn',
+  tag: 'mt-google-btn',
   uri,
   render: () => html`
     <a href="${uri}" style="display:inline-block;" class="google loginBtn loginBtn--google"></a>

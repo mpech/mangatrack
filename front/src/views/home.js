@@ -5,6 +5,7 @@ import MtGrid from '@/components/grid'
 import { fetchMangas, get } from '@/api'
 import safe from '@/utils/safe'
 import { fetchMyMangas } from '@/services/manga'
+import { prop, defineAll } from '@/utils/hybrids'
 const setMangas = host => res => {
   host.mangas = res.items
   host.nextLink = res.links.next
@@ -25,15 +26,17 @@ const handleMore = safe(host => {
   return host.nextLink && get(host.nextLink).then(concatMangas(host))
 })
 
+defineAll(MtLayout, MtFilterForm, MtGrid)
 export default {
-  tag: 'mtHome',
-  mangas: { set: (h, v) => v },
-  nextLink: { set: (host, v) => v },
-  count: { get: (host, val) => val, set: (host, v) => v },
-  myMangas: [],
+  tag: 'mt-home',
+  mangas: prop([]),
+  nextLink: prop(''),
+  count: prop(0),
+  myMangas: prop([]),
   hasMore: false,
-  init: { get: (host, val = false) => val, set: (host, val) => val },
+  init: prop(false),
   load: {
+    value: undefined,
     observe (host) {
       // when in /me, no need to fetch for I am hidden
       // assert: I can only browse here via refetch link or back history (meaning I was mounted)
@@ -48,7 +51,7 @@ export default {
       }
     }
   },
-  render: ({ mangas = [], myMangas, nextLink, count }) => html`
+  render: ({ mangas = [], myMangas, nextLink, count }) => (html`
     <mt-layout with-to-top>
       <mt-filter-form onsearch="${search}"></mt-filter-form>
       ${typeof (count) !== 'undefined' ? html`<div class="stats">${count} results</div>` : ''}
@@ -82,5 +85,5 @@ export default {
   button:hover {
       background-image: linear-gradient(transparent,rgba(0,0,0,.05) 40%,rgba(0,0,0,.1));
   }
-`).define(MtLayout, MtFilterForm, MtGrid)
+`))
 }

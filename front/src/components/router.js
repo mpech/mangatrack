@@ -1,11 +1,13 @@
-import { html, define } from 'hybrids'
+import { html } from 'hybrids'
 import MtViewsHome from '@/views/home'
 import MtViewsMe from '@/views/me'
 import MtViewsManga from '@/views/manga'
 import MtViewsLogin from '@/views/login'
 import MtViewsLogout from '@/views/logout'
 import MtViewsNotFound from '@/views/notFound'
-define(
+import { prop, defineAll } from '@/utils/hybrids'
+
+defineAll(
   MtViewsHome,
   MtViewsMe,
   MtViewsManga,
@@ -25,8 +27,9 @@ const routes = [
 
 const Router = {
   tag: 'mt-router',
-  routes,
+  routes: prop(routes),
   path: {
+    value: '',
     connect (host) {
       const fn = () => {
         host.path = window.location.href.replace(window.location.origin, '')

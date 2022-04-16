@@ -1,7 +1,7 @@
 import { html } from 'hybrids'
 
 export default {
-  tag: 'MtRefresh',
+  tag: 'mt-refresh',
   render: () => html`
     <button title="refresh chapters">⟳</button>
   `.style(`

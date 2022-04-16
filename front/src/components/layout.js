@@ -1,12 +1,15 @@
 import { html } from 'hybrids'
 import MtToTop from '@/components/toTop'
 import MtA from '@/components/a'
+import { defineAll } from '@/utils/hybrids'
+
 const onclick = (host, e) => {
   host.path = e.target.pathname
 }
 
+defineAll(MtToTop, MtA)
 export default {
-  tag: 'MtLayout',
+  tag: 'mt-layout',
   withToTop: false,
   path: {
     get: () => window.location.pathname,
@@ -56,5 +59,5 @@ mt-a {
 .logout [data-name="logout"] {
   color: #ff8080;
 }
-  `.define(MtToTop, MtA)
+  `
 }

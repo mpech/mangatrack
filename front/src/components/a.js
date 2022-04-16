@@ -8,7 +8,7 @@ const handleClick = (host) => {
 }
 
 export default {
-  tag: 'MtA',
+  tag: 'mt-a',
   to: '',
   toSharped: {
     get ({ to }) {

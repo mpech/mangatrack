@@ -28,7 +28,7 @@ const handleUntagged = (host) => {
   myDebounce(host)
 }
 export default {
-  tag: 'MtFilterForm',
+  tag: 'mt-filter-form',
   q: { get: (host, val = '') => val, set: (host, val) => val },
   kr: { get: (host, val = true) => val, set: (host, val) => val },
   cn: { get: (host, val = true) => val, set: (host, val) => val },

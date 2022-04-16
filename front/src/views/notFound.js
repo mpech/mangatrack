@@ -2,10 +2,12 @@ import { html } from 'hybrids'
 import { ops } from '@/config'
 import MtLayout from '@/components/layout'
 import MtH1 from '@/components/h1'
+import { defineAll } from '@/utils/hybrids'
 
+defineAll(MtLayout, MtH1)
 // https://github.com/dysfunc/ascii-emoji/blob/master/emojis
 export default {
-  tag: 'MtNotFound',
+  tag: 'mt-not-found',
   page: {
     get: () => window.location
   },
@@ -18,5 +20,5 @@ export default {
     <p>Thanks!</p>
   </div>
 </mt-layout>
-  `.define(MtLayout, MtH1)
+  `
 }

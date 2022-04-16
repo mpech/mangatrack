@@ -2,9 +2,13 @@ import MtGoogleBtn from '@/components/login/googleBtn'
 import MtFacebookBtn from '@/components/login/facebookBtn'
 import MtLayout from '@/components/layout'
 import { html } from 'hybrids'
+import { defineAll } from '@/utils/hybrids'
+
+defineAll(MtGoogleBtn, MtFacebookBtn, MtLayout)
 export default {
-  tag: 'MtLogin',
+  tag: 'mt-login',
   token: {
+    value: undefined,
     connect () {
       const params = new URLSearchParams(window.location.search)
       const accessToken = params.get('access_token')
@@ -35,5 +39,5 @@ export default {
   margin-top: 40px;
   align-items: center;
 }
-  `.define(MtGoogleBtn, MtFacebookBtn, MtLayout)
+  `
 }

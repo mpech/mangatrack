@@ -11,6 +11,7 @@ import { follow, unfollow, fetchMyMangas, refreshManga } from '@/services/manga'
 import { fetchMangaDetail, fetchMe } from '@/api'
 import safe, { safeRetry } from '@/utils/safe'
 import thumbUrl404 from '@/assets/thumburl_404.png'
+import { prop, defineAll } from '@/utils/hybrids'
 
 const handleUnfollow = (host, e) => {
   const { id, lastChap: { num }, name } = e.composedPath()[0].followData
@@ -74,20 +75,22 @@ const handleTagChange = host => {
   safe(fetchMangaDetail)({ nameId }).then(setMangaDetail(host))
 }
 
+defineAll(MtChapters, MtLayout, MtH1, MtFollow, MtCard, MtRefresh, MtTags, MtTagSelection)
 export default {
-  tag: 'MtManga',
-  chapters: [],
+  tag: 'mt-manga',
+  chapters: prop([]),
   manga: {
     get: (host, last) => last || { description: {} },
     set: (host, v) => v
   },
-  user: {},
-  myMangas: [],
+  user: prop({}),
+  myMangas: prop([]),
   nameId: { get: (host, val = window.location.href.match(/mangas\/(.*)/)[1]) => val },
   myManga: ({ myMangas, manga }) => myMangas.find(({ state, mangaId }) => state !== 'deleted' && mangaId === manga.id),
   lastRead: ({ myManga }) => myManga?.num !== undefined ? myManga?.num : UNREAD,
   followed: ({ lastRead }) => lastRead !== UNREAD,
   load: {
+    value: undefined,
     connect (host) {
       const nameId = host.nameId
       fetchMyMangas().then(res => {
@@ -193,5 +196,5 @@ blockquote footer:before {
 mt-tags {
   --font-size: 16px;
 }
-  `.define(MtChapters, MtLayout, MtH1, MtFollow, MtCard, MtRefresh, MtTags, MtTagSelection)
+  `
 }
