@@ -6,7 +6,7 @@
   "dependencies": {
     "dayjs": "^1.10.7",
     "debounce": "^1.2.1",
-    "hybrids": "^7.0.6"
+    "hybrids": "^8.0.5"
   },
   "devDependencies": {
     "rollup": "^2.0.0",
