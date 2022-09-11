@@ -7,16 +7,16 @@
 
 Run all tests
 ```
-npm test
+pnpm test
 ```
 
 Run some test
 ```
-npm test test/e2e/mangas.js
+pnpm test test/e2e/mangas.js --watch --parallel
 ```
 or
 ```
-cd test/e2e && npm test mangas.js
+cd test/e2e && pnpm test mangas.js
 ```
 
 ## Deployment
