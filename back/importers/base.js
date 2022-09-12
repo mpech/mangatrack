@@ -1,5 +1,4 @@
 import axios from 'axios'
-import moment from 'moment'
 import cheerio from 'cheerio'
 class Base {
 }
@@ -11,6 +10,14 @@ Base.prototype.domFetch = async function (url) {
   })
   return $
 }
+const monthes = 'jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec'.split('|')
+const rmonth = '(?<month>\\d{1,2})'
+const rlitmonth = '(?<litmonth>' + monthes.join('|') + ')'
+const ryear = '(?<year>\\d{4})'
+const rday = '(?<day>\\d{1,2})'
+const rhour = '(?<hour>\\d{1,2})'
+const rminute = '(?<minute>\\d{1,2})'
+const rsep = '[^\\w]*'
 Base.prototype.parseDate = function (s, now) {
   now = now || Date.now()
   /*
@@ -30,25 +37,28 @@ Base.prototype.parseDate = function (s, now) {
     s = s.replace('ago', '')
     const num = parseInt(s.match(/\d+/))
     if (s.includes('day')) {
-      return moment(now - num * 3600 * 24 * 1000).valueOf()
+      return now - num * 3600 * 24 * 1000
     } else if (s.includes('hour')) {
-      return moment(now - num * 3600 * 1000).valueOf()
+      return now - num * 3600 * 1000
     } else {
-      return moment(now - num * 60 * 1000).valueOf()
+      return now - num * 60 * 1000
     }
   }
   if (s.includes('esterday')) {
-    return moment(now - 1 * 3600 * 24 * 1000).valueOf()
+    return now - 1 * 3600 * 24 * 1000
   }
   if (s.includes('oday')) {
     // minus one hour
-    return moment(now - 1 * 3600 * 1000).valueOf()
+    return now - 1 * 3600 * 1000
   }
-  if (s.match(/sep|oct|nov|dec|jan|feb|mar|apr|may|jun|jul|aug/i)) {
-    return moment(s, 'MMM-DD,YYYY').valueOf()
+  if (new RegExp([rlitmonth, rday, ryear].join(rsep), 'i').test(s)) {
+    const { litmonth, day, year } = s.match(new RegExp([rlitmonth, rday, ryear].join(rsep), 'i')).groups
+    return new Date(year, monthes.indexOf(litmonth.toLowerCase()), day).getTime()
   }
-  if (moment(s, 'MM-DD HH:mm').isValid()) {
-    return moment(s, 'MM-DD HH:mm').valueOf()
+  if (new RegExp([rmonth, rday, rhour, rminute].join(rsep), 'i').test(s)) {
+    const { month, day, hour, minute } = s.match(new RegExp([rmonth, rday, rhour, rminute].join(rsep), 'i')).groups
+
+    return new Date(new Date().getFullYear(), month - 1, day, hour, minute).getTime()
   }
   return new Date(s).getTime()
 }
