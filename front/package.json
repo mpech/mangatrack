@@ -24,6 +24,9 @@
     "start": "pnpx vite",
     "build": "node build.mjs"
   },
+  "engines": {
+    "node": ">=16.7.0"
+  },
   "private": true,
   "license": "WTF"
 }
