@@ -1,5 +1,4 @@
 const path = require('path')
-const { visualizer } = require('rollup-plugin-visualizer')
 const { defineConfig } = require('vite')
 const SRC_PATH = path.join(__dirname, '/src')
 
@@ -20,12 +19,7 @@ if (import.meta.hot) {
 
 module.exports = defineConfig({
   root: SRC_PATH,
-  build: {
-    outDir: path.join(__dirname, 'dist'),
-    rollupOptions: {
-      plugins: [process.env.STATS === '1' && visualizer()]
-    }
-  },
+  server: { port: 3000 },
   resolve: {
     alias: [
       {
@@ -36,3 +30,5 @@ module.exports = defineConfig({
   },
   plugins: [process.env.NODE_ENV !== 'production' && hybridsHmr()]
 })
+
+module.exports.SRC_PATH = SRC_PATH

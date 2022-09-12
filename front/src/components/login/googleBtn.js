@@ -1,15 +1,14 @@
 import { html } from 'hybrids'
-import { oauth } from '@/config.js'
-import darkNormal from '@/assets/google/btn_google_signin_dark_normal_web.png'
-import darkFocus from '@/assets/google/btn_google_signin_dark_focus_web.png'
-import darkPressed from '@/assets/google/btn_google_signin_dark_pressed_web.png'
+import { oauth } from '@/config'
 
 const uri = `${oauth.google_endpoint}?response_type=code&\
 client_id=${oauth.google_clientId}&\
 redirect_uri=${oauth.google_redirect_uri}&\
 scope=${oauth.google_scope}&\
-state=${oauth.self_callback}`
+state=${encodeURIComponent(oauth.self_callback)}`
 
+const darkFocus = '/assets/google/btn_google_signin_dark_focus_web.png'
+const darkPressed = '/assets/google/btn_google_signin_dark_pressed_web.png'
 export default {
   tag: 'mt-google-btn',
   uri,
@@ -55,7 +54,7 @@ a{
   display:block;
   height:46px;
   width:191px;
-  background: url(${darkNormal})
+  background: url(/assets/google/btn_google_signin_dark_normal_web.png)
 }
 a:hover{
   background: url(${darkFocus})

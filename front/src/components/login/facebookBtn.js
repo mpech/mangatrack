@@ -2,14 +2,14 @@ import { html } from 'hybrids'
 import { oauth } from '@/config'
 
 const fbOauth = ({ uri }) => {
-  window.location.href = this.uri
+  window.location.href = uri
 }
 
 const uri = `${oauth.facebook_endpoint}?response_type=code&\
 client_id=${oauth.facebook_clientId}&\
 redirect_uri=${oauth.facebook_redirect_uri}&\
 scope=${oauth.facebook_scope}&\
-state=${oauth.self_callback}`
+state=${encodeURIComponent(oauth.self_callback)}`
 
 export default {
   tag: 'mt-facebook-btn',

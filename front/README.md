@@ -2,6 +2,6 @@ hybrids + vite
 
 ```
 
-npm start
+pnpm start
 
 ```

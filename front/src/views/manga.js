@@ -8,10 +8,10 @@ import MtCard from '@/components/card'
 import MtTags from '@/components/tags'
 import MtTagSelection from '@/components/tagSelection'
 import { follow, unfollow, fetchMyMangas, refreshManga } from '@/services/manga'
-import { fetchMangaDetail, fetchMe } from '@/api'
+import { fetchMangaDetail, fetchMe } from '@/api/index'
 import safe, { safeRetry } from '@/utils/safe'
-import thumbUrl404 from '@/assets/thumburl_404.png'
 import { prop, defineAll } from '@/utils/hybrids'
+const thumbUrl404 = '/assets/thumburl_404.png'
 
 const handleUnfollow = (host, e) => {
   const { id, lastChap: { num }, name } = e.composedPath()[0].followData

@@ -13,7 +13,7 @@ export const oauth = {
   facebook_scope: 'public_profile',
   facebook_endpoint: 'https://www.facebook.com/v5.0/dialog/oauth',
 
-  self_callback: `${window.location.origin}/login`
+  self_callback: `${window.location.origin}/#/login`
 }
 
 export const ops = {

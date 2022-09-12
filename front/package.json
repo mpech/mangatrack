@@ -9,9 +9,8 @@
     "hybrids": "^8.0.5"
   },
   "devDependencies": {
-    "rollup": "^2.0.0",
-    "rollup-plugin-visualizer": "^5.5.2",
-    "vite": "^2.5.10"
+    "esbuild": "^0.15.7",
+    "vite": "^3.1.0"
   },
   "standard": {
     "globals": [
@@ -21,10 +20,9 @@
     ]
   },
   "scripts": {
-    "standard": "npx standard --fix",
-    "start": "npx vite",
-    "build": "NODE_ENV=production npx vite build --emptyOutDir",
-    "build-stats": "NODE_ENV=production STATS=1 npm run build"
+    "standard": "pnpx standard --fix",
+    "start": "pnpx vite",
+    "build": "node build.mjs"
   },
   "private": true,
   "license": "WTF"

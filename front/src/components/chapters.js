@@ -1,9 +1,6 @@
 import dayjs from 'dayjs'
 import { html, dispatch, define } from 'hybrids'
 import MtA, { handleScroll } from '@/components/a'
-import mangakakalot from '@/assets/mangakakalot.png'
-import fanfox from '@/assets/fanfox.png'
-import manganelo from '@/assets/manganelo.png'
 import { prop } from '@/utils/hybrids'
 
 export const UNREAD = -1
@@ -169,13 +166,13 @@ export default {
     margin-right: 0px;
   }
   .from-mangakakalot {
-    background-image: url('${mangakakalot}');
+    background-image: url(/assets/mangakakalot.png);
   }
   .from-fanfox {
-    background-image: url('${fanfox}');
+    background-image: url(/assets/fanfox.png);
   }
   .from-manganelo {
-    background-image: url('${manganelo}');
+    background-image: url(/assets/manganelo.png);
   }
   .truckKun svg {
     color: white;

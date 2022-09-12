@@ -1,4 +1,4 @@
-import { putTags as putTagsApi } from '@/api'
+import { putTags as putTagsApi } from '@/api/index'
 import { notify, notifyError } from '@/components/notification'
 import { safeRetry } from '@/utils/safe'
 

@@ -17,11 +17,11 @@ defineAll(
 )
 
 const routes = [
-  [/^\/(?:#\/)?me/, 'mt-me'],
-  [/^\/(?:#\/)?mangas\/[^/]+/, 'mt-manga'],
-  [/^\/(?:#\/)?login/, 'mt-login'],
-  [/^\/(?:#\/)?logout/, 'mt-logout'],
-  [/^\/(?:#\/)?$/, 'mt-home'],
+  [/(^\/me|#\/me)/, 'mt-me'],
+  [/(^\/mangas|#\/mangas)/, 'mt-manga'],
+  [/(^\/login|#\/login)/, 'mt-login'],
+  [/(^\/logout|#\/logout)/, 'mt-logout'],
+  [/(^\/|#\/)$/, 'mt-home'],
   [/.*/, 'mt-not-found']
 ]
 

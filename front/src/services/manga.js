@@ -1,4 +1,4 @@
-import { trackManga, untrackManga, fetchMyMangas as apiFetchMyMangas, refreshManga as apiRefreshManga, fetchMangaDetail } from '@/api'
+import { trackManga, untrackManga, fetchMyMangas as apiFetchMyMangas, refreshManga as apiRefreshManga, fetchMangaDetail } from '@/api/index'
 import { notify, notifyError } from '@/components/notification'
 import safe, { safeRetry } from '@/utils/safe'
 
