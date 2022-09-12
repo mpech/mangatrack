@@ -22,7 +22,8 @@
   "scripts": {
     "standard": "pnpx standard --fix",
     "start": "pnpx vite",
-    "build": "node build.mjs"
+    "build": "node build.mjs",
+    "test": "echo no tests"
   },
   "engines": {
     "node": ">=16.7.0"
