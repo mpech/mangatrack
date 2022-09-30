@@ -3,6 +3,7 @@ import MtFacebookBtn from '@/components/login/facebookBtn'
 import MtLayout from '@/components/layout'
 import { html } from 'hybrids'
 import { defineAll } from '@/utils/hybrids'
+import localHistory from '@/utils/localHistory'
 
 defineAll(MtGoogleBtn, MtFacebookBtn, MtLayout)
 export default {
@@ -16,7 +17,8 @@ export default {
       accessToken && window.localStorage.setItem('accessToken', accessToken)
       refreshToken && window.localStorage.setItem('refreshToken', refreshToken)
       if (accessToken || refreshToken) {
-        window.location = '/'
+        const path = localHistory.find(s => !/login/.test(s))
+        window.location = path
       }
     }
   },

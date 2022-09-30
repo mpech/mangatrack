@@ -6,6 +6,7 @@ import MtViewsLogin from '@/views/login'
 import MtViewsLogout from '@/views/logout'
 import MtViewsNotFound from '@/views/notFound'
 import { prop, defineAll } from '@/utils/hybrids'
+import localHistory from '@/utils/localHistory'
 
 defineAll(
   MtViewsHome,
@@ -33,6 +34,7 @@ const Router = {
     connect (host) {
       const fn = () => {
         host.path = window.location.href.replace(window.location.origin, '')
+        localHistory.push(host.path)
       }
       fn()
       window.addEventListener('hashchange', fn)
