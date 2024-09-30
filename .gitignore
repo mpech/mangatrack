@@ -1,3 +1,4 @@
 *.tar.gz
 dep
 node_modules
+package-lock.json
